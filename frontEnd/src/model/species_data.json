@@ -1,0 +1,608 @@
+[
+    {
+        "id": 0,
+        "common_name": "Antelope",
+        "scientific_name": "Antilopinae (subfamily)",
+        "description": "The antelope is a species of Antilopinae (subfamily)."
+    },
+    {
+        "id": 1,
+        "common_name": "Badger",
+        "scientific_name": "Meles meles",
+        "description": "The badger is a species of Meles meles."
+    },
+    {
+        "id": 2,
+        "common_name": "Bat",
+        "scientific_name": "Chiroptera (order)",
+        "description": "The bat is a species of Chiroptera (order)."
+    },
+    {
+        "id": 3,
+        "common_name": "Bear",
+        "scientific_name": "Ursidae (family)",
+        "description": "The bear is a species of Ursidae (family)."
+    },
+    {
+        "id": 4,
+        "common_name": "Bee",
+        "scientific_name": "Unknown Classification",
+        "description": "The bee is a species of Unknown Classification."
+    },
+    {
+        "id": 5,
+        "common_name": "Beetle",
+        "scientific_name": "Coleoptera (order)",
+        "description": "The beetle is a species of Coleoptera (order)."
+    },
+    {
+        "id": 6,
+        "common_name": "Bison",
+        "scientific_name": "Bison bison",
+        "description": "The bison is a species of Bison bison."
+    },
+    {
+        "id": 7,
+        "common_name": "Boar",
+        "scientific_name": "Sus scrofa",
+        "description": "The boar is a species of Sus scrofa."
+    },
+    {
+        "id": 8,
+        "common_name": "Butterfly",
+        "scientific_name": "Lepidoptera (order)",
+        "description": "The butterfly is a species of Lepidoptera (order)."
+    },
+    {
+        "id": 9,
+        "common_name": "Camel",
+        "scientific_name": "Camelus dromedarius",
+        "description": "The camel is a species of Camelus dromedarius."
+    },
+    {
+        "id": 10,
+        "common_name": "Capybara",
+        "scientific_name": "Hydrochoerus hydrochaeris",
+        "description": "The capybara is a species of Hydrochoerus hydrochaeris."
+    },
+    {
+        "id": 11,
+        "common_name": "Cat",
+        "scientific_name": "Felis catus",
+        "description": "The cat is a species of Felis catus."
+    },
+    {
+        "id": 12,
+        "common_name": "Caterpillar",
+        "scientific_name": "Lepidoptera (larval stage)",
+        "description": "The caterpillar is a species of Lepidoptera (larval stage)."
+    },
+    {
+        "id": 13,
+        "common_name": "Chicken",
+        "scientific_name": "Unknown Classification",
+        "description": "The chicken is a species of Unknown Classification."
+    },
+    {
+        "id": 14,
+        "common_name": "Chimpanzee",
+        "scientific_name": "Pan troglodytes",
+        "description": "The chimpanzee is a species of Pan troglodytes."
+    },
+    {
+        "id": 15,
+        "common_name": "Cockroach",
+        "scientific_name": "Blattodea (order)",
+        "description": "The cockroach is a species of Blattodea (order)."
+    },
+    {
+        "id": 16,
+        "common_name": "Cow",
+        "scientific_name": "Bos taurus",
+        "description": "The cow is a species of Bos taurus."
+    },
+    {
+        "id": 17,
+        "common_name": "Coyote",
+        "scientific_name": "Canis latrans",
+        "description": "The coyote is a species of Canis latrans."
+    },
+    {
+        "id": 18,
+        "common_name": "Crab",
+        "scientific_name": "Brachyura (infraorder)",
+        "description": "The crab is a species of Brachyura (infraorder)."
+    },
+    {
+        "id": 19,
+        "common_name": "Crocodile",
+        "scientific_name": "Crocodylus niloticus",
+        "description": "The crocodile is a species of Crocodylus niloticus."
+    },
+    {
+        "id": 20,
+        "common_name": "Crow",
+        "scientific_name": "Corvus corax",
+        "description": "The crow is a species of Corvus corax."
+    },
+    {
+        "id": 21,
+        "common_name": "Deer",
+        "scientific_name": "Unknown Classification",
+        "description": "The deer is a species of Unknown Classification."
+    },
+    {
+        "id": 22,
+        "common_name": "Dog",
+        "scientific_name": "Canis lupus familiaris",
+        "description": "The dog is a species of Canis lupus familiaris."
+    },
+    {
+        "id": 23,
+        "common_name": "Dolphin",
+        "scientific_name": "Delphinidae (family)",
+        "description": "The dolphin is a species of Delphinidae (family)."
+    },
+    {
+        "id": 24,
+        "common_name": "Donkey",
+        "scientific_name": "Equus africanus asinus",
+        "description": "The donkey is a species of Equus africanus asinus."
+    },
+    {
+        "id": 25,
+        "common_name": "Dragonfly",
+        "scientific_name": "Odonata (order)",
+        "description": "The dragonfly is a species of Odonata (order)."
+    },
+    {
+        "id": 26,
+        "common_name": "Duck",
+        "scientific_name": "Anas platyrhynchos",
+        "description": "The duck is a species of Anas platyrhynchos."
+    },
+    {
+        "id": 27,
+        "common_name": "Eagle",
+        "scientific_name": "Aquila chrysaetos",
+        "description": "The eagle is a species of Aquila chrysaetos."
+    },
+    {
+        "id": 28,
+        "common_name": "Elephant",
+        "scientific_name": "Loxodonta africana",
+        "description": "The elephant is a species of Loxodonta africana."
+    },
+    {
+        "id": 29,
+        "common_name": "Flamingo",
+        "scientific_name": "Phoenicopterus roseus",
+        "description": "The flamingo is a species of Phoenicopterus roseus."
+    },
+    {
+        "id": 30,
+        "common_name": "Fly",
+        "scientific_name": "Diptera (order)",
+        "description": "The fly is a species of Diptera (order)."
+    },
+    {
+        "id": 31,
+        "common_name": "Fox",
+        "scientific_name": "Vulpes vulpes",
+        "description": "The fox is a species of Vulpes vulpes."
+    },
+    {
+        "id": 32,
+        "common_name": "Frog",
+        "scientific_name": "Unknown Classification",
+        "description": "The frog is a species of Unknown Classification."
+    },
+    {
+        "id": 33,
+        "common_name": "Giraffe",
+        "scientific_name": "Giraffa camelopardalis",
+        "description": "The giraffe is a species of Giraffa camelopardalis."
+    },
+    {
+        "id": 34,
+        "common_name": "Goat",
+        "scientific_name": "Capra aegagrus hircus",
+        "description": "The goat is a species of Capra aegagrus hircus."
+    },
+    {
+        "id": 35,
+        "common_name": "Goldfish",
+        "scientific_name": "Carassius auratus",
+        "description": "The goldfish is a species of Carassius auratus."
+    },
+    {
+        "id": 36,
+        "common_name": "Goose",
+        "scientific_name": "Anser anser",
+        "description": "The goose is a species of Anser anser."
+    },
+    {
+        "id": 37,
+        "common_name": "Gorilla",
+        "scientific_name": "Gorilla gorilla",
+        "description": "The gorilla is a species of Gorilla gorilla."
+    },
+    {
+        "id": 38,
+        "common_name": "Grasshopper",
+        "scientific_name": "Caelifera (suborder)",
+        "description": "The grasshopper is a species of Caelifera (suborder)."
+    },
+    {
+        "id": 39,
+        "common_name": "Hamster",
+        "scientific_name": "Cricetinae (subfamily)",
+        "description": "The hamster is a species of Cricetinae (subfamily)."
+    },
+    {
+        "id": 40,
+        "common_name": "Hare",
+        "scientific_name": "Lepus europaeus",
+        "description": "The hare is a species of Lepus europaeus."
+    },
+    {
+        "id": 41,
+        "common_name": "Hedgehog",
+        "scientific_name": "Erinaceus europaeus",
+        "description": "The hedgehog is a species of Erinaceus europaeus."
+    },
+    {
+        "id": 42,
+        "common_name": "Hippopotamus",
+        "scientific_name": "Hippopotamus amphibius",
+        "description": "The hippopotamus is a species of Hippopotamus amphibius."
+    },
+    {
+        "id": 43,
+        "common_name": "Hornbill",
+        "scientific_name": "Bucerotidae (family)",
+        "description": "The hornbill is a species of Bucerotidae (family)."
+    },
+    {
+        "id": 44,
+        "common_name": "Horse",
+        "scientific_name": "Equus ferus caballus",
+        "description": "The horse is a species of Equus ferus caballus."
+    },
+    {
+        "id": 45,
+        "common_name": "Hummingbird",
+        "scientific_name": "Trochilidae (family)",
+        "description": "The hummingbird is a species of Trochilidae (family)."
+    },
+    {
+        "id": 46,
+        "common_name": "Hyena",
+        "scientific_name": "Crocuta crocuta",
+        "description": "The hyena is a species of Crocuta crocuta."
+    },
+    {
+        "id": 47,
+        "common_name": "Jellyfish",
+        "scientific_name": "Scyphozoa (class)",
+        "description": "The jellyfish is a species of Scyphozoa (class)."
+    },
+    {
+        "id": 48,
+        "common_name": "Kangaroo",
+        "scientific_name": "Macropus rufus",
+        "description": "The kangaroo is a species of Macropus rufus."
+    },
+    {
+        "id": 49,
+        "common_name": "Koala",
+        "scientific_name": "Phascolarctos cinereus",
+        "description": "The koala is a species of Phascolarctos cinereus."
+    },
+    {
+        "id": 50,
+        "common_name": "Ladybugs",
+        "scientific_name": "Unknown Classification",
+        "description": "The ladybugs is a species of Unknown Classification."
+    },
+    {
+        "id": 51,
+        "common_name": "Leopard",
+        "scientific_name": "Panthera pardus",
+        "description": "The leopard is a species of Panthera pardus."
+    },
+    {
+        "id": 52,
+        "common_name": "Lion",
+        "scientific_name": "Panthera leo",
+        "description": "The lion is a species of Panthera leo."
+    },
+    {
+        "id": 53,
+        "common_name": "Lizard",
+        "scientific_name": "Lacertilia (suborder)",
+        "description": "The lizard is a species of Lacertilia (suborder)."
+    },
+    {
+        "id": 54,
+        "common_name": "Lobster",
+        "scientific_name": "Homarus americanus",
+        "description": "The lobster is a species of Homarus americanus."
+    },
+    {
+        "id": 55,
+        "common_name": "Mandrill",
+        "scientific_name": "Mandrillus sphinx",
+        "description": "The mandrill is a species of Mandrillus sphinx."
+    },
+    {
+        "id": 56,
+        "common_name": "Mantis",
+        "scientific_name": "Mantodea (order)",
+        "description": "The mantis is a species of Mantodea (order)."
+    },
+    {
+        "id": 57,
+        "common_name": "Mosquito",
+        "scientific_name": "Culicidae (family)",
+        "description": "The mosquito is a species of Culicidae (family)."
+    },
+    {
+        "id": 58,
+        "common_name": "Moth",
+        "scientific_name": "Lepidoptera (order)",
+        "description": "The moth is a species of Lepidoptera (order)."
+    },
+    {
+        "id": 59,
+        "common_name": "Mouse",
+        "scientific_name": "Mus musculus",
+        "description": "The mouse is a species of Mus musculus."
+    },
+    {
+        "id": 60,
+        "common_name": "Octopus",
+        "scientific_name": "Octopus vulgaris",
+        "description": "The octopus is a species of Octopus vulgaris."
+    },
+    {
+        "id": 61,
+        "common_name": "Orangutan",
+        "scientific_name": "Pongo pygmaeus",
+        "description": "The orangutan is a species of Pongo pygmaeus."
+    },
+    {
+        "id": 62,
+        "common_name": "Otter",
+        "scientific_name": "Lutra lutra",
+        "description": "The otter is a species of Lutra lutra."
+    },
+    {
+        "id": 63,
+        "common_name": "Owl",
+        "scientific_name": "Strigiformes (order)",
+        "description": "The owl is a species of Strigiformes (order)."
+    },
+    {
+        "id": 64,
+        "common_name": "Panda",
+        "scientific_name": "Ailuropoda melanoleuca",
+        "description": "The panda is a species of Ailuropoda melanoleuca."
+    },
+    {
+        "id": 65,
+        "common_name": "Pangolin",
+        "scientific_name": "Manis javanica",
+        "description": "The pangolin is a species of Manis javanica."
+    },
+    {
+        "id": 66,
+        "common_name": "Parrot",
+        "scientific_name": "Psittaciformes (order)",
+        "description": "The parrot is a species of Psittaciformes (order)."
+    },
+    {
+        "id": 67,
+        "common_name": "Peacock",
+        "scientific_name": "Pavo cristatus",
+        "description": "The peacock is a species of Pavo cristatus."
+    },
+    {
+        "id": 68,
+        "common_name": "Pelecaniformes",
+        "scientific_name": "Pelecaniformes (order)",
+        "description": "The pelecaniformes is a species of Pelecaniformes (order)."
+    },
+    {
+        "id": 69,
+        "common_name": "Penguin",
+        "scientific_name": "Aptenodytes forsteri",
+        "description": "The penguin is a species of Aptenodytes forsteri."
+    },
+    {
+        "id": 70,
+        "common_name": "Pig",
+        "scientific_name": "Sus scrofa domesticus",
+        "description": "The pig is a species of Sus scrofa domesticus."
+    },
+    {
+        "id": 71,
+        "common_name": "Pigeon",
+        "scientific_name": "Columba livia",
+        "description": "The pigeon is a species of Columba livia."
+    },
+    {
+        "id": 72,
+        "common_name": "Platypus",
+        "scientific_name": "Ornithorhynchus anatinus",
+        "description": "The platypus is a species of Ornithorhynchus anatinus."
+    },
+    {
+        "id": 73,
+        "common_name": "Porcupine",
+        "scientific_name": "Hystrix indica",
+        "description": "The porcupine is a species of Hystrix indica."
+    },
+    {
+        "id": 74,
+        "common_name": "Possum",
+        "scientific_name": "Didelphis virginiana",
+        "description": "The possum is a species of Didelphis virginiana."
+    },
+    {
+        "id": 75,
+        "common_name": "Pufferfish",
+        "scientific_name": "Tetraodontidae (family)",
+        "description": "The pufferfish is a species of Tetraodontidae (family)."
+    },
+    {
+        "id": 76,
+        "common_name": "Raccoon",
+        "scientific_name": "Procyon lotor",
+        "description": "The raccoon is a species of Procyon lotor."
+    },
+    {
+        "id": 77,
+        "common_name": "Reindeer",
+        "scientific_name": "Rangifer tarandus",
+        "description": "The reindeer is a species of Rangifer tarandus."
+    },
+    {
+        "id": 78,
+        "common_name": "Rhinoceros",
+        "scientific_name": "Rhinoceros unicornis",
+        "description": "The rhinoceros is a species of Rhinoceros unicornis."
+    },
+    {
+        "id": 79,
+        "common_name": "Sandpiper",
+        "scientific_name": "Calidris alba",
+        "description": "The sandpiper is a species of Calidris alba."
+    },
+    {
+        "id": 80,
+        "common_name": "Scallop",
+        "scientific_name": "Pecten maximus",
+        "description": "The scallop is a species of Pecten maximus."
+    },
+    {
+        "id": 81,
+        "common_name": "Scorpion",
+        "scientific_name": "Scorpiones (order)",
+        "description": "The scorpion is a species of Scorpiones (order)."
+    },
+    {
+        "id": 82,
+        "common_name": "Seahorse",
+        "scientific_name": "Hippocampus kuda",
+        "description": "The seahorse is a species of Hippocampus kuda."
+    },
+    {
+        "id": 83,
+        "common_name": "Seal",
+        "scientific_name": "Phoca vitulina",
+        "description": "The seal is a species of Phoca vitulina."
+    },
+    {
+        "id": 84,
+        "common_name": "Shark",
+        "scientific_name": "Selachimorpha (superorder)",
+        "description": "The shark is a species of Selachimorpha (superorder)."
+    },
+    {
+        "id": 85,
+        "common_name": "Sheep",
+        "scientific_name": "Ovis aries",
+        "description": "The sheep is a species of Ovis aries."
+    },
+    {
+        "id": 86,
+        "common_name": "Snake",
+        "scientific_name": "Serpentes (suborder)",
+        "description": "The snake is a species of Serpentes (suborder)."
+    },
+    {
+        "id": 87,
+        "common_name": "Sparrow",
+        "scientific_name": "Passer domesticus",
+        "description": "The sparrow is a species of Passer domesticus."
+    },
+    {
+        "id": 88,
+        "common_name": "Spider",
+        "scientific_name": "Araneae (order)",
+        "description": "The spider is a species of Araneae (order)."
+    },
+    {
+        "id": 89,
+        "common_name": "Squid",
+        "scientific_name": "Loligo vulgaris",
+        "description": "The squid is a species of Loligo vulgaris."
+    },
+    {
+        "id": 90,
+        "common_name": "Squirrel",
+        "scientific_name": "Sciurus vulgaris",
+        "description": "The squirrel is a species of Sciurus vulgaris."
+    },
+    {
+        "id": 91,
+        "common_name": "Starfish",
+        "scientific_name": "Asteroidea (class)",
+        "description": "The starfish is a species of Asteroidea (class)."
+    },
+    {
+        "id": 92,
+        "common_name": "Swan",
+        "scientific_name": "Cygnus olor",
+        "description": "The swan is a species of Cygnus olor."
+    },
+    {
+        "id": 93,
+        "common_name": "Tiger",
+        "scientific_name": "Panthera tigris",
+        "description": "The tiger is a species of Panthera tigris."
+    },
+    {
+        "id": 94,
+        "common_name": "Turkey",
+        "scientific_name": "Meleagris gallopavo",
+        "description": "The turkey is a species of Meleagris gallopavo."
+    },
+    {
+        "id": 95,
+        "common_name": "Turtle",
+        "scientific_name": "Testudines (order)",
+        "description": "The turtle is a species of Testudines (order)."
+    },
+    {
+        "id": 96,
+        "common_name": "Walrus",
+        "scientific_name": "Odobenus rosmarus",
+        "description": "The walrus is a species of Odobenus rosmarus."
+    },
+    {
+        "id": 97,
+        "common_name": "Whale",
+        "scientific_name": "Cetacea (order)",
+        "description": "The whale is a species of Cetacea (order)."
+    },
+    {
+        "id": 98,
+        "common_name": "Wombat",
+        "scientific_name": "Vombatus ursinus",
+        "description": "The wombat is a species of Vombatus ursinus."
+    },
+    {
+        "id": 99,
+        "common_name": "Woodpecker",
+        "scientific_name": "Picidae (family)",
+        "description": "The woodpecker is a species of Picidae (family)."
+    },
+    {
+        "id": 100,
+        "common_name": "Zebra",
+        "scientific_name": "Equus quagga",
+        "description": "The zebra is a species of Equus quagga."
+    }
+]
