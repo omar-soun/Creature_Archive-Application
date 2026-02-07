@@ -1,0 +1,104 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.example
+
+# Firebase Credentials
+firebase-credentials.json
+service-account.json
+google-services.json
+GoogleService-Info.plist
+
+# Backend
+Backend/__pycache__/
+Backend/venv/
+Backend/.venv/
+Backend/*.egg-info/
+Backend/dist/
+Backend/build/
+
+# Frontend
+frontEnd/node_modules/
+frontEnd/.expo/
+frontEnd/dist/
+frontEnd/build/
+frontEnd/.metro-bundler-cache/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Dependencies
+node_modules/
+__pycache__/
+
+# Sensitive Data
+*.pem
+*.key
+*.p8
+*.p12
+secrets/
+
+# Build Artifacts
+android/app/build/
+android/build/# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.example
+
+# Firebase Credentials
+firebase-credentials.json
+google-services.json
+GoogleService-Info.plist
+
+# Backend
+Backend/__pycache__/
+Backend/venv/
+Backend/.venv/
+Backend/*.egg-info/
+Backend/dist/
+Backend/build/
+
+# Frontend
+frontEnd/node_modules/
+frontEnd/.expo/
+frontEnd/dist/
+frontEnd/build/
+frontEnd/.metro-bundler-cache/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Dependencies
+node_modules/
+__pycache__/
+
+# Sensitive Data
+*.pem
+*.key
+*.p8
+*.p12
+secrets/
+
+# Build Artifacts
+android/app/build/
+android/build/

@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users collection — read-only for clients.
+    // All writes (create/update/delete) go through the backend API,
+    // which uses Firebase Admin SDK and bypasses these rules.
+    match /users/{userId} {
+      allow read: if request.auth != null
+                  && request.auth.uid == userId;
+
+      allow write: if false;
+    }
+
+    // Journal entries collection — strict user isolation
+    match /journal_entries/{entryId} {
+      allow read: if request.auth != null
+                  && resource.data.userId == request.auth.uid;
+
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasAll([
+                         'userId', 'speciesName', 'scientificName',
+                         'confidenceScore', 'imageUrl', 'location',
+                         'capturedAt', 'syncedAt'
+                       ])
+                    && request.resource.data.confidenceScore >= 0.0
+                    && request.resource.data.confidenceScore <= 1.0;
+
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
+
+      allow delete: if request.auth != null
+                    && resource.data.userId == request.auth.uid;
+    }
+
+    // Deny all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
