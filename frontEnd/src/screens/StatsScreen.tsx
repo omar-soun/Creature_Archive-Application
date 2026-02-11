@@ -173,8 +173,8 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                             {/* Dots */}
                             {points.map((p, i) => (
                                 <G key={i} x={p.x} y={p.y}>
-                                    <Circle r={6} fill={theme.card} stroke="#1B4D3E" strokeWidth={3} />
-                                    <Circle r={2} fill="#1B4D3E" />
+                                    <Circle r={6} fill={theme.card} stroke="#059669" strokeWidth={3} />
+                                    <Circle r={2} fill="#059669" />
                                 </G>
                             ))}
                         </Svg>
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     overviewCardPrimary: {
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
     },
     overviewIcon: {
         fontSize: 24,
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     pieCenterValue: {
         fontSize: 22,
         fontWeight: '700',
-        color: '#1B4D3E',
+        color: '#059669',
     },
     pieCenterLabel: {
         fontSize: 11,
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: '#FFFFFF',
         borderWidth: 3,
-        borderColor: '#1B4D3E',
+        borderColor: '#059669',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 10,
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
         width: 4,
         height: 4,
         borderRadius: 2,
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
     },
     xAxisContainer: {
         flexDirection: 'row',
@@ -667,7 +667,7 @@ const styles = StyleSheet.create({
     },
     progressFill: {
         height: '100%',
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         borderRadius: 3,
     },
     speciesCount: {

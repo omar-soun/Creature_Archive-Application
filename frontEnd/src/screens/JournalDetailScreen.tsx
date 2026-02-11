@@ -198,7 +198,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     ) : (
                         <View style={[styles.heroPlaceholder, { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.heroPlaceholderIcon}>🦅</Text>
-                            <Text style={[styles.heroPlaceholderText, { color: isDarkMode ? theme.text : '#1B4D3E' }]}>{entry.speciesName}</Text>
+                            <Text style={[styles.heroPlaceholderText, { color: isDarkMode ? theme.text : '#059669' }]}>{entry.speciesName}</Text>
                         </View>
                     )}
                 </View>
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     heroPlaceholderText: {
         fontSize: 20,
         fontWeight: '600',
-        color: '#1B4D3E',
+        color: '#059669',
     },
 
     // Title Block
@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         width: 4,
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         borderTopLeftRadius: 16,
         borderBottomLeftRadius: 16,
     },
@@ -725,13 +725,13 @@ const styles = StyleSheet.create({
         elevation: 10,
     },
     editButton: {
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         borderRadius: 14,
         height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#1B4D3E',
+        shadowColor: '#059669',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,

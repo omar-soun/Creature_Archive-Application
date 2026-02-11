@@ -6,13 +6,11 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import authService from './src/services/authService';
 import { migrationService } from './src/services/migrationService';
 import { fileStorageService } from './src/services/fileStorageService';
 import { speciesService } from './src/services/speciesService'; // Eager load species data at startup
-import { ThemeProvider } from './src/context/ThemeContext';
+import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 
 // Screen imports
 import SplashScreen from './src/screens/SplashScreen';
@@ -45,7 +43,8 @@ interface MainState {
 
 type AppState = { auth: AuthScreen } | MainState;
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { isThemeLoaded } = useTheme();
   const [appState, setAppState] = useState<AppState>({ auth: 'Splash' });
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [isMigrated, setIsMigrated] = useState(false);
@@ -180,8 +179,8 @@ const App: React.FC = () => {
   // RENDER CURRENT SCREEN
   // ============================================
   const renderScreen = () => {
-    // Splash screen while checking auth + migration
-    if (!isAuthChecked || !isMigrated) {
+    // Wait for theme + auth + migration before rendering
+    if (!isThemeLoaded || !isAuthChecked || !isMigrated) {
       return <SplashScreen onFinish={() => {}} />;
     }
 
@@ -283,17 +282,13 @@ const App: React.FC = () => {
     return <SplashScreen onFinish={handleSplashFinish} />;
   };
 
-  return (
-    <ThemeProvider>
-      {renderScreen()}
-    </ThemeProvider>
-  );
+  return renderScreen();
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+const App: React.FC = () => (
+  <ThemeProvider>
+    <AppContent />
+  </ThemeProvider>
+);
 
 export default App;

@@ -7,12 +7,15 @@ import {
   StatusBar,
   Animated,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 interface SplashScreenProps {
   onFinish?: () => void;
 }
 
 const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
+  const { isDarkMode, theme } = useTheme();
+
   // Animation values
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const logoScale = useRef(new Animated.Value(0.9)).current;
@@ -60,8 +63,8 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   }, [logoOpacity, logoScale, textOpacity, subtitleOpacity, onFinish]);
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
       <View style={styles.contentContainer}>
         {/* Logo */}
@@ -82,19 +85,19 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         </Animated.View>
 
         {/* App Name */}
-        <Animated.Text style={[styles.appName, { opacity: textOpacity }]}>
+        <Animated.Text style={[styles.appName, { color: theme.text, opacity: textOpacity }]}>
           Creature Archive
         </Animated.Text>
 
         {/* Subtitle */}
-        <Animated.Text style={[styles.subtitle, { opacity: subtitleOpacity }]}>
+        <Animated.Text style={[styles.subtitle, { color: theme.textSecondary, opacity: subtitleOpacity }]}>
           AI-Powered Zoological Research
         </Animated.Text>
       </View>
 
       {/* Bottom Branding (Optional) */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Field Research Made Intelligent</Text>
+        <Text style={[styles.footerText, { color: theme.textSecondary }]}>Field Research Made Intelligent</Text>
       </View>
     </View>
   );

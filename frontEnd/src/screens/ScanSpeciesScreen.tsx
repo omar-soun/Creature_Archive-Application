@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
     View,
     Text,
@@ -14,6 +14,7 @@ import {
     ActivityIndicator,
     PermissionsAndroid,
     PanResponder,
+    useWindowDimensions,
 } from 'react-native';
 
 /**
@@ -56,6 +57,38 @@ const CORNER_THICKNESS = 4;
 
 const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBack }) => {
     const { isDarkMode, theme } = useTheme();
+
+    // Orientation-aware camera preview
+    const { width: winWidth, height: winHeight } = useWindowDimensions();
+    const isLandscape = winWidth > winHeight;
+
+    // Camera preview dimensions: 9:16 in portrait, 16:9 in landscape
+    const cameraPreviewStyle = useMemo(() => {
+        if (isLandscape) {
+            // Landscape: 16:9 ratio, fit to screen height
+            const previewHeight = winHeight;
+            const previewWidth = previewHeight * (16 / 9);
+            return {
+                width: Math.min(previewWidth, winWidth),
+                height: previewHeight,
+                alignSelf: 'center' as const,
+            };
+        } else {
+            // Portrait: 9:16 ratio, fit to screen width
+            const previewWidth = winWidth;
+            const previewHeight = previewWidth * (16 / 9);
+            return {
+                width: previewWidth,
+                height: Math.min(previewHeight, winHeight),
+                alignSelf: 'center' as const,
+            };
+        }
+    }, [winWidth, winHeight, isLandscape]);
+
+    // Dynamic scan frame size based on orientation
+    const scanFrameSize = isLandscape
+        ? Math.min(winHeight, winWidth) * 0.55
+        : winWidth * 0.72;
 
     // Camera State
     const [isCapturing, setIsCapturing] = useState(false);
@@ -299,7 +332,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
     // ============================================
     const CROP_HANDLE_HIT = 36;
     const MIN_CROP_DIM = 80;
-    const screenDims = Dimensions.get('window');
+    const screenDims = { width: winWidth, height: winHeight };
 
     const getHitZone = (px: number, py: number): string => {
         const c = cropBoxRef.current;
@@ -622,10 +655,10 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#000000" />
 
-            {/* Camera */}
+            {/* Camera - orientation-aware preview */}
             <Camera
                 ref={cameraRef}
-                style={StyleSheet.absoluteFill}
+                style={[StyleSheet.absoluteFill, cameraPreviewStyle]}
                 device={device}
                 isActive={true}
                 photo={true}
@@ -667,7 +700,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 <View style={styles.overlayTop} />
                 <View style={styles.overlayMiddle}>
                     <View style={styles.overlaySide} />
-                    <View style={styles.scanFrame}>
+                    <View style={[styles.scanFrame, { width: scanFrameSize, height: scanFrameSize }]}>
                         <View style={[styles.corner, styles.cornerTL]}>
                             <View style={[styles.cornerBar, styles.cornerBarH]} />
                             <View style={[styles.cornerBar, styles.cornerBarV]} />

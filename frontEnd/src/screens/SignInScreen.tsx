@@ -16,6 +16,7 @@ import {
   Alert,
 } from 'react-native';
 import authService from '../services/authService';
+import { useTheme } from '../context/ThemeContext';
 
 interface SignInScreenProps {
   onSignIn: () => void;
@@ -26,6 +27,8 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
   onSignIn,
   onNavigateToSignUp,
 }) => {
+  const { isDarkMode, theme } = useTheme();
+
   // Form State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -80,8 +83,8 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -105,18 +108,18 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
                   resizeMode="contain"
                 />
               </View>
-              <Text style={styles.appName}>Creature Archive</Text>
-              <Text style={styles.subtitle}>AI-Powered Zoological Research</Text>
+              <Text style={[styles.appName, { color: theme.text }]}>Creature Archive</Text>
+              <Text style={[styles.subtitle, { color: theme.textSecondary }]}>AI-Powered Zoological Research</Text>
             </View>
 
             {/* Form Section */}
             <View style={styles.form}>
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email</Text>
+                <Text style={[styles.label, { color: theme.text }]}>Email</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { backgroundColor: theme.border, color: theme.text }]}
                   placeholder="researcher@university.edu"
-                  placeholderTextColor="#9CA3AF"
+                  placeholderTextColor={theme.textSecondary}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -129,12 +132,12 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Password</Text>
+                <Text style={[styles.label, { color: theme.text }]}>Password</Text>
                 <TextInput
                   ref={passwordRef}
-                  style={styles.input}
+                  style={[styles.input, { backgroundColor: theme.border, color: theme.text }]}
                   placeholder="••••••••"
-                  placeholderTextColor="#9CA3AF"
+                  placeholderTextColor={theme.textSecondary}
                   secureTextEntry
                   value={password}
                   onChangeText={setPassword}
@@ -151,7 +154,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
 
               {/* Error Message */}
               {error && (
-                <View style={styles.errorContainer}>
+                <View style={[styles.errorContainer, isDarkMode && { backgroundColor: '#3B1111', borderColor: '#7F1D1D' }]}>
                   <Text style={styles.errorText}>{error}</Text>
                 </View>
               )}
@@ -170,12 +173,9 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
                 )}
               </TouchableOpacity>
 
-
-
-
               {/* Secondary Action */}
               <View style={styles.footerLinks}>
-                <Text style={styles.footerText}>Don't have an account? </Text>
+                <Text style={[styles.footerText, { color: theme.textSecondary }]}>Don't have an account? </Text>
                 <TouchableOpacity onPress={onNavigateToSignUp} activeOpacity={0.7}>
                   <Text style={styles.signupText}>Sign up</Text>
                 </TouchableOpacity>
@@ -184,10 +184,10 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
 
             {/* Footer Section */}
             <View style={styles.footer}>
-              <Text style={styles.disclaimer}>
+              <Text style={[styles.disclaimer, { color: theme.textSecondary }]}>
                 By continuing, you agree to our Terms of Service
               </Text>
-              <Text style={styles.disclaimer}>
+              <Text style={[styles.disclaimer, { color: theme.textSecondary }]}>
                 For academic and research use only
               </Text>
             </View>

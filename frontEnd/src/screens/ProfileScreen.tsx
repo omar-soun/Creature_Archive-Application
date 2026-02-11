@@ -391,12 +391,12 @@ const styles = StyleSheet.create({
   // Profile Card
   profileCard: { borderRadius: 24, padding: 28, alignItems: 'center', marginBottom: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 12, elevation: 3 },
   avatarContainer: { position: 'relative', marginBottom: 20 },
-  avatar: { width: 100, height: 100, borderRadius: 30, backgroundColor: '#1B4D3E', alignItems: 'center', justifyContent: 'center' },
+  avatar: { width: 100, height: 100, borderRadius: 30, backgroundColor: '#059669', alignItems: 'center', justifyContent: 'center' },
   avatarLoading: { backgroundColor: '#6B7280' },
   avatarImage: { width: 100, height: 100, borderRadius: 30 },
   avatarText: { fontSize: 36, fontWeight: '700', color: '#FFFFFF' },
   userName: { fontSize: 24, fontWeight: '700', marginBottom: 4 },
-  userRole: { fontSize: 16, color: '#1B4D3E', fontWeight: '600', marginBottom: 4 },
+  userRole: { fontSize: 16, color: '#059669', fontWeight: '600', marginBottom: 4 },
   userInstitution: { fontSize: 14, marginBottom: 24 },
   statsRow: { flexDirection: 'row', alignItems: 'center', paddingTop: 20, borderTopWidth: 1, width: '100%' },
   statItem: { flex: 1, alignItems: 'center' },
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
   // Member Badge
   memberBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ECFDF5', borderRadius: 14, padding: 14, marginBottom: 24, gap: 12 },
   memberIcon: { fontSize: 24 },
-  memberTitle: { fontSize: 14, fontWeight: '600', color: '#1B4D3E' },
+  memberTitle: { fontSize: 14, fontWeight: '600', color: '#059669' },
   memberDate: { fontSize: 13, color: '#059669' },
 
   // Sections

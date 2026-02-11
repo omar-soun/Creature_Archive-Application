@@ -90,11 +90,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     label: {
-        fontSize: 11,
-        fontWeight: '600',
+        fontSize: 14,
+        fontWeight: '700',
     },
     labelActive: {
-        color: '#1B4D3E',
+        color: '#059669',
+        fontWeight: '700',
     },
 });
 

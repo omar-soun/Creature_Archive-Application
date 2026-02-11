@@ -337,7 +337,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                 <Text style={{ fontSize: 24, marginBottom: 8 }}>📝</Text>
                 <Text style={{ color: theme.textSecondary, fontWeight: '500', marginBottom: 4 }}>No recent activity</Text>
                 <TouchableOpacity onPress={() => onNavigate('ScanSpecies')}>
-                  <Text style={{ color: '#1B4D3E', fontWeight: '600' }}>+ Add your first entry</Text>
+                  <Text style={{ color: '#059669', fontWeight: '600' }}>+ Add your first entry</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#059669',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1B4D3E',
+    color: '#059669',
     marginBottom: 16,
   },
   quickActionsGrid: {
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   actionCardPrimary: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#059669',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
     borderLeftWidth: 4,
-    borderLeftColor: '#1B4D3E',
+    borderLeftColor: '#059669',
   },
   todayContent: {
     flexDirection: 'row',
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
   statValueToday: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#1B4D3E',
+    color: '#059669',
   },
   statLabelToday: {
     fontSize: 14,

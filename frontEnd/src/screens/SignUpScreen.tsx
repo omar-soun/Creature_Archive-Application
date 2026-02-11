@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import authService from '../services/authService';
 import { SignUpData } from '../types/models';
+import { useTheme } from '../context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -35,6 +36,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
   onSignUp,
   onNavigateToSignIn,
 }) => {
+  const { isDarkMode, theme } = useTheme();
+
   // Step State
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 
@@ -264,8 +267,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
   const passwordStrength = getPasswordStrength();
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -287,8 +290,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                 style={styles.logo}
                 resizeMode="contain"
               />
-              <Text style={styles.appName}>Creature Archive</Text>
-              <Text style={styles.subtitle}>AI-Powered Zoological Research</Text>
+              <Text style={[styles.appName, { color: theme.text }]}>Creature Archive</Text>
+              <Text style={[styles.subtitle, { color: theme.textSecondary }]}>AI-Powered Zoological Research</Text>
 
               {/* Step Indicator */}
               <View style={styles.stepIndicator}>
@@ -296,27 +299,27 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                 <View style={[styles.stepLine, currentStep === 2 && styles.stepLineActive]} />
                 <View style={[styles.stepDot, currentStep === 2 && styles.stepDotActive]} />
               </View>
-              <Text style={styles.stepLabel}>
+              <Text style={[styles.stepLabel, { color: theme.textSecondary }]}>
                 Step {currentStep} of 2: {currentStep === 1 ? 'Profile Details' : 'Account Credentials'}
               </Text>
             </View>
 
             {/* Animated Form Container */}
             <View style={styles.formWindow}>
-              <Animated.View 
+              <Animated.View
                 style={[
-                  styles.slidingContainer, 
+                  styles.slidingContainer,
                   { transform: [{ translateX }] }
                 ]}
               >
                 {/* Step 1: Profile Details */}
                 <Animated.View style={[styles.stepContainer, { opacity: step1Opacity }]}>
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>First Name</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>First Name</Text>
                     <TextInput
-                      style={styles.input}
+                      style={[styles.input, { backgroundColor: theme.border, color: theme.text }]}
                       placeholder="Sarah"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={theme.textSecondary}
                       value={firstName}
                       onChangeText={setFirstName}
                       onFocus={() => handleInputFocus(0)}
@@ -328,12 +331,12 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Last Name</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>Last Name</Text>
                     <TextInput
                       ref={lastNameRef}
-                      style={styles.input}
+                      style={[styles.input, { backgroundColor: theme.border, color: theme.text }]}
                       placeholder="Chen"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={theme.textSecondary}
                       value={lastName}
                       onChangeText={setLastName}
                       onFocus={() => handleInputFocus(1)}
@@ -345,12 +348,12 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Current Role</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>Current Role</Text>
                     <TextInput
                       ref={roleRef}
-                      style={styles.input}
+                      style={[styles.input, { backgroundColor: theme.border, color: theme.text }]}
                       placeholder="Research Assistant"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={theme.textSecondary}
                       value={currentRole}
                       onChangeText={setCurrentRole}
                       onFocus={() => handleInputFocus(2)}
@@ -362,12 +365,12 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Current Company or School</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>Current Company or School</Text>
                     <TextInput
                       ref={institutionRef}
-                      style={styles.input}
+                      style={[styles.input, { backgroundColor: theme.border, color: theme.text }]}
                       placeholder="University Name"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={theme.textSecondary}
                       value={institution}
                       onChangeText={setInstitution}
                       onFocus={() => handleInputFocus(3)}
@@ -387,7 +390,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                   </TouchableOpacity>
 
                   <View style={styles.signInContainer}>
-                    <Text style={styles.signInText}>Already have an account? </Text>
+                    <Text style={[styles.signInText, { color: theme.textSecondary }]}>Already have an account? </Text>
                     <TouchableOpacity onPress={onNavigateToSignIn} activeOpacity={0.7}>
                       <Text style={styles.signInLink}>Sign in</Text>
                     </TouchableOpacity>
@@ -397,15 +400,16 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                 {/* Step 2: Account Credentials */}
                 <Animated.View style={[styles.stepContainer, { opacity: step2Opacity }]}>
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>Email</Text>
                     <TextInput
                       ref={emailRef}
                       style={[
                         styles.input,
-                        emailTouched && !emailValidation.isValid && styles.inputError
+                        { backgroundColor: theme.border, color: theme.text },
+                        emailTouched && !emailValidation.isValid && styles.inputError,
                       ]}
                       placeholder="researcher@university.edu"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={theme.textSecondary}
                       value={email}
                       onChangeText={setEmail}
                       onBlur={() => setEmailTouched(true)}
@@ -422,15 +426,16 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Password</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>Password</Text>
                     <TextInput
                       ref={passwordRef}
                       style={[
                         styles.input,
-                        passwordTouched && !passwordValidation.isValid && styles.inputError
+                        { backgroundColor: theme.border, color: theme.text },
+                        passwordTouched && !passwordValidation.isValid && styles.inputError,
                       ]}
                       placeholder="••••••••"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={theme.textSecondary}
                       value={password}
                       onChangeText={setPassword}
                       onBlur={() => setPasswordTouched(true)}
@@ -452,7 +457,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                                   backgroundColor:
                                     level <= passwordStrength.level
                                       ? passwordStrength.color
-                                      : '#E5E7EB',
+                                      : theme.border,
                                 },
                               ]}
                             />
@@ -469,15 +474,16 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Confirm Password</Text>
+                    <Text style={[styles.label, { color: theme.text }]}>Confirm Password</Text>
                     <TextInput
                       ref={confirmPasswordRef}
                       style={[
                         styles.input,
-                        confirmTouched && !confirmValidation.isValid && styles.inputError
+                        { backgroundColor: theme.border, color: theme.text },
+                        confirmTouched && !confirmValidation.isValid && styles.inputError,
                       ]}
                       placeholder="••••••••"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={theme.textSecondary}
                       value={confirmPassword}
                       onChangeText={setConfirmPassword}
                       onBlur={() => setConfirmTouched(true)}
@@ -490,25 +496,25 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                       <Text style={styles.validationError}>{confirmValidation.message}</Text>
                     )}
                     {confirmTouched && confirmValidation.isValid && confirmPassword.length > 0 && (
-                      <Text style={styles.validationSuccess}>✓ Passwords match</Text>
+                      <Text style={styles.validationSuccess}>Passwords match</Text>
                     )}
                   </View>
 
                   {/* Error Message */}
                   {error && (
-                    <View style={styles.errorContainer}>
+                    <View style={[styles.errorContainer, isDarkMode && { backgroundColor: '#3B1111', borderColor: '#7F1D1D' }]}>
                       <Text style={styles.errorText}>{error}</Text>
                     </View>
                   )}
 
                   <View style={styles.buttonGroup}>
                     <TouchableOpacity
-                      style={[styles.secondaryButton, isLoading && styles.buttonDisabled]}
+                      style={[styles.secondaryButton, { backgroundColor: theme.card, borderColor: theme.border }, isLoading && styles.buttonDisabled]}
                       onPress={handleBack}
                       activeOpacity={0.85}
                       disabled={isLoading}
                     >
-                      <Text style={styles.secondaryButtonText}>Back</Text>
+                      <Text style={[styles.secondaryButtonText, { color: theme.text }]}>Back</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -526,7 +532,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                   </View>
 
                   <View style={styles.signInContainer}>
-                    <Text style={styles.signInText}>Already have an account? </Text>
+                    <Text style={[styles.signInText, { color: theme.textSecondary }]}>Already have an account? </Text>
                     <TouchableOpacity onPress={onNavigateToSignIn} activeOpacity={0.7}>
                       <Text style={styles.signInLink}>Sign in</Text>
                     </TouchableOpacity>
@@ -537,10 +543,10 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
 
             {/* Footer Disclaimer */}
             <View style={styles.footer}>
-              <Text style={styles.disclaimer}>
+              <Text style={[styles.disclaimer, { color: theme.textSecondary }]}>
                 By continuing, you agree to our Terms of Service
               </Text>
-              <Text style={styles.disclaimer}>
+              <Text style={[styles.disclaimer, { color: theme.textSecondary }]}>
                 For academic and research use only
               </Text>
             </View>

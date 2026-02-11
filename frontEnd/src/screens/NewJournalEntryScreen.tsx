@@ -756,13 +756,13 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     saveButton: {
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         borderRadius: 14,
         height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#1B4D3E',
+        shadowColor: '#059669',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -834,12 +834,12 @@ const styles = StyleSheet.create({
         color: '#1A1A1A',
     },
     dropdownOptionTextSelected: {
-        color: '#1B4D3E',
+        color: '#059669',
         fontWeight: '600',
     },
     checkmark: {
         fontSize: 18,
-        color: '#1B4D3E',
+        color: '#059669',
         fontWeight: '700',
     },
     dropdownCancel: {

@@ -20,6 +20,7 @@ export interface ThemeColors {
 interface ThemeContextValue {
   isDarkMode: boolean;
   themeMode: ThemeMode;
+  isThemeLoaded: boolean;
   toggleDarkMode: (value: boolean) => void;
   setThemeMode: (mode: ThemeMode) => void;
   theme: ThemeColors;
@@ -38,6 +39,7 @@ const getTheme = (isDark: boolean): ThemeColors => ({
 const ThemeContext = createContext<ThemeContextValue>({
   isDarkMode: false,
   themeMode: 'system',
+  isThemeLoaded: false,
   toggleDarkMode: () => {},
   setThemeMode: () => {},
   theme: getTheme(false),
@@ -79,7 +81,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const theme = getTheme(isDarkMode);
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, themeMode, toggleDarkMode, setThemeMode, theme }}>
+    <ThemeContext.Provider value={{ isDarkMode, themeMode, isThemeLoaded: isLoaded, toggleDarkMode, setThemeMode, theme }}>
       {children}
     </ThemeContext.Provider>
   );

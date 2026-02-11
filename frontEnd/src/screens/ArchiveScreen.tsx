@@ -478,7 +478,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                         activeOpacity={0.7}
                     >
                         {isSyncing ? (
-                            <ActivityIndicator size="small" color="#1B4D3E" />
+                            <ActivityIndicator size="small" color="#059669" />
                         ) : (
                             <Text style={styles.syncButtonIcon}>☁️</Text>
                         )}
@@ -497,8 +497,8 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={handleRefresh}
-                        tintColor="#1B4D3E"
-                        colors={['#1B4D3E']}
+                        tintColor="#059669"
+                        colors={['#059669']}
                     />
                 }
             >
@@ -886,7 +886,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     filterTabActive: {
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
     },
     filterTabIcon: {
         fontSize: 16,
@@ -916,7 +916,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
     },
     dateFilterBtnActive: {
-        borderColor: '#1B4D3E',
+        borderColor: '#059669',
         backgroundColor: '#ECFDF5',
     },
     dateFilterIcon: {
@@ -929,7 +929,7 @@ const styles = StyleSheet.create({
         color: '#374151',
     },
     dateFilterTextActive: {
-        color: '#1B4D3E',
+        color: '#059669',
     },
     clearDateBtn: {
         marginLeft: 8,
@@ -937,7 +937,7 @@ const styles = StyleSheet.create({
     },
     clearDateIcon: {
         fontSize: 12,
-        color: '#1B4D3E',
+        color: '#059669',
     },
 
     // Scroll Content
@@ -1158,12 +1158,12 @@ const styles = StyleSheet.create({
     clearFiltersText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#1B4D3E',
+        color: '#059669',
     },
     startJournalBtn: {
         paddingHorizontal: 24,
         paddingVertical: 14,
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         borderRadius: 12,
     },
     startJournalText: {
@@ -1197,7 +1197,7 @@ const styles = StyleSheet.create({
     retryBtn: {
         paddingHorizontal: 24,
         paddingVertical: 12,
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         borderRadius: 12,
     },
     retryText: {
@@ -1214,10 +1214,10 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 30,
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#1B4D3E',
+        shadowColor: '#059669',
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.35,
         shadowRadius: 10,
@@ -1283,7 +1283,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     pickerItemActive: {
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
     },
     pickerItemText: {
         fontSize: 14,
@@ -1314,7 +1314,7 @@ const styles = StyleSheet.create({
         flex: 2,
         paddingVertical: 14,
         borderRadius: 12,
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         alignItems: 'center',
     },
     dateModalApplyBtnDisabled: {

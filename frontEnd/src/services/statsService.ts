@@ -32,7 +32,7 @@ const COLORS = [
     '#34D399', // Light Green
     '#6EE7B7', // Teal
     '#A7F3D0', // Pale
-    '#F97316', // Orange
+    '#A7C4B8', // Orange
     '#F59E0B', // Amber
 ];
 

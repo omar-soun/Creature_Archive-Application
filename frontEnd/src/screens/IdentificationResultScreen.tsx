@@ -405,7 +405,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                             activeOpacity={0.7}
                         >
                             {isRefreshingGps ? (
-                                <ActivityIndicator size="small" color="#1B4D3E" />
+                                <ActivityIndicator size="small" color="#059669" />
                             ) : (
                                 <Text style={styles.refreshIcon}>🔄</Text>
                             )}
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     heroPlaceholderIcon: { fontSize: 72, marginBottom: 12 },
-    heroPlaceholderText: { fontSize: 18, fontWeight: '600', color: '#1B4D3E' },
+    heroPlaceholderText: { fontSize: 18, fontWeight: '600', color: '#059669' },
 
     // Loading Overlay
     loadingOverlay: {
@@ -690,14 +690,14 @@ const styles = StyleSheet.create({
         elevation: 10,
     },
     primaryButton: {
-        backgroundColor: '#1B4D3E',
+        backgroundColor: '#059669',
         borderRadius: 14,
         height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 12,
-        shadowColor: '#1B4D3E',
+        shadowColor: '#059669',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
