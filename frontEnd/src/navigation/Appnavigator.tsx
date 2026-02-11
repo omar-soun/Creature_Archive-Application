@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { ThemeProvider } from '../context/ThemeContext';
 
 // Import screens
 import SplashScreen from '../screens/SplashScreen';
@@ -9,18 +10,25 @@ import HomeScreen from '../screens/HomeScreen';
 import ArchiveScreen from '../screens/ArchiveScreen';
 import StatsScreen from '../screens/StatsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import ScanSpeciesScreen from '../screens/ScanSpeciesScreen';
+import JournalDetailScreen from '../screens/JournalDetailScreen';
 
 // Import types
 import { TabRoute } from '../components/BottomTabBar';
 
 type AppScreen = 'Splash' | 'SignIn' | 'SignUp' | 'Main';
+type OverlayScreen = 'ScanSpecies' | 'JournalDetail' | null;
 
 const AppNavigator: React.FC = () => {
   // Auth flow state
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('Splash');
-  
+
   // Tab navigation state (for main app)
   const [currentTab, setCurrentTab] = useState<TabRoute>('Home');
+
+  // Overlay screen state (screens that sit on top of tabs)
+  const [overlayScreen, setOverlayScreen] = useState<OverlayScreen>(null);
+  const [overlayParams, setOverlayParams] = useState<any>(null);
 
   // Handle splash screen completion
   const handleSplashFinish = () => {
@@ -53,19 +61,36 @@ const AppNavigator: React.FC = () => {
   const handleSignOut = () => {
     setCurrentScreen('SignIn');
     setCurrentTab('Home');
+    setOverlayScreen(null);
+    setOverlayParams(null);
   };
 
-  // Handle tab navigation
-  const handleTabNavigate = (route: TabRoute) => {
-    setCurrentTab(route);
-  };
+  // Handle navigation (tabs + overlay screens)
+  const handleNavigate = useCallback((route: any, params?: any) => {
+    const tabRoutes: TabRoute[] = ['Home', 'Archive', 'Stats', 'Profile'];
+
+    if (tabRoutes.includes(route)) {
+      setOverlayScreen(null);
+      setOverlayParams(null);
+      setCurrentTab(route as TabRoute);
+    } else if (route === 'ScanSpecies' || route === 'JournalDetail') {
+      setOverlayScreen(route as OverlayScreen);
+      setOverlayParams(params || null);
+    }
+  }, []);
+
+  // Handle back from overlay screens
+  const handleOverlayBack = useCallback(() => {
+    setOverlayScreen(null);
+    setOverlayParams(null);
+  }, []);
 
   // Render current screen
   const renderScreen = () => {
     switch (currentScreen) {
       case 'Splash':
         return <SplashScreen onFinish={handleSplashFinish} />;
-      
+
       case 'SignIn':
         return (
           <SignInScreen
@@ -73,7 +98,7 @@ const AppNavigator: React.FC = () => {
             onNavigateToSignUp={navigateToSignUp}
           />
         );
-      
+
       case 'SignUp':
         return (
           <SignUpScreen
@@ -81,41 +106,65 @@ const AppNavigator: React.FC = () => {
             onNavigateToSignIn={navigateToSignIn}
           />
         );
-      
+
       case 'Main':
         return renderMainApp();
-      
+
       default:
         return <SplashScreen onFinish={handleSplashFinish} />;
     }
   };
 
-  // Render main app with tab navigation
+  // Render main app with tab navigation + overlay screens
   const renderMainApp = () => {
+    // Overlay screens take priority
+    if (overlayScreen === 'ScanSpecies') {
+      return (
+        <ScanSpeciesScreen
+          onNavigate={handleNavigate}
+          onBack={handleOverlayBack}
+        />
+      );
+    }
+
+    if (overlayScreen === 'JournalDetail') {
+      return (
+        <JournalDetailScreen
+          onNavigate={handleNavigate}
+          onBack={handleOverlayBack}
+          routeParams={overlayParams}
+        />
+      );
+    }
+
     switch (currentTab) {
       case 'Home':
-        return <HomeScreen onNavigate={handleTabNavigate} />;
-      
+        return <HomeScreen onNavigate={handleNavigate} />;
+
       case 'Archive':
-        return <ArchiveScreen onNavigate={handleTabNavigate} />;
-      
+        return <ArchiveScreen onNavigate={handleNavigate} />;
+
       case 'Stats':
-        return <StatsScreen onNavigate={handleTabNavigate} />;
-      
+        return <StatsScreen onNavigate={handleNavigate} />;
+
       case 'Profile':
         return (
           <ProfileScreen
-            onNavigate={handleTabNavigate}
+            onNavigate={handleNavigate}
             // onSignOut={handleSignOut}
           />
         );
-      
+
       default:
-        return <HomeScreen onNavigate={handleTabNavigate} />;
+        return <HomeScreen onNavigate={handleNavigate} />;
     }
   };
 
-  return <View style={styles.container}>{renderScreen()}</View>;
+  return (
+    <ThemeProvider>
+      <View style={styles.container}>{renderScreen()}</View>
+    </ThemeProvider>
+  );
 };
 
 const styles = StyleSheet.create({

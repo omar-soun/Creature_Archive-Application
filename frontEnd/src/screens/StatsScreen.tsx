@@ -12,6 +12,7 @@ import Svg, { G, Circle, Polyline, Line } from 'react-native-svg';
 import BottomTabBar, { TabRoute } from '../components/BottomTabBar';
 import statsService from '../services/statsService';
 import useJournalEntries from '../hooks/useJournalEntries';
+import { useTheme } from '../context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -23,6 +24,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
     // ============================================
     // STATE & DATA FETCHING
     // ============================================
+    const { isDarkMode, theme } = useTheme();
     const { entries, isLoading } = useJournalEntries();
 
     const stats = useMemo(() => {
@@ -89,9 +91,9 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                     </Svg>
 
                     {/* Center white circle (info) */}
-                    <View style={styles.pieCenter}>
+                    <View style={[styles.pieCenter, { backgroundColor: theme.card }]}>
                         <Text style={styles.pieCenterValue}>{totalCount}</Text>
-                        <Text style={styles.pieCenterLabel}>Total</Text>
+                        <Text style={[styles.pieCenterLabel, { color: theme.textSecondary }]}>Total</Text>
                     </View>
                     {totalCount === 0 && (
                         <View style={{ position: 'absolute' }}>
@@ -105,8 +107,8 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                     {speciesDistribution.map((item, index) => (
                         <View key={index} style={styles.legendItem}>
                             <View style={[styles.legendDot, { backgroundColor: item.color }]} />
-                            <Text style={styles.legendName} numberOfLines={1}>{item.name}</Text>
-                            <Text style={styles.legendCount}>{item.count}</Text>
+                            <Text style={[styles.legendName, { color: theme.text }]} numberOfLines={1}>{item.name}</Text>
+                            <Text style={[styles.legendCount, { color: theme.text }]}>{item.count}</Text>
                         </View>
                     ))}
                 </View>
@@ -147,18 +149,18 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                 <View style={styles.dotChartArea}>
                     {/* Y-axis labels */}
                     <View style={styles.yAxis}>
-                        <Text style={styles.yAxisLabel}>{maxTrendCount}</Text>
-                        <Text style={styles.yAxisLabel}>{Math.round((maxTrendCount + minTrendCount) / 2)}</Text>
-                        <Text style={styles.yAxisLabel}>{minTrendCount}</Text>
+                        <Text style={[styles.yAxisLabel, { color: theme.textSecondary }]}>{maxTrendCount}</Text>
+                        <Text style={[styles.yAxisLabel, { color: theme.textSecondary }]}>{Math.round((maxTrendCount + minTrendCount) / 2)}</Text>
+                        <Text style={[styles.yAxisLabel, { color: theme.textSecondary }]}>{minTrendCount}</Text>
                     </View>
 
                     {/* Chart content */}
                     <View style={[styles.chartContent, { height: chartHeight }]}>
                         <Svg height={chartHeight} width={chartWidth}>
                             {/* Grid lines */}
-                            <Line x1="0" y1="0" x2={chartWidth} y2="0" stroke="#F3F4F6" strokeWidth="1" />
-                            <Line x1="0" y1={chartHeight / 2} x2={chartWidth} y2={chartHeight / 2} stroke="#F3F4F6" strokeWidth="1" />
-                            <Line x1="0" y1={chartHeight} x2={chartWidth} y2={chartHeight} stroke="#F3F4F6" strokeWidth="1" />
+                            <Line x1="0" y1="0" x2={chartWidth} y2="0" stroke={theme.border} strokeWidth="1" />
+                            <Line x1="0" y1={chartHeight / 2} x2={chartWidth} y2={chartHeight / 2} stroke={theme.border} strokeWidth="1" />
+                            <Line x1="0" y1={chartHeight} x2={chartWidth} y2={chartHeight} stroke={theme.border} strokeWidth="1" />
 
                             {/* Connecting Line */}
                             <Polyline
@@ -171,7 +173,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                             {/* Dots */}
                             {points.map((p, i) => (
                                 <G key={i} x={p.x} y={p.y}>
-                                    <Circle r={6} fill="white" stroke="#1B4D3E" strokeWidth={3} />
+                                    <Circle r={6} fill={theme.card} stroke="#1B4D3E" strokeWidth={3} />
                                     <Circle r={2} fill="#1B4D3E" />
                                 </G>
                             ))}
@@ -183,8 +185,8 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                 <View style={styles.xAxisContainer}>
                     {monthlyTrend.map((item, index) => (
                         <View key={index} style={styles.xAxisItem}>
-                            <Text style={styles.xAxisMonth}>{item.month}</Text>
-                            <Text style={styles.xAxisCount}>{item.count}</Text>
+                            <Text style={[styles.xAxisMonth, { color: theme.textSecondary }]}>{item.month}</Text>
+                            <Text style={[styles.xAxisCount, { color: theme.text }]}>{item.count}</Text>
                         </View>
                     ))}
                 </View>
@@ -196,8 +198,8 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
     // RENDER
     // ============================================
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
@@ -205,51 +207,51 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
             >
                 {/* Header */}
                 <View style={styles.header}>
-                    <Text style={styles.headerTitle}>Statistics</Text>
-                    <Text style={styles.headerSubtitle}>Your research insights</Text>
+                    <Text style={[styles.headerTitle, { color: theme.text }]}>Statistics</Text>
+                    <Text style={[styles.headerSubtitle, { color: theme.textSecondary }]}>Your research insights</Text>
                 </View>
 
                 {/* Overview Cards */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Overview</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>Overview</Text>
                     <View style={styles.overviewGrid}>
                         <View style={[styles.overviewCard, styles.overviewCardPrimary]}>
                             <Text style={styles.overviewIconPrimary}>📊</Text>
                             <Text style={styles.overviewValuePrimary}>{overviewStats.totalObservations}</Text>
                             <Text style={styles.overviewLabelPrimary}>Total Observations</Text>
                         </View>
-                        <View style={styles.overviewCard}>
+                        <View style={[styles.overviewCard, { backgroundColor: theme.card }]}>
                             <Text style={styles.overviewIcon}>🦎</Text>
-                            <Text style={styles.overviewValue}>{overviewStats.uniqueSpecies}</Text>
-                            <Text style={styles.overviewLabel}>Unique Species</Text>
+                            <Text style={[styles.overviewValue, { color: theme.text }]}>{overviewStats.uniqueSpecies}</Text>
+                            <Text style={[styles.overviewLabel, { color: theme.textSecondary }]}>Unique Species</Text>
                         </View>
-                        <View style={styles.overviewCard}>
+                        <View style={[styles.overviewCard, { backgroundColor: theme.card }]}>
                             <Text style={styles.overviewIcon}>🎯</Text>
-                            <Text style={styles.overviewValue}>{overviewStats.avgConfidence}%</Text>
-                            <Text style={styles.overviewLabel}>Avg. Confidence</Text>
+                            <Text style={[styles.overviewValue, { color: theme.text }]}>{overviewStats.avgConfidence}%</Text>
+                            <Text style={[styles.overviewLabel, { color: theme.textSecondary }]}>Avg. Confidence</Text>
                         </View>
-                        <View style={styles.overviewCard}>
+                        <View style={[styles.overviewCard, { backgroundColor: theme.card }]}>
                             <Text style={styles.overviewIcon}>📅</Text>
-                            <Text style={styles.overviewValue}>{overviewStats.fieldDays}</Text>
-                            <Text style={styles.overviewLabel}>Field Days</Text>
+                            <Text style={[styles.overviewValue, { color: theme.text }]}>{overviewStats.fieldDays}</Text>
+                            <Text style={[styles.overviewLabel, { color: theme.textSecondary }]}>Field Days</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Species Distribution Pie Chart */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Species Distribution</Text>
-                    <View style={styles.chartCard}>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>Species Distribution</Text>
+                    <View style={[styles.chartCard, { backgroundColor: theme.card }]}>
                         {renderPieChart()}
                     </View>
                 </View>
 
                 {/* 6-Month Trend */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>6-Month Trend</Text>
-                    <View style={styles.chartCard}>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>6-Month Trend</Text>
+                    <View style={[styles.chartCard, { backgroundColor: theme.card }]}>
                         <View style={styles.trendHeader}>
-                            <Text style={styles.trendTitle}>Observations over time</Text>
+                            <Text style={[styles.trendTitle, { color: theme.textSecondary }]}>Observations over time</Text>
                         </View>
                         {renderDotChart()}
                     </View>
@@ -257,24 +259,27 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
 
                 {/* Top Species */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Top Species</Text>
-                    <View style={styles.speciesCard}>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>Top Species</Text>
+                    <View style={[styles.speciesCard, { backgroundColor: theme.card }]}>
                         {topSpecies.length > 0 ? topSpecies.map((species, index) => (
                             <View
                                 key={species.name}
                                 style={[
                                     styles.speciesRow,
+                                    { borderBottomColor: theme.border },
                                     index === topSpecies.length - 1 && styles.speciesRowLast,
                                 ]}
                             >
                                 <View style={[
                                     styles.speciesRank,
+                                    { backgroundColor: theme.border },
                                     index === 0 && styles.speciesRankFirst,
                                     index === 1 && styles.speciesRankSecond,
                                     index === 2 && styles.speciesRankThird,
                                 ]}>
                                     <Text style={[
                                         styles.rankText,
+                                        { color: theme.text },
                                         index === 0 && styles.rankTextFirst,
                                         index === 1 && styles.rankTextSecond,
                                         index === 2 && styles.rankTextThird,
@@ -283,8 +288,8 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                                     </Text>
                                 </View>
                                 <View style={styles.speciesInfo}>
-                                    <Text style={styles.speciesName}>{species.name}</Text>
-                                    <View style={styles.progressBar}>
+                                    <Text style={[styles.speciesName, { color: theme.text }]}>{species.name}</Text>
+                                    <View style={[styles.progressBar, { backgroundColor: theme.border }]}>
                                         <View
                                             style={[
                                                 styles.progressFill,
@@ -294,8 +299,8 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                                     </View>
                                 </View>
                                 <View style={styles.speciesCount}>
-                                    <Text style={styles.countValue}>{species.count}</Text>
-                                    <Text style={styles.countPercent}>{species.percentage}%</Text>
+                                    <Text style={[styles.countValue, { color: theme.text }]}>{species.count}</Text>
+                                    <Text style={[styles.countPercent, { color: theme.textSecondary }]}>{species.percentage}%</Text>
                                 </View>
                             </View>
                         )) : (

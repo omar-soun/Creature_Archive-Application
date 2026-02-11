@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Platform,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 export type TabRoute = 'Home' | 'Archive' | 'Stats' | 'Profile';
 
@@ -28,8 +29,10 @@ const tabs: TabItem[] = [
 ];
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ currentRoute, onNavigate }) => {
+    const { isDarkMode, theme } = useTheme();
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.card }]}>
             {tabs.map((tab) => {
                 const isActive = currentRoute === tab.route;
                 return (
@@ -39,10 +42,10 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ currentRoute, onNavigate })
                         onPress={() => onNavigate(tab.route)}
                         activeOpacity={0.7}
                     >
-                        <View style={[styles.iconContainer, isActive && styles.iconContainerActive]}>
+                        <View style={[styles.iconContainer, isActive && { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.iconText}>{tab.icon}</Text>
                         </View>
-                        <Text style={[styles.label, isActive && styles.labelActive]}>
+                        <Text style={[styles.label, { color: isDarkMode ? '#64748B' : '#9CA3AF' }, isActive && styles.labelActive]}>
                             {tab.label}
                         </Text>
                     </TouchableOpacity>
@@ -58,7 +61,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#FFFFFF',
         flexDirection: 'row',
         justifyContent: 'space-around',
         paddingVertical: 10,
@@ -84,16 +86,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 4,
     },
-    iconContainerActive: {
-        backgroundColor: '#ECFDF5',
-    },
     iconText: {
         fontSize: 20,
     },
     label: {
         fontSize: 11,
         fontWeight: '600',
-        color: '#9CA3AF',
     },
     labelActive: {
         color: '#1B4D3E',

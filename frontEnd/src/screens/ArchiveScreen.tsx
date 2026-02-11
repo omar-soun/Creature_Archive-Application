@@ -20,6 +20,7 @@ import useJournalEntries from '../hooks/useJournalEntries';
 import { syncManager } from '../services/syncManager';
 import { SyncStatusBadge } from '../components/OfflineIndicator';
 import { LocalJournalEntry } from '../types/models';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * ============================================
@@ -62,6 +63,11 @@ const MONTHS = [
 ];
 
 const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
+    // ============================================
+    // THEME
+    // ============================================
+    const { isDarkMode, theme } = useTheme();
+
     // ============================================
     // HOOKS - Offline-first local storage data
     // ============================================
@@ -298,12 +304,12 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
     const renderSkeleton = () => (
         <View style={styles.listContainer}>
             {[1, 2, 3, 4].map((i) => (
-                <View key={i} style={styles.skeletonCard}>
-                    <View style={styles.skeletonThumbnail} />
+                <View key={i} style={[styles.skeletonCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                    <View style={[styles.skeletonThumbnail, { backgroundColor: theme.border }]} />
                     <View style={styles.skeletonContent}>
-                        <View style={styles.skeletonTitle} />
-                        <View style={styles.skeletonSubtitle} />
-                        <View style={styles.skeletonMeta} />
+                        <View style={[styles.skeletonTitle, { backgroundColor: theme.border }]} />
+                        <View style={[styles.skeletonSubtitle, { backgroundColor: theme.border }]} />
+                        <View style={[styles.skeletonMeta, { backgroundColor: theme.border }]} />
                     </View>
                 </View>
             ))}
@@ -316,19 +322,19 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
             <Text style={styles.emptyIcon}>
                 {activeClassFilter !== 'All' || activeDateFilter || searchQuery ? '🔍' : '📔'}
             </Text>
-            <Text style={styles.emptyTitle}>
+            <Text style={[styles.emptyTitle, { color: theme.text }]}>
                 {activeClassFilter !== 'All' || activeDateFilter || searchQuery
                     ? 'No observations found'
                     : 'No journals yet'}
             </Text>
-            <Text style={styles.emptyText}>
+            <Text style={[styles.emptyText, { color: theme.textSecondary }]}>
                 {activeClassFilter !== 'All' || activeDateFilter || searchQuery
                     ? 'Try adjusting your filters'
                     : 'Start saving your wildlife discoveries!'}
             </Text>
             {(activeClassFilter !== 'All' || activeDateFilter || searchQuery) ? (
                 <TouchableOpacity
-                    style={styles.clearFiltersBtn}
+                    style={[styles.clearFiltersBtn, { backgroundColor: theme.border }]}
                     onPress={() => {
                         setActiveClassFilter('All');
                         clearDateFilter();
@@ -352,8 +358,8 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
     const renderError = () => (
         <View style={styles.errorState}>
             <Text style={styles.errorIcon}>⚠️</Text>
-            <Text style={styles.errorTitle}>Something went wrong</Text>
-            <Text style={styles.errorText}>{error}</Text>
+            <Text style={[styles.errorTitle, { color: theme.text }]}>Something went wrong</Text>
+            <Text style={[styles.errorText, { color: theme.textSecondary }]}>{error}</Text>
             <TouchableOpacity style={styles.retryBtn} onPress={() => { clearError(); refresh(); }}>
                 <Text style={styles.retryText}>Try Again</Text>
             </TouchableOpacity>
@@ -367,7 +373,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
         return (
             <TouchableOpacity
                 key={entry.localId}
-                style={[styles.card, isDeleting && styles.cardDeleting]}
+                style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }, isDeleting && styles.cardDeleting]}
                 activeOpacity={0.7}
                 onPress={() => handleEntryPress(entry)}
                 onLongPress={() => handleDeleteEntry(entry)}
@@ -377,11 +383,11 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                 <View style={styles.cardThumbnail}>
                     <Image
                         source={entry.localImageUri ? { uri: entry.localImageUri.startsWith('file://') ? entry.localImageUri : `file://${entry.localImageUri}` } : require('../assets/1.png')}
-                        style={styles.thumbnailImage}
+                        style={[styles.thumbnailImage, { backgroundColor: theme.border }]}
                         resizeMode="cover"
                     />
                     {/* Class Badge */}
-                    <View style={styles.classBadge}>
+                    <View style={[styles.classBadge, { backgroundColor: theme.card, borderColor: theme.border }]}>
                         <Text style={styles.classBadgeText}>
                             {CLASS_FILTERS.find(f => f.value === entry.animalClass)?.icon || '🌿'}
                         </Text>
@@ -390,16 +396,16 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
 
                 {/* Content */}
                 <View style={styles.cardContent}>
-                    <Text style={styles.speciesName} numberOfLines={1}>
+                    <Text style={[styles.speciesName, { color: theme.text }]} numberOfLines={1}>
                         {entry.speciesName}
                     </Text>
-                    <Text style={styles.scientificName} numberOfLines={1}>
+                    <Text style={[styles.scientificName, { color: theme.textSecondary }]} numberOfLines={1}>
                         {entry.scientificName}
                     </Text>
 
                     <View style={styles.metadataRow}>
                         <Text style={styles.metaIcon}>🕒</Text>
-                        <Text style={styles.metaText}>
+                        <Text style={[styles.metaText, { color: theme.textSecondary }]}>
                             {formatDisplayDate(entry)}, {formatDisplayTime(entry)}
                         </Text>
                     </View>
@@ -408,8 +414,8 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                     {entry.tags && entry.tags.length > 0 && (
                         <View style={styles.tagsRow}>
                             {entry.tags.slice(0, 3).map((tag, idx) => (
-                                <View key={idx} style={styles.tag}>
-                                    <Text style={styles.tagText}>{tag}</Text>
+                                <View key={idx} style={[styles.tag, { backgroundColor: theme.border }]}>
+                                    <Text style={[styles.tagText, { color: theme.textSecondary }]}>{tag}</Text>
                                 </View>
                             ))}
                         </View>
@@ -454,19 +460,19 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
     // MAIN RENDER
     // ============================================
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
 
             {/* Header */}
-            <View style={styles.header}>
+            <View style={[styles.header, { backgroundColor: theme.background }]}>
                 <View>
-                    <Text style={styles.headerTitle}>My Archive</Text>
-                    <Text style={styles.headerSubtitle}>Your Wildlife Journal</Text>
+                    <Text style={[styles.headerTitle, { color: theme.text }]}>My Archive</Text>
+                    <Text style={[styles.headerSubtitle, { color: theme.textSecondary }]}>Your Wildlife Journal</Text>
                 </View>
                 <View style={styles.headerRight}>
                     <TouchableOpacity
-                        style={styles.syncButton}
+                        style={[styles.syncButton, { backgroundColor: theme.accentLight }]}
                         onPress={handleSyncToCloud}
                         disabled={isSyncing}
                         activeOpacity={0.7}
@@ -477,7 +483,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                             <Text style={styles.syncButtonIcon}>☁️</Text>
                         )}
                     </TouchableOpacity>
-                    <Text style={styles.headerCount}>
+                    <Text style={[styles.headerCount, { color: theme.textSecondary }]}>
                         {isLoading ? '...' : `${filteredEntries.length}`}
                     </Text>
                 </View>
@@ -497,26 +503,26 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                 }
             >
                 {/* Search Bar */}
-                <View style={styles.searchSection}>
-                    <View style={styles.searchContainer}>
+                <View style={[styles.searchSection, { backgroundColor: theme.background }]}>
+                    <View style={[styles.searchContainer, { backgroundColor: theme.card, borderColor: theme.border }]}>
                         <Text style={styles.searchIcon}>🔍</Text>
                         <TextInput
-                            style={styles.searchInput}
+                            style={[styles.searchInput, { color: theme.text }]}
                             placeholder="Search species, scientific name, tags..."
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                             value={searchQuery}
                             onChangeText={setSearchQuery}
                         />
                         {searchQuery.length > 0 && (
                             <TouchableOpacity onPress={() => setSearchQuery('')}>
-                                <Text style={styles.clearIcon}>✕</Text>
+                                <Text style={[styles.clearIcon, { color: theme.textSecondary }]}>✕</Text>
                             </TouchableOpacity>
                         )}
                     </View>
                 </View>
 
                 {/* Class Filter Tabs */}
-                <View style={styles.filterTabsContainer}>
+                <View style={[styles.filterTabsContainer, { backgroundColor: theme.background }]}>
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -527,7 +533,9 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                             <TouchableOpacity
                                 style={[
                                     styles.dateFilterBtn,
+                                    { backgroundColor: theme.card, borderColor: theme.border },
                                     activeDateFilter && styles.dateFilterBtnActive,
+                                    activeDateFilter && { backgroundColor: theme.accentLight },
                                 ]}
                                 onPress={() => setIsDateModalOpen(true)}
                                 activeOpacity={0.7}
@@ -535,6 +543,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                 <Text style={styles.dateFilterIcon}>📅</Text>
                                 <Text style={[
                                     styles.dateFilterText,
+                                    { color: theme.text },
                                     activeDateFilter && styles.dateFilterTextActive,
                                 ]}>
                                     {activeDateFilter || 'Filter by Date'}
@@ -558,6 +567,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                 key={filter.value}
                                 style={[
                                     styles.filterTab,
+                                    { backgroundColor: theme.border },
                                     activeClassFilter === filter.value && styles.filterTabActive,
                                 ]}
                                 onPress={() => setActiveClassFilter(filter.value)}
@@ -567,6 +577,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                 <Text
                                     style={[
                                         styles.filterTabText,
+                                        { color: theme.text },
                                         activeClassFilter === filter.value && styles.filterTabTextActive,
                                     ]}
                                 >
@@ -585,7 +596,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                 ) : filteredEntries.length > 0 ? (
                     <View style={styles.listContainer}>
                         {/* Long press hint */}
-                        <Text style={styles.hintText}>Long press to delete</Text>
+                        <Text style={[styles.hintText, { color: theme.textSecondary }]}>Long press to delete</Text>
                         {filteredEntries.map(renderJournalCard)}
                     </View>
                 ) : (
@@ -615,14 +626,14 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                     style={styles.modalOverlay}
                     onPress={() => setIsDateModalOpen(false)}
                 >
-                    <View style={styles.dateModal}>
-                        <Text style={styles.dateModalTitle}>Filter by Date</Text>
-                        <Text style={styles.dateModalSubtitle}>
+                    <View style={[styles.dateModal, { backgroundColor: theme.card }]}>
+                        <Text style={[styles.dateModalTitle, { color: theme.text }]}>Filter by Date</Text>
+                        <Text style={[styles.dateModalSubtitle, { color: theme.textSecondary }]}>
                             Select year, optionally month and day
                         </Text>
 
                         {/* Year Picker */}
-                        <Text style={styles.pickerLabel}>Year</Text>
+                        <Text style={[styles.pickerLabel, { color: theme.text }]}>Year</Text>
                         <ScrollView
                             horizontal
                             showsHorizontalScrollIndicator={false}
@@ -633,6 +644,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                     key={year}
                                     style={[
                                         styles.pickerItem,
+                                        { backgroundColor: theme.border },
                                         selectedYear === year && styles.pickerItemActive,
                                     ]}
                                     onPress={() => {
@@ -646,6 +658,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                     <Text
                                         style={[
                                             styles.pickerItemText,
+                                            { color: theme.text },
                                             selectedYear === year && styles.pickerItemTextActive,
                                         ]}
                                     >
@@ -658,7 +671,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                         {/* Month Picker */}
                         {selectedYear && (
                             <>
-                                <Text style={styles.pickerLabel}>Month (Optional)</Text>
+                                <Text style={[styles.pickerLabel, { color: theme.text }]}>Month (Optional)</Text>
                                 <ScrollView
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
@@ -669,6 +682,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                             key={month}
                                             style={[
                                                 styles.pickerItem,
+                                                { backgroundColor: theme.border },
                                                 selectedMonth === idx && styles.pickerItemActive,
                                             ]}
                                             onPress={() => {
@@ -679,6 +693,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                             <Text
                                                 style={[
                                                     styles.pickerItemText,
+                                                    { color: theme.text },
                                                     selectedMonth === idx && styles.pickerItemTextActive,
                                                 ]}
                                             >

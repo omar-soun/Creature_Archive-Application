@@ -37,6 +37,7 @@ import {
 
 import Geolocation from '@react-native-community/geolocation';
 import ImageEditor from '@react-native-community/image-editor';
+import { useTheme } from '../context/ThemeContext';
 
 interface ScanSpeciesScreenProps {
     onNavigate: (route: any, params?: any) => void;
@@ -54,6 +55,8 @@ const CORNER_SIZE = 32;
 const CORNER_THICKNESS = 4;
 
 const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBack }) => {
+    const { isDarkMode, theme } = useTheme();
+
     // Camera State
     const [isCapturing, setIsCapturing] = useState(false);
     const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
@@ -450,21 +453,21 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
     // ============================================
     if (!hasCameraPermission) {
         return (
-            <View style={styles.container}>
-                <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.backButton} onPress={onBack}>
-                        <Text style={styles.backArrow}>‹</Text>
+            <View style={[styles.container, { backgroundColor: theme.background }]}>
+                <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
+                <View style={[styles.header, { backgroundColor: theme.card }]}>
+                    <TouchableOpacity style={[styles.backButton, { backgroundColor: theme.border }]} onPress={onBack}>
+                        <Text style={[styles.backArrow, { color: theme.text }]}>‹</Text>
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Scan Species</Text>
+                    <Text style={[styles.headerTitle, { color: theme.text }]}>Scan Species</Text>
                     <View style={styles.headerRight} />
                 </View>
-                <View style={styles.permissionContainer}>
-                    <View style={styles.permissionIconBox}>
+                <View style={[styles.permissionContainer, { backgroundColor: theme.background }]}>
+                    <View style={[styles.permissionIconBox, { backgroundColor: theme.accentLight }]}>
                         <Text style={styles.permissionIcon}>📷</Text>
                     </View>
-                    <Text style={styles.permissionTitle}>Camera Access Required</Text>
-                    <Text style={styles.permissionDesc}>
+                    <Text style={[styles.permissionTitle, { color: theme.text }]}>Camera Access Required</Text>
+                    <Text style={[styles.permissionDesc, { color: theme.textSecondary }]}>
                         To identify species, Creature Archive needs access to your camera.
                     </Text>
                     <TouchableOpacity
@@ -491,20 +494,20 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
     // ============================================
     if (!device) {
         return (
-            <View style={styles.container}>
-                <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.backButton} onPress={onBack}>
-                        <Text style={styles.backArrow}>‹</Text>
+            <View style={[styles.container, { backgroundColor: theme.background }]}>
+                <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
+                <View style={[styles.header, { backgroundColor: theme.card }]}>
+                    <TouchableOpacity style={[styles.backButton, { backgroundColor: theme.border }]} onPress={onBack}>
+                        <Text style={[styles.backArrow, { color: theme.text }]}>‹</Text>
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Scan Species</Text>
+                    <Text style={[styles.headerTitle, { color: theme.text }]}>Scan Species</Text>
                     <View style={styles.headerRight} />
                 </View>
-                <View style={styles.permissionContainer}>
+                <View style={[styles.permissionContainer, { backgroundColor: theme.background }]}>
                     <View style={[styles.permissionIconBox, { backgroundColor: '#FEE2E2' }]}>
                         <Text style={styles.permissionIcon}>⚠️</Text>
                     </View>
-                    <Text style={styles.permissionTitle}>Camera Unavailable</Text>
+                    <Text style={[styles.permissionTitle, { color: theme.text }]}>Camera Unavailable</Text>
                     <TouchableOpacity style={styles.permissionBtn} onPress={handleOpenGallery}>
                         <Text style={styles.permissionBtnText}>Select from Gallery</Text>
                     </TouchableOpacity>
@@ -694,30 +697,30 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
             </View>
 
             {/* Controls */}
-            <View style={styles.controlPanel}>
+            <View style={[styles.controlPanel, { backgroundColor: theme.card }]}>
                 <View style={styles.controlsRow}>
                     <TouchableOpacity
                         style={styles.sideBtn}
                         onPress={handleOpenGallery}
                         disabled={isLoadingGallery}
                     >
-                        <View style={styles.sideBtnIcon}>
+                        <View style={[styles.sideBtnIcon, { backgroundColor: theme.border }]}>
                             {isLoadingGallery ? (
                                 <ActivityIndicator size="small" color="#1B4D3E" />
                             ) : (
                                 <Text style={styles.sideBtnEmoji}>🖼️</Text>
                             )}
                         </View>
-                        <Text style={styles.sideBtnLabel}>Gallery</Text>
+                        <Text style={[styles.sideBtnLabel, { color: theme.textSecondary }]}>Gallery</Text>
                     </TouchableOpacity>
 
                     <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
                         <TouchableOpacity
-                            style={[styles.shutterOuter, (!isCameraReady || isCapturing) && styles.shutterDisabled]}
+                            style={[styles.shutterOuter, { backgroundColor: theme.card, borderColor: theme.border }, (!isCameraReady || isCapturing) && styles.shutterDisabled]}
                             onPress={handleCapture}
                             disabled={!isCameraReady || isCapturing}
                         >
-                            <View style={styles.shutterMiddle}>
+                            <View style={[styles.shutterMiddle, { borderColor: theme.border }]}>
                                 {isCapturing ? (
                                     <ActivityIndicator size="large" color="#FFF" />
                                 ) : (
@@ -728,17 +731,17 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                     </Animated.View>
 
                     <TouchableOpacity style={styles.sideBtn} onPress={handleFlipCamera}>
-                        <View style={styles.sideBtnIcon}>
+                        <View style={[styles.sideBtnIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.sideBtnEmoji}>🔄</Text>
                         </View>
-                        <Text style={styles.sideBtnLabel}>Flip</Text>
+                        <Text style={[styles.sideBtnLabel, { color: theme.textSecondary }]}>Flip</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.footerRow}>
-                    <Text style={styles.footerText}>Tap to capture</Text>
+                    <Text style={[styles.footerText, { color: theme.textSecondary }]}>Tap to capture</Text>
                     <View style={styles.footerDot} />
-                    <Text style={styles.footerText}>Works offline</Text>
+                    <Text style={[styles.footerText, { color: theme.textSecondary }]}>Works offline</Text>
                 </View>
             </View>
         </View>

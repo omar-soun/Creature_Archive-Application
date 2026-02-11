@@ -13,12 +13,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import authService from '../services/authService';
 import { apiService } from '../services/apiService';
 import { fileStorageService } from '../services/fileStorageService';
 import { syncManager } from '../services/syncManager';
 import useJournalEntries from '../hooks/useJournalEntries';
+import { useTheme } from '../context/ThemeContext';
 import BottomTabBar, { TabRoute } from '../components/BottomTabBar';
 
 // ============================================
@@ -41,13 +41,6 @@ interface ProfileScreenProps {
   onSignOut?: () => void;
 }
 
-// ============================================
-// STORAGE KEYS
-// ============================================
-const STORAGE_KEYS = {
-  DARK_MODE: '@creature_archive_dark_mode',
-  SYNC_ENABLED: '@creature_archive_sync_enabled',
-};
 
 // ============================================
 // PROFILE SCREEN COMPONENT
@@ -56,7 +49,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   // ============================================
   // STATE
   // ============================================
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDarkMode, toggleDarkMode, theme } = useTheme();
   const [isSyncing, setIsSyncing] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -117,9 +110,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
 
   const loadPreferences = async () => {
     try {
-      const darkMode = await AsyncStorage.getItem(STORAGE_KEYS.DARK_MODE);
-      if (darkMode !== null) setIsDarkMode(darkMode === 'true');
-
       const savedImagePath = await fileStorageService.getProfileImagePath();
       if (savedImagePath) setProfileImage(savedImagePath);
     } catch (error) {
@@ -130,15 +120,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   // ============================================
   // HANDLERS
   // ============================================
-  const handleDarkModeToggle = async (value: boolean) => {
-    setIsDarkMode(value);
-    try {
-      await AsyncStorage.setItem(STORAGE_KEYS.DARK_MODE, value.toString());
-    } catch (error) {
-      console.error('Error saving dark mode preference:', error);
-    }
-  };
-
   const handleEditProfile = () => {
     // Navigate to edit screen logic here
     Alert.alert('Edit Profile', 'Navigate to edit profile form.');
@@ -206,19 +187,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
 
   const getInitials = (): string => {
     return `${user.firstName?.charAt(0) || ''}${user.lastName?.charAt(0) || ''}`.toUpperCase();
-  };
-
-  // ============================================
-  // THEME COLORS
-  // ============================================
-  const theme = {
-    background: isDarkMode ? '#0F172A' : '#F8FAFC',
-    card: isDarkMode ? '#1E293B' : '#FFFFFF',
-    text: isDarkMode ? '#F1F5F9' : '#111827',
-    textSecondary: isDarkMode ? '#94A3B8' : '#6B7280',
-    border: isDarkMode ? '#334155' : '#F3F4F6',
-    accent: '#1B4D3E',
-    accentLight: isDarkMode ? '#1E3A2F' : '#ECFDF5',
   };
 
   // ============================================
@@ -365,7 +333,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
               </View>
               <Switch
                 value={isDarkMode}
-                onValueChange={handleDarkModeToggle}
+                onValueChange={(val: boolean) => toggleDarkMode(val)}
                 trackColor={{ false: theme.border, true: '#818CF8' }}
                 thumbColor={isDarkMode ? '#4F46E5' : '#F4F4F5'}
                 ios_backgroundColor={theme.border}

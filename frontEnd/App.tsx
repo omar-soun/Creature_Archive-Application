@@ -12,6 +12,7 @@ import authService from './src/services/authService';
 import { migrationService } from './src/services/migrationService';
 import { fileStorageService } from './src/services/fileStorageService';
 import { speciesService } from './src/services/speciesService'; // Eager load species data at startup
+import { ThemeProvider } from './src/context/ThemeContext';
 
 // Screen imports
 import SplashScreen from './src/screens/SplashScreen';
@@ -176,115 +177,117 @@ const App: React.FC = () => {
   };
 
   // ============================================
-  // RENDER: SPLASH SCREEN (while checking auth + migration)
+  // RENDER CURRENT SCREEN
   // ============================================
-  if (!isAuthChecked || !isMigrated) {
-    return <SplashScreen onFinish={() => {}} />;
-  }
-
-  // ============================================
-  // RENDER: AUTH SCREENS
-  // ============================================
-  if ('auth' in appState) {
-    switch (appState.auth) {
-      case 'Splash':
-        return <SplashScreen onFinish={handleSplashFinish} />;
-      case 'SignIn':
-        return (
-          <SignInScreen
-            onSignIn={handleSignIn}
-            onNavigateToSignUp={navigateToSignUp}
-          />
-        );
-      case 'SignUp':
-        return (
-          <SignUpScreen
-            onSignUp={handleSignUp}
-            onNavigateToSignIn={navigateToSignIn}
-          />
-        );
+  const renderScreen = () => {
+    // Splash screen while checking auth + migration
+    if (!isAuthChecked || !isMigrated) {
+      return <SplashScreen onFinish={() => {}} />;
     }
-  }
 
-  // ============================================
-  // RENDER: MAIN APP SCREENS
-  // ============================================
-  if ('main' in appState) {
-    const { main, params } = appState;
-
-    // Flow Screens (with back navigation)
-    switch (main) {
-      case 'ScanSpecies':
-        return (
-          <ScanSpeciesScreen
-            onNavigate={handleNavigate}
-            onBack={handleBack}
-          />
-        );
-
-      case 'IdentificationResult':
-        return (
-          <IdentificationResultScreen
-            onNavigate={handleNavigate}
-            onBack={handleBack}
-            photoUri={params?.photoUri}
-            location={params?.location}
-            timestamp={params?.timestamp}
-          />
-        );
-
-      case 'NewEntry':
-        return (
-          <NewJournalEntryScreen
-            onNavigate={handleNavigate}
-            onBack={handleBack}
-            routeParams={params}
-          />
-        );
-
-      case 'JournalDetail':
-        return (
-          <JournalDetailScreen
-            onNavigate={handleNavigate}
-            onBack={handleBack}
-            routeParams={params}
-          />
-        );
-
-      case 'EditEntry':
-        return (
-          <EditJournalEntryScreen
-            onNavigate={handleNavigate}
-            onBack={handleBack}
-            routeParams={params}
-          />
-        );
-
-      // Tab Screens
-      case 'Home':
-        return <HomeScreen onNavigate={handleNavigate} />;
-
-      case 'Archive':
-        return <ArchiveScreen onNavigate={handleNavigate} />;
-
-      case 'Stats':
-        return <StatsScreen onNavigate={handleNavigate} />;
-
-      case 'Profile':
-        return (
-          <ProfileScreen
-            onNavigate={handleNavigate}
-            onSignOut={handleSignOut}
-          />
-        );
-
-      default:
-        return <HomeScreen onNavigate={handleNavigate} />;
+    // Auth screens
+    if ('auth' in appState) {
+      switch (appState.auth) {
+        case 'Splash':
+          return <SplashScreen onFinish={handleSplashFinish} />;
+        case 'SignIn':
+          return (
+            <SignInScreen
+              onSignIn={handleSignIn}
+              onNavigateToSignUp={navigateToSignUp}
+            />
+          );
+        case 'SignUp':
+          return (
+            <SignUpScreen
+              onSignUp={handleSignUp}
+              onNavigateToSignIn={navigateToSignIn}
+            />
+          );
+      }
     }
-  }
 
-  // Fallback
-  return <SplashScreen onFinish={handleSplashFinish} />;
+    // Main app screens
+    if ('main' in appState) {
+      const { main, params } = appState;
+
+      switch (main) {
+        case 'ScanSpecies':
+          return (
+            <ScanSpeciesScreen
+              onNavigate={handleNavigate}
+              onBack={handleBack}
+            />
+          );
+
+        case 'IdentificationResult':
+          return (
+            <IdentificationResultScreen
+              onNavigate={handleNavigate}
+              onBack={handleBack}
+              photoUri={params?.photoUri}
+              location={params?.location}
+              timestamp={params?.timestamp}
+            />
+          );
+
+        case 'NewEntry':
+          return (
+            <NewJournalEntryScreen
+              onNavigate={handleNavigate}
+              onBack={handleBack}
+              routeParams={params}
+            />
+          );
+
+        case 'JournalDetail':
+          return (
+            <JournalDetailScreen
+              onNavigate={handleNavigate}
+              onBack={handleBack}
+              routeParams={params}
+            />
+          );
+
+        case 'EditEntry':
+          return (
+            <EditJournalEntryScreen
+              onNavigate={handleNavigate}
+              onBack={handleBack}
+              routeParams={params}
+            />
+          );
+
+        case 'Home':
+          return <HomeScreen onNavigate={handleNavigate} />;
+
+        case 'Archive':
+          return <ArchiveScreen onNavigate={handleNavigate} />;
+
+        case 'Stats':
+          return <StatsScreen onNavigate={handleNavigate} />;
+
+        case 'Profile':
+          return (
+            <ProfileScreen
+              onNavigate={handleNavigate}
+              onSignOut={handleSignOut}
+            />
+          );
+
+        default:
+          return <HomeScreen onNavigate={handleNavigate} />;
+      }
+    }
+
+    return <SplashScreen onFinish={handleSplashFinish} />;
+  };
+
+  return (
+    <ThemeProvider>
+      {renderScreen()}
+    </ThemeProvider>
+  );
 };
 
 const styles = StyleSheet.create({

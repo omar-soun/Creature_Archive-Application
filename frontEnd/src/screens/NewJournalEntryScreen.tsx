@@ -15,6 +15,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import useJournalEntries from '../hooks/useJournalEntries';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * ============================================
@@ -64,6 +65,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
     // ============================================
     // HOOKS - Offline-first data management
     // ============================================
+    const { isDarkMode, theme } = useTheme();
     const {
         createEntry,
     } = useJournalEntries();
@@ -204,16 +206,16 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
     // RENDER
     // ============================================
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
 
             {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={onBack} activeOpacity={0.7}>
-                    <Text style={styles.backArrow}>‹</Text>
+            <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
+                <TouchableOpacity style={[styles.backButton, { backgroundColor: theme.border }]} onPress={onBack} activeOpacity={0.7}>
+                    <Text style={[styles.backArrow, { color: theme.text }]}>‹</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>New Journal Entry</Text>
+                <Text style={[styles.headerTitle, { color: theme.text }]}>New Journal Entry</Text>
                 <View style={styles.headerRight} />
             </View>
 
@@ -227,7 +229,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                     {/* SPECIES PREVIEW (Top) */}
                     {/* ============================================ */}
                     <View style={styles.previewSection}>
-                        <View style={styles.imageContainer}>
+                        <View style={[styles.imageContainer, { backgroundColor: theme.border }]}>
                             {photoUri ? (
                                 <Image
                                     source={{ uri: photoUri }}
@@ -235,7 +237,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                     resizeMode="cover"
                                 />
                             ) : (
-                                <View style={styles.placeholderImage}>
+                                <View style={[styles.placeholderImage, { backgroundColor: theme.border }]}>
                                     <Text style={styles.placeholderIcon}>📷</Text>
                                 </View>
                             )}
@@ -246,52 +248,52 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                 </View>
                             )}
                         </View>
-                        <Text style={styles.previewLabel}>Species Preview</Text>
+                        <Text style={[styles.previewLabel, { color: theme.textSecondary }]}>Species Preview</Text>
                     </View>
 
                     {/* ============================================ */}
                     {/* OBSERVATION DATA CARD (Read-Only) */}
                     {/* ============================================ */}
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>Observation Data</Text>
-                        <Text style={styles.cardSubtitle}>Auto-captured • Read only</Text>
+                    <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                        <Text style={[styles.cardTitle, { color: theme.text }]}>Observation Data</Text>
+                        <Text style={[styles.cardSubtitle, { color: theme.textSecondary }]}>Auto-captured • Read only</Text>
 
                         {/* Date Row */}
                         <View style={styles.dataRow}>
-                            <View style={styles.dataIcon}>
+                            <View style={[styles.dataIcon, { backgroundColor: theme.accentLight }]}>
                                 <Text style={styles.dataIconText}>📅</Text>
                             </View>
                             <View style={styles.dataContent}>
-                                <Text style={styles.dataValue}>{observationDate || 'Not recorded'}</Text>
-                                <Text style={styles.dataLabel}>Date observed</Text>
+                                <Text style={[styles.dataValue, { color: theme.text }]}>{observationDate || 'Not recorded'}</Text>
+                                <Text style={[styles.dataLabel, { color: theme.textSecondary }]}>Date observed</Text>
                             </View>
                         </View>
 
-                        <View style={styles.dataDivider} />
+                        <View style={[styles.dataDivider, { backgroundColor: theme.border }]} />
 
                         {/* Time Row */}
                         <View style={styles.dataRow}>
-                            <View style={styles.dataIcon}>
+                            <View style={[styles.dataIcon, { backgroundColor: theme.accentLight }]}>
                                 <Text style={styles.dataIconText}>🕐</Text>
                             </View>
                             <View style={styles.dataContent}>
-                                <Text style={styles.dataValue}>{observationTime || 'Not recorded'}</Text>
-                                <Text style={styles.dataLabel}>Time observed</Text>
+                                <Text style={[styles.dataValue, { color: theme.text }]}>{observationTime || 'Not recorded'}</Text>
+                                <Text style={[styles.dataLabel, { color: theme.textSecondary }]}>Time observed</Text>
                             </View>
                         </View>
 
-                        <View style={styles.dataDivider} />
+                        <View style={[styles.dataDivider, { backgroundColor: theme.border }]} />
 
                         {/* GPS Row */}
                         <View style={styles.dataRow}>
-                            <View style={[styles.dataIcon, !gpsLocation && styles.dataIconInactive]}>
+                            <View style={[styles.dataIcon, !gpsLocation && styles.dataIconInactive, { backgroundColor: gpsLocation ? theme.accentLight : theme.border }]}>
                                 <Text style={styles.dataIconText}>📍</Text>
                             </View>
                             <View style={styles.dataContent}>
-                                <Text style={[styles.dataValue, !gpsLocation && styles.dataValueInactive]}>
+                                <Text style={[styles.dataValue, !gpsLocation && { color: theme.textSecondary }, gpsLocation && { color: theme.text }]}>
                                     {formatCoordinates(gpsLocation)}
                                 </Text>
-                                <Text style={styles.dataLabel}>GPS coordinates</Text>
+                                <Text style={[styles.dataLabel, { color: theme.textSecondary }]}>GPS coordinates</Text>
                             </View>
                         </View>
                     </View>
@@ -299,103 +301,103 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                     {/* ============================================ */}
                     {/* EDITABLE FORM FIELDS */}
                     {/* ============================================ */}
-                    <Text style={styles.sectionTitle}>Species Information</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>Species Information</Text>
 
                     {/* Species Name (Pre-filled, Editable) */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>
+                        <Text style={[styles.label, { color: theme.text }]}>
                             Species Name <Text style={styles.required}>*</Text>
                         </Text>
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, { backgroundColor: theme.border, borderColor: theme.border, color: theme.text }]}
                             value={speciesName}
                             onChangeText={setSpeciesName}
                             placeholder="e.g., Red-tailed Hawk"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                         />
                     </View>
 
                     {/* Scientific Name (Pre-filled, Editable) */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Scientific Name</Text>
+                        <Text style={[styles.label, { color: theme.text }]}>Scientific Name</Text>
                         <TextInput
-                            style={[styles.input, styles.italicInput]}
+                            style={[styles.input, styles.italicInput, { backgroundColor: theme.border, borderColor: theme.border, color: theme.text }]}
                             value={scientificName}
                             onChangeText={setScientificName}
                             placeholder="e.g., Buteo jamaicensis"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                             autoCapitalize="none"
                         />
                     </View>
 
                     {/* Class of Animal (Dropdown) */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Class of Animal</Text>
+                        <Text style={[styles.label, { color: theme.text }]}>Class of Animal</Text>
                         <TouchableOpacity
-                            style={styles.dropdownTrigger}
+                            style={[styles.dropdownTrigger, { backgroundColor: theme.border, borderColor: theme.border }]}
                             onPress={() => setIsDropdownOpen(true)}
                             activeOpacity={0.7}
                         >
-                            <Text style={[styles.dropdownText, !animalClass && styles.placeholderText]}>
+                            <Text style={[styles.dropdownText, { color: theme.text }, !animalClass && { color: theme.textSecondary }]}>
                                 {animalClass
                                     ? classOptions.find(c => c.value === animalClass)?.label || animalClass
                                     : 'Select class...'}
                             </Text>
-                            <Text style={styles.dropdownArrow}>▼</Text>
+                            <Text style={[styles.dropdownArrow, { color: theme.textSecondary }]}>▼</Text>
                         </TouchableOpacity>
                     </View>
 
                     {/* Behavior Observed */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Behavior Observed</Text>
+                        <Text style={[styles.label, { color: theme.text }]}>Behavior Observed</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, { backgroundColor: theme.border, borderColor: theme.border, color: theme.text }]}
                             value={behavior}
                             onChangeText={setBehavior}
                             placeholder="e.g., Perched, Hunting, Flying"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                         />
                     </View>
 
                     {/* Quantity (Pre-filled, Editable) */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Quantity</Text>
+                        <Text style={[styles.label, { color: theme.text }]}>Quantity</Text>
                         <TextInput
-                            style={[styles.input, styles.quantityInput]}
+                            style={[styles.input, styles.quantityInput, { backgroundColor: theme.border, borderColor: theme.border, color: theme.text }]}
                             value={quantity}
                             onChangeText={(text) => setQuantity(text.replace(/[^0-9]/g, ''))}
                             keyboardType="number-pad"
                             placeholder="1"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                             maxLength={4}
                         />
                     </View>
 
                     {/* Habitat Type */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Habitat Type</Text>
+                        <Text style={[styles.label, { color: theme.text }]}>Habitat Type</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, { backgroundColor: theme.border, borderColor: theme.border, color: theme.text }]}
                             value={habitat}
                             onChangeText={setHabitat}
                             placeholder="e.g., Forest, Grassland, Wetland"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                         />
                     </View>
 
                     {/* Field Notes (Multi-line, Auto-resize) */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Field Notes</Text>
+                        <Text style={[styles.label, { color: theme.text }]}>Field Notes</Text>
                         <TextInput
                             style={[
                                 styles.input,
                                 styles.textArea,
-                                { height: Math.max(MIN_NOTES_HEIGHT, Math.min(notesHeight, MAX_NOTES_HEIGHT)) }
+                                { height: Math.max(MIN_NOTES_HEIGHT, Math.min(notesHeight, MAX_NOTES_HEIGHT)), backgroundColor: theme.border, borderColor: theme.border, color: theme.text }
                             ]}
                             value={fieldNotes}
                             onChangeText={setFieldNotes}
                             placeholder="Additional observations, environmental conditions, weather..."
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                             multiline
                             textAlignVertical="top"
                             scrollEnabled={notesHeight >= MAX_NOTES_HEIGHT}
@@ -404,23 +406,23 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                 setNotesHeight(newHeight);
                             }}
                         />
-                        <Text style={styles.helperText}>
+                        <Text style={[styles.helperText, { color: theme.textSecondary }]}>
                             {fieldNotes.length > 0 ? `${fieldNotes.length} characters` : 'Describe your observation in detail'}
                         </Text>
                     </View>
 
                     {/* Tags */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Tags</Text>
+                        <Text style={[styles.label, { color: theme.text }]}>Tags</Text>
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, { backgroundColor: theme.border, borderColor: theme.border, color: theme.text }]}
                             value={tags}
                             onChangeText={setTags}
                             placeholder="e.g., raptor, bird-of-prey, winter"
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={theme.textSecondary}
                             autoCapitalize="none"
                         />
-                        <Text style={styles.helperText}>Separate tags with commas</Text>
+                        <Text style={[styles.helperText, { color: theme.textSecondary }]}>Separate tags with commas</Text>
                     </View>
 
                     {/* ============================================ */}
@@ -460,15 +462,15 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                 onRequestClose={() => setIsDropdownOpen(false)}
             >
                 <Pressable style={styles.modalOverlay} onPress={() => setIsDropdownOpen(false)}>
-                    <View style={styles.dropdownMenu}>
-                        <Text style={styles.dropdownTitle}>Select Class of Animal</Text>
+                    <View style={[styles.dropdownMenu, { backgroundColor: theme.card }]}>
+                        <Text style={[styles.dropdownTitle, { color: theme.text, borderBottomColor: theme.border }]}>Select Class of Animal</Text>
 
                         {classOptions.map((option) => (
                             <TouchableOpacity
                                 key={option.value}
                                 style={[
                                     styles.dropdownOption,
-                                    animalClass === option.value && styles.dropdownOptionSelected,
+                                    animalClass === option.value && [styles.dropdownOptionSelected, { backgroundColor: theme.accentLight }],
                                 ]}
                                 onPress={() => {
                                     setAnimalClass(option.value);
@@ -481,6 +483,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                     <Text
                                         style={[
                                             styles.dropdownOptionText,
+                                            { color: theme.text },
                                             animalClass === option.value && styles.dropdownOptionTextSelected,
                                         ]}
                                     >
@@ -494,10 +497,10 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                         ))}
 
                         <TouchableOpacity
-                            style={styles.dropdownCancel}
+                            style={[styles.dropdownCancel, { borderTopColor: theme.border }]}
                             onPress={() => setIsDropdownOpen(false)}
                         >
-                            <Text style={styles.dropdownCancelText}>Cancel</Text>
+                            <Text style={[styles.dropdownCancelText, { color: theme.textSecondary }]}>Cancel</Text>
                         </TouchableOpacity>
                     </View>
                 </Pressable>

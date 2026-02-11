@@ -13,6 +13,7 @@ import {
     Alert,
     Share,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * ============================================
@@ -64,6 +65,8 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
     onBack,
     routeParams,
 }) => {
+    const { isDarkMode, theme } = useTheme();
+
     // Menu state
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -162,21 +165,21 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
     // RENDER
     // ============================================
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
             {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={onBack} activeOpacity={0.7}>
-                    <Text style={styles.backArrow}>‹</Text>
+            <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
+                <TouchableOpacity style={[styles.backButton, { backgroundColor: theme.border }]} onPress={onBack} activeOpacity={0.7}>
+                    <Text style={[styles.backArrow, { color: theme.text }]}>‹</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Journal</Text>
+                <Text style={[styles.headerTitle, { color: theme.text }]}>Journal</Text>
                 <TouchableOpacity
-                    style={styles.menuButton}
+                    style={[styles.menuButton, { backgroundColor: theme.border }]}
                     onPress={() => setIsMenuOpen(true)}
                     activeOpacity={0.7}
                 >
-                    <Text style={styles.menuIcon}>⋮</Text>
+                    <Text style={[styles.menuIcon, { color: theme.text }]}>⋮</Text>
                 </TouchableOpacity>
             </View>
 
@@ -185,7 +188,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                 showsVerticalScrollIndicator={false}
             >
                 {/* Hero Image */}
-                <View style={styles.heroContainer}>
+                <View style={[styles.heroContainer, { backgroundColor: theme.card }]}>
                     {entry.photoUri || entry.image ? (
                         <Image
                             source={entry.image || { uri: entry.photoUri }}
@@ -193,28 +196,28 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                             resizeMode="cover"
                         />
                     ) : (
-                        <View style={styles.heroPlaceholder}>
+                        <View style={[styles.heroPlaceholder, { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.heroPlaceholderIcon}>🦅</Text>
-                            <Text style={styles.heroPlaceholderText}>{entry.speciesName}</Text>
+                            <Text style={[styles.heroPlaceholderText, { color: isDarkMode ? theme.text : '#1B4D3E' }]}>{entry.speciesName}</Text>
                         </View>
                     )}
                 </View>
 
                 {/* Species Title Block */}
                 <View style={styles.titleBlock}>
-                    <Text style={styles.speciesName}>{entry.speciesName}</Text>
-                    <Text style={styles.scientificName}>{entry.scientificName}</Text>
+                    <Text style={[styles.speciesName, { color: theme.text }]}>{entry.speciesName}</Text>
+                    <Text style={[styles.scientificName, { color: theme.textSecondary }]}>{entry.scientificName}</Text>
                 </View>
 
                 {/* AI Confidence Card */}
-                <View style={styles.card}>
+                <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
                     <View style={styles.confidenceHeader}>
-                        <Text style={styles.confidenceLabel}>AI Prediction Confidence</Text>
+                        <Text style={[styles.confidenceLabel, { color: theme.text }]}>AI Prediction Confidence</Text>
                         <Text style={[styles.confidenceValue, { color: confidenceInfo.color }]}>
                             {entry.confidence}%
                         </Text>
                     </View>
-                    <View style={styles.progressBarBg}>
+                    <View style={[styles.progressBarBg, { backgroundColor: theme.border }]}>
                         <View
                             style={[
                                 styles.progressBarFill,
@@ -225,141 +228,141 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                             ]}
                         />
                     </View>
-                    <Text style={styles.confidenceFooter}>{confidenceInfo.text}</Text>
+                    <Text style={[styles.confidenceFooter, { color: theme.textSecondary }]}>{confidenceInfo.text}</Text>
                 </View>
 
                 {/* Observation Metadata Card */}
-                <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Observation Details</Text>
+                <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                    <Text style={[styles.cardTitle, { color: theme.text }]}>Observation Details</Text>
 
                     {/* Date */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>📅</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>Date of Observation</Text>
-                            <Text style={styles.metaValue}>{entry.date}</Text>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Date of Observation</Text>
+                            <Text style={[styles.metaValue, { color: theme.text }]}>{entry.date}</Text>
                         </View>
                     </View>
 
-                    <View style={styles.metaDivider} />
+                    <View style={[styles.metaDivider, { backgroundColor: theme.border }]} />
 
                     {/* Time */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>🕐</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>Time of Observation</Text>
-                            <Text style={styles.metaValue}>{entry.time}</Text>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Time of Observation</Text>
+                            <Text style={[styles.metaValue, { color: theme.text }]}>{entry.time}</Text>
                         </View>
                     </View>
 
-                    <View style={styles.metaDivider} />
+                    <View style={[styles.metaDivider, { backgroundColor: theme.border }]} />
 
                     {/* GPS Location */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>📍</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>GPS Location</Text>
-                            <Text style={styles.metaValue}>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>GPS Location</Text>
+                            <Text style={[styles.metaValue, { color: theme.text }]}>
                                 {entry.coordinates || formatCoordinates(entry.location) || 'No GPS data'}
                             </Text>
                             {entry.locationName && (
-                                <Text style={styles.metaSubvalue}>{entry.locationName}</Text>
+                                <Text style={[styles.metaSubvalue, { color: theme.textSecondary }]}>{entry.locationName}</Text>
                             )}
                         </View>
                     </View>
 
-                    <View style={styles.metaDivider} />
+                    <View style={[styles.metaDivider, { backgroundColor: theme.border }]} />
 
                     {/* Behavior */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>👁️</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>Behavior Observed</Text>
-                            <Text style={[styles.metaValue, !entry.behavior && styles.metaValueMuted]}>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Behavior Observed</Text>
+                            <Text style={[styles.metaValue, { color: theme.text }, !entry.behavior && styles.metaValueMuted]}>
                                 {entry.behavior || 'Not recorded'}
                             </Text>
                         </View>
                     </View>
 
-                    <View style={styles.metaDivider} />
+                    <View style={[styles.metaDivider, { backgroundColor: theme.border }]} />
 
                     {/* Quantity */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>#️⃣</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>Quantity</Text>
-                            <Text style={styles.metaValue}>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Quantity</Text>
+                            <Text style={[styles.metaValue, { color: theme.text }]}>
                                 {entry.quantity ? `${entry.quantity} Individual${entry.quantity !== 1 ? 's' : ''}` : 'Not recorded'}
                             </Text>
                         </View>
                     </View>
 
-                    <View style={styles.metaDivider} />
+                    <View style={[styles.metaDivider, { backgroundColor: theme.border }]} />
 
                     {/* Species Type */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>🏷️</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>Species Type</Text>
-                            <Text style={styles.metaValue}>{entry.animalClass}</Text>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Species Type</Text>
+                            <Text style={[styles.metaValue, { color: theme.text }]}>{entry.animalClass}</Text>
                         </View>
                     </View>
 
-                    <View style={styles.metaDivider} />
+                    <View style={[styles.metaDivider, { backgroundColor: theme.border }]} />
 
                     {/* Tags */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>🔖</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>Tags</Text>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Tags</Text>
                             <View style={styles.tagsContainer}>
                                 {entry.tags.length > 0 ? (
                                     entry.tags.map((tag, index) => (
-                                        <View key={index} style={styles.tagPill}>
+                                        <View key={index} style={[styles.tagPill, { backgroundColor: theme.accentLight, borderColor: isDarkMode ? theme.border : '#D1FAE5' }]}>
                                             <Text style={styles.tagText}>{tag}</Text>
                                         </View>
                                     ))
                                 ) : (
-                                    <Text style={styles.metaValueMuted}>No tags</Text>
+                                    <Text style={[styles.metaValueMuted, { color: theme.textSecondary }]}>No tags</Text>
                                 )}
                             </View>
                         </View>
                     </View>
 
-                    <View style={styles.metaDivider} />
+                    <View style={[styles.metaDivider, { backgroundColor: theme.border }]} />
 
                     {/* Habitat Type */}
                     <View style={styles.metaRow}>
-                        <View style={styles.metaIcon}>
+                        <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
                             <Text style={styles.metaIconText}>🌲</Text>
                         </View>
                         <View style={styles.metaContent}>
-                            <Text style={styles.metaLabel}>Habitat Type</Text>
-                            <Text style={styles.metaValue}>{entry.habitatType || 'Not recorded'}</Text>
+                            <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Habitat Type</Text>
+                            <Text style={[styles.metaValue, { color: theme.text }]}>{entry.habitatType || 'Not recorded'}</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Research Notes Section */}
                 <View style={styles.notesSection}>
-                    <Text style={styles.notesSectionTitle}>Research Notes</Text>
-                    <View style={styles.notesCard}>
+                    <Text style={[styles.notesSectionTitle, { color: theme.text }]}>Research Notes</Text>
+                    <View style={[styles.notesCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
                         <View style={styles.notesAccent} />
-                        <Text style={[styles.notesText, !entry.notes && styles.notesTextMuted]}>
+                        <Text style={[styles.notesText, { color: theme.text }, !entry.notes && { color: theme.textSecondary, fontStyle: 'italic' }]}>
                             {entry.notes || 'No research notes recorded for this observation.'}
                         </Text>
                     </View>
@@ -370,7 +373,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
             </ScrollView>
 
             {/* Footer - Edit Button */}
-            <View style={styles.footer}>
+            <View style={[styles.footer, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
                 <TouchableOpacity style={styles.editButton} onPress={handleEdit} activeOpacity={0.85}>
                     <Text style={styles.editButtonIcon}>✏️</Text>
                     <Text style={styles.editButtonText}>Edit Journal</Text>
@@ -385,7 +388,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                 onRequestClose={() => setIsMenuOpen(false)}
             >
                 <Pressable style={styles.modalOverlay} onPress={() => setIsMenuOpen(false)}>
-                    <View style={styles.menuContainer}>
+                    <View style={[styles.menuContainer, { backgroundColor: theme.card }]}>
                         {/* Share Option */}
                         <TouchableOpacity
                             style={styles.menuItem}
@@ -393,10 +396,10 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                             activeOpacity={0.7}
                         >
                             <Text style={styles.menuItemIcon}>📤</Text>
-                            <Text style={styles.menuItemText}>Share</Text>
+                            <Text style={[styles.menuItemText, { color: theme.text }]}>Share</Text>
                         </TouchableOpacity>
 
-                        <View style={styles.menuDivider} />
+                        <View style={[styles.menuDivider, { backgroundColor: theme.border }]} />
 
                         {/* Export to PDF Option */}
                         <TouchableOpacity
@@ -405,10 +408,10 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                             activeOpacity={0.7}
                         >
                             <Text style={styles.menuItemIcon}>📄</Text>
-                            <Text style={styles.menuItemText}>Export to PDF</Text>
+                            <Text style={[styles.menuItemText, { color: theme.text }]}>Export to PDF</Text>
                         </TouchableOpacity>
 
-                        <View style={styles.menuDivider} />
+                        <View style={[styles.menuDivider, { backgroundColor: theme.border }]} />
 
                         {/* Delete Option */}
                         <TouchableOpacity

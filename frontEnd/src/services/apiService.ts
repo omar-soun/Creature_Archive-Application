@@ -5,7 +5,7 @@
  * All cloud synchronization goes through this service.
  */
 
-import { getAuth } from '@react-native-firebase/auth';
+import { getAuth, getIdToken } from '@react-native-firebase/auth';
 import { Platform } from 'react-native';
 import { LocalJournalEntry, SyncResult } from '../types/models';
 
@@ -118,7 +118,7 @@ async function getAuthToken(): Promise<string> {
   if (!user) {
     throw new Error('User not authenticated');
   }
-  return user.getIdToken();
+  return getIdToken(user);
 }
 
 /**

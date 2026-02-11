@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import useSpeciesDetection, { getStageText } from '../hooks/useSpeciesDetection';
+import { useTheme } from '../context/ThemeContext';
 
 /**
  * ============================================
@@ -59,6 +60,11 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
     location: initialLocation,
     timestamp,
 }) => {
+    // ============================================
+    // THEME
+    // ============================================
+    const { isDarkMode, theme } = useTheme();
+
     // ============================================
     // SPECIES DETECTION HOOK
     // ============================================
@@ -249,15 +255,15 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
     // RENDER
     // ============================================
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
             {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={onBack}>
-                    <Text style={styles.backArrow}>‹</Text>
+            <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
+                <TouchableOpacity style={[styles.backButton, { backgroundColor: theme.border }]} onPress={onBack}>
+                    <Text style={[styles.backArrow, { color: theme.text }]}>‹</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Observation Details</Text>
+                <Text style={[styles.headerTitle, { color: theme.text }]}>Observation Details</Text>
                 <View style={styles.headerRight} />
             </View>
 
@@ -266,11 +272,11 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                 showsVerticalScrollIndicator={false}
             >
                 {/* Hero Image */}
-                <View style={styles.heroContainer}>
+                <View style={[styles.heroContainer, { backgroundColor: theme.card }]}>
                     {photoUri ? (
                         <Image source={{ uri: photoUri }} style={styles.heroImage} resizeMode="cover" />
                     ) : (
-                        <View style={styles.heroPlaceholder}>
+                        <View style={[styles.heroPlaceholder, { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.heroPlaceholderIcon}>📷</Text>
                             <Text style={styles.heroPlaceholderText}>No image</Text>
                         </View>
@@ -310,27 +316,27 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                 <View style={styles.titleBlock}>
                     {isDetecting ? (
                         <>
-                            <View style={styles.skeletonTitle} />
-                            <View style={styles.skeletonSubtitle} />
+                            <View style={[styles.skeletonTitle, { backgroundColor: theme.border }]} />
+                            <View style={[styles.skeletonSubtitle, { backgroundColor: theme.border }]} />
                         </>
                     ) : (
                         <>
-                            <Text style={styles.commonName}>{identificationData.commonName}</Text>
-                            <Text style={styles.scientificName}>{identificationData.scientificName}</Text>
+                            <Text style={[styles.commonName, { color: theme.text }]}>{identificationData.commonName}</Text>
+                            <Text style={[styles.scientificName, { color: theme.textSecondary }]}>{identificationData.scientificName}</Text>
                         </>
                     )}
                 </View>
 
                 {/* Confidence Card - Only show when we have results */}
                 {result && (
-                    <View style={styles.card}>
+                    <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
                         <View style={styles.cardHeader}>
-                            <Text style={styles.cardLabel}>Confidence Score</Text>
+                            <Text style={[styles.cardLabel, { color: theme.text }]}>Confidence Score</Text>
                             <Text style={[styles.confidenceValue, { color: confidenceInfo.color }]}>
                                 {identificationData.confidenceScore}%
                             </Text>
                         </View>
-                        <View style={styles.progressBarBg}>
+                        <View style={[styles.progressBarBg, { backgroundColor: theme.border }]}>
                             <View
                                 style={[
                                     styles.progressBarFill,
@@ -340,60 +346,60 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                         </View>
                         <View style={styles.confidenceHelperRow}>
                             <View style={[styles.confidenceDot, { backgroundColor: confidenceInfo.color }]} />
-                            <Text style={styles.confidenceHelper}>{confidenceInfo.text}</Text>
+                            <Text style={[styles.confidenceHelper, { color: theme.textSecondary }]}>{confidenceInfo.text}</Text>
                         </View>
                     </View>
                 )}
 
                 {/* Observation Details Card */}
-                <Text style={styles.sectionTitle}>Observation Details</Text>
-                <View style={styles.card}>
+                <Text style={[styles.sectionTitle, { color: theme.text }]}>Observation Details</Text>
+                <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
                     {/* Date Row - Auto-filled, Mandatory */}
                     <View style={styles.detailRow}>
-                        <View style={styles.iconCircle}>
+                        <View style={[styles.iconCircle, { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.detailIcon}>📅</Text>
                         </View>
                         <View style={styles.detailContent}>
-                            <Text style={styles.detailPrimary}>{observationDate || 'Loading...'}</Text>
-                            <Text style={styles.detailSecondary}>Date observed</Text>
+                            <Text style={[styles.detailPrimary, { color: theme.text }]}>{observationDate || 'Loading...'}</Text>
+                            <Text style={[styles.detailSecondary, { color: theme.textSecondary }]}>Date observed</Text>
                         </View>
-                        <View style={styles.autoTag}>
+                        <View style={[styles.autoTag, { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.autoTagText}>Auto</Text>
                         </View>
                     </View>
 
-                    <View style={styles.divider} />
+                    <View style={[styles.divider, { backgroundColor: theme.border }]} />
 
                     {/* Time Row - Auto-filled, Mandatory */}
                     <View style={styles.detailRow}>
-                        <View style={styles.iconCircle}>
+                        <View style={[styles.iconCircle, { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.detailIcon}>🕐</Text>
                         </View>
                         <View style={styles.detailContent}>
-                            <Text style={styles.detailPrimary}>{observationTime || 'Loading...'}</Text>
-                            <Text style={styles.detailSecondary}>Time observed</Text>
+                            <Text style={[styles.detailPrimary, { color: theme.text }]}>{observationTime || 'Loading...'}</Text>
+                            <Text style={[styles.detailSecondary, { color: theme.textSecondary }]}>Time observed</Text>
                         </View>
-                        <View style={styles.autoTag}>
+                        <View style={[styles.autoTag, { backgroundColor: theme.accentLight }]}>
                             <Text style={styles.autoTagText}>Auto</Text>
                         </View>
                     </View>
 
-                    <View style={styles.divider} />
+                    <View style={[styles.divider, { backgroundColor: theme.border }]} />
 
                     {/* GPS Row - Optional with Refresh */}
                     <View style={styles.detailRow}>
-                        <View style={[styles.iconCircle, !gpsLocation && styles.iconCircleInactive]}>
+                        <View style={[styles.iconCircle, { backgroundColor: theme.accentLight }, !gpsLocation && { backgroundColor: theme.border }]}>
                             <Text style={styles.detailIcon}>📍</Text>
                         </View>
                         <View style={styles.detailContent}>
-                            <Text style={[styles.detailPrimary, !gpsLocation && styles.detailPrimaryInactive]}>
+                            <Text style={[styles.detailPrimary, { color: theme.text }, !gpsLocation && { color: theme.textSecondary }]}>
                                 {formatCoordinates(gpsLocation)}
                             </Text>
-                            <Text style={styles.detailSecondary}>GPS coordinates</Text>
+                            <Text style={[styles.detailSecondary, { color: theme.textSecondary }]}>GPS coordinates</Text>
                         </View>
                         {/* Refresh Button */}
                         <TouchableOpacity
-                            style={styles.refreshButton}
+                            style={[styles.refreshButton, { backgroundColor: theme.border }]}
                             onPress={handleRefreshGps}
                             disabled={isRefreshingGps}
                             activeOpacity={0.7}
@@ -408,7 +414,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
 
                     {/* GPS Helper Text */}
                     {!gpsLocation && (
-                        <Text style={styles.gpsHelperText}>
+                        <Text style={[styles.gpsHelperText, { color: theme.textSecondary }]}>
                             Tap refresh to try getting your location
                         </Text>
                     )}
@@ -427,7 +433,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
             </ScrollView>
 
             {/* Footer Actions */}
-            <View style={styles.footer}>
+            <View style={[styles.footer, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
                 <TouchableOpacity
                     style={[styles.primaryButton, (!result || isDetecting) && styles.primaryButtonDisabled]}
                     onPress={handleSave}
@@ -447,9 +453,9 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                     )}
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.secondaryButton} onPress={handleRescan} activeOpacity={0.7}>
+                <TouchableOpacity style={[styles.secondaryButton, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={handleRescan} activeOpacity={0.7}>
                     <Text style={styles.secondaryButtonIcon}>🔄</Text>
-                    <Text style={styles.secondaryButtonText}>Rescan</Text>
+                    <Text style={[styles.secondaryButtonText, { color: theme.text }]}>Rescan</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -16,6 +16,7 @@ import { getAuth } from '@react-native-firebase/auth';
 import { apiService } from '../services/apiService';
 import BottomTabBar, { TabRoute } from '../components/BottomTabBar';
 import useJournalEntries from '../hooks/useJournalEntries';
+import { useTheme } from '../context/ThemeContext';
 
 const PROFILE_CACHE_KEY = '@creature_archive_cached_profile';
 
@@ -33,10 +34,11 @@ interface BackendUserProfile {
 }
 
 interface HomeScreenProps {
-  onNavigate: (route: any) => void;
+  onNavigate: (route: any, params?: any) => void;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
+  const { isDarkMode, theme } = useTheme();
   const [user, setUser] = React.useState<BackendUserProfile | null>(null);
   const [profileImage, setProfileImage] = React.useState<string | null>(null);
   const { entries } = useJournalEntries();
@@ -120,15 +122,46 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   const recentActivity = entries
     .sort((a, b) => b.capturedAt - a.capturedAt)
     .slice(0, 5)
-    .map(entry => ({
-      id: entry.localId,
-      species: entry.speciesName,
-      scientificName: entry.scientificName,
-      date: new Date(entry.capturedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + new Date(entry.capturedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
-      confidence: Math.round(entry.confidenceScore * 100),
-      // Use local image or fallback
-      image: entry.localImageUri ? { uri: entry.localImageUri } : (entry.imageUrl ? { uri: entry.imageUrl } : require('../assets/1.png')),
-    }));
+    .map(entry => {
+      const entryDate = new Date(entry.capturedAt);
+      const imageUri = entry.localImageUri
+        ? (entry.localImageUri.startsWith('file://') ? entry.localImageUri : `file://${entry.localImageUri}`)
+        : entry.imageUrl || null;
+      const coordinates = entry.latitude && entry.longitude
+        ? `${entry.latitude.toFixed(4)}° N, ${entry.longitude.toFixed(4)}° W`
+        : '';
+      return {
+        id: entry.localId,
+        species: entry.speciesName,
+        scientificName: entry.scientificName,
+        date: entryDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + entryDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+        confidence: Math.round(entry.confidenceScore * 100),
+        image: imageUri ? { uri: imageUri } : require('../assets/1.png'),
+        // Full entry data for detail navigation
+        entryParams: {
+          entry: {
+            id: entry.localId,
+            localId: entry.localId,
+            firestoreId: entry.firestoreId,
+            speciesName: entry.speciesName,
+            scientificName: entry.scientificName,
+            animalClass: entry.animalClass,
+            date: entryDate.toISOString().split('T')[0],
+            time: entryDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+            location: entry.locationName || 'Unknown Location',
+            coordinates: coordinates,
+            confidence: Math.round((entry.confidenceScore || 0) * 100),
+            tags: entry.tags || [],
+            image: imageUri ? { uri: imageUri } : require('../assets/1.png'),
+            notes: entry.notes,
+            habitatType: entry.habitatType,
+            behavior: entry.behaviorObserved,
+            quantity: entry.quantity,
+            syncStatus: entry.syncStatus,
+          },
+        },
+      };
+    });
 
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 90) return '#059669';
@@ -143,8 +176,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -154,9 +187,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <View>
-              <Text style={styles.headerTitle}>
+              <Text style={[styles.headerTitle, { color: theme.text }]}>
                 Creature Archive</Text>
-              <Text style={styles.headerSubtitle} numberOfLines={1}>
+              <Text style={[styles.headerSubtitle, { color: theme.textSecondary }]} numberOfLines={1}>
                 Field Research Assistant</Text>
             </View>
             <TouchableOpacity
@@ -177,7 +210,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>Quick Actions</Text>
           <View style={styles.quickActionsGrid}>
             <TouchableOpacity
               style={[styles.actionCard, styles.actionCardPrimary]}
@@ -195,25 +228,25 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
 
             <View style={styles.actionRow}>
               <TouchableOpacity
-                style={styles.actionCardSmall}
+                style={[styles.actionCardSmall, { backgroundColor: theme.card }]}
                 activeOpacity={0.85}
                 onPress={() => onNavigate('Archive')}
               >
-                <View style={styles.actionIconSecondary}>
+                <View style={[styles.actionIconSecondary, { backgroundColor: theme.border }]}>
                   <Text style={styles.actionIconTextSmall}>📦</Text>
                 </View>
-                <Text style={styles.actionTextSecondary}>View Archive</Text>
+                <Text style={[styles.actionTextSecondary, { color: theme.text }]}>View Archive</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.actionCardSmall}
+                style={[styles.actionCardSmall, { backgroundColor: theme.card }]}
                 activeOpacity={0.85}
                 onPress={() => onNavigate('Stats')}
               >
-                <View style={styles.actionIconSecondary}>
+                <View style={[styles.actionIconSecondary, { backgroundColor: theme.border }]}>
                   <Text style={styles.actionIconTextSmall}>📊</Text>
                 </View>
-                <Text style={styles.actionTextSecondary}>Analytics</Text>
+                <Text style={[styles.actionTextSecondary, { color: theme.text }]}>Analytics</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -221,33 +254,33 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
 
         {/* Research Summary */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Research Summary</Text>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>Research Summary</Text>
           <View style={styles.statsContainer}>
             <View style={styles.statsRow}>
-              <View style={[styles.statCard, styles.statCardLarge]}>
-                <Text style={styles.statValue}>{summaryStats.totalObservations}</Text>
-                <Text style={styles.statLabel}>Total Observations</Text>
+              <View style={[styles.statCard, styles.statCardLarge, { backgroundColor: theme.card }]}>
+                <Text style={[styles.statValue, { color: theme.text }]}>{summaryStats.totalObservations}</Text>
+                <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Total Observations</Text>
               </View>
               <View style={styles.statsColumn}>
-                <View style={styles.statCardSmall}>
-                  <Text style={styles.statValueSmall}>{summaryStats.thisMonth}</Text>
-                  <Text style={styles.statLabelSmall}>This Month</Text>
+                <View style={[styles.statCardSmall, { backgroundColor: theme.card }]}>
+                  <Text style={[styles.statValueSmall, { color: theme.text }]}>{summaryStats.thisMonth}</Text>
+                  <Text style={[styles.statLabelSmall, { color: theme.textSecondary }]}>This Month</Text>
                 </View>
-                <View style={styles.statCardSmall}>
-                  <Text style={styles.statValueSmall}>{summaryStats.thisWeek}</Text>
-                  <Text style={styles.statLabelSmall}>This Week</Text>
+                <View style={[styles.statCardSmall, { backgroundColor: theme.card }]}>
+                  <Text style={[styles.statValueSmall, { color: theme.text }]}>{summaryStats.thisWeek}</Text>
+                  <Text style={[styles.statLabelSmall, { color: theme.textSecondary }]}>This Week</Text>
                 </View>
               </View>
             </View>
-            <View style={styles.statCardToday}>
+            <View style={[styles.statCardToday, { backgroundColor: theme.card }]}>
               <View style={styles.todayContent}>
                 <Text style={styles.statValueToday}>{summaryStats.today}</Text>
                 <View>
-                  <Text style={styles.statLabelToday}>Today's Observations</Text>
-                  <Text style={styles.todaySubtext}>Keep up the great work!</Text>
+                  <Text style={[styles.statLabelToday, { color: theme.text }]}>Today's Observations</Text>
+                  <Text style={[styles.todaySubtext, { color: theme.textSecondary }]}>Keep up the great work!</Text>
                 </View>
               </View>
-              <View style={styles.todayIcon}>
+              <View style={[styles.todayIcon, { backgroundColor: theme.accentLight }]}>
                 <Text style={styles.todayIconText}>🎯</Text>
               </View>
             </View>
@@ -256,18 +289,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
 
         {/* Recent Activity */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <View style={styles.activityList}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>Recent Activity</Text>
+          <View style={[styles.activityList, { backgroundColor: theme.card }]}>
             {recentActivity.length > 0 ? (
               recentActivity.map((item, index) => (
                 <TouchableOpacity
                   key={item.id}
                   style={[
                     styles.activityCard,
+                    { borderBottomColor: theme.border },
                     index === recentActivity.length - 1 && styles.activityCardLast,
                   ]}
                   activeOpacity={0.7}
-                  onPress={() => onNavigate('Archive')} // Navigate to archive to see details
+                  onPress={() => onNavigate('JournalDetail', item.entryParams)}
                 >
                   <View style={styles.activityImageContainer}>
                     <Image
@@ -277,9 +311,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                     />
                   </View>
                   <View style={styles.activityInfo}>
-                    <Text style={styles.speciesName}>{item.species}</Text>
+                    <Text style={[styles.speciesName, { color: theme.text }]}>{item.species}</Text>
                     <Text style={styles.scientificName}>{item.scientificName}</Text>
-                    <Text style={styles.activityDate}>{item.date}</Text>
+                    <Text style={[styles.activityDate, { color: theme.textSecondary }]}>{item.date}</Text>
                   </View>
                   <View
                     style={[
@@ -301,7 +335,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
             ) : (
               <View style={{ padding: 24, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontSize: 24, marginBottom: 8 }}>📝</Text>
-                <Text style={{ color: '#6B7280', fontWeight: '500', marginBottom: 4 }}>No recent activity</Text>
+                <Text style={{ color: theme.textSecondary, fontWeight: '500', marginBottom: 4 }}>No recent activity</Text>
                 <TouchableOpacity onPress={() => onNavigate('ScanSpecies')}>
                   <Text style={{ color: '#1B4D3E', fontWeight: '600' }}>+ Add your first entry</Text>
                 </TouchableOpacity>
