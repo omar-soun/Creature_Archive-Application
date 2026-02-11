@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   logoWrapper: {
     marginBottom: 18,
     // Subtle shadow for depth
-    shadowColor: '#1B4D3E',
+    shadowColor: '#059669',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
     shadowRadius: 16,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: '#1B4D3E',
+    color: '#059669',
     fontWeight: '500',
   },
 
@@ -302,14 +302,14 @@ const styles = StyleSheet.create({
 
   // Primary Button
   signInButton: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#059669',
     borderRadius: 14,
     paddingVertical: 18,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
     // Elegant shadow
-    shadowColor: '#1B4D3E',
+    shadowColor: '#059669',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   signupText: {
-    color: '#1B4D3E',
+    color: '#059669',
     fontSize: 15,
     fontWeight: '600',
   },

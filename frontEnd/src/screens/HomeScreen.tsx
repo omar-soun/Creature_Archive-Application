@@ -14,6 +14,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAuth } from '@react-native-firebase/auth';
 import { apiService } from '../services/apiService';
+import { fileStorageService } from '../services/fileStorageService';
 import BottomTabBar, { TabRoute } from '../components/BottomTabBar';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { useTheme } from '../context/ThemeContext';
@@ -48,9 +49,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   }, []);
 
   const loadUserProfile = async () => {
+    let fetchedProfile: BackendUserProfile | null = null;
+
     try {
       // 1. Try fetching user data from backend API
       const userData = await apiService.getCurrentUser();
+      fetchedProfile = userData;
       setUser(userData);
 
       // Cache for offline access
@@ -60,11 +64,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
       try {
         const cached = await AsyncStorage.getItem(PROFILE_CACHE_KEY);
         if (cached) {
-          setUser(JSON.parse(cached));
+          fetchedProfile = JSON.parse(cached);
+          setUser(fetchedProfile);
         } else {
           const firebaseUser = getAuth().currentUser;
           if (firebaseUser) {
-            setUser({
+            fetchedProfile = {
               uid: firebaseUser.uid,
               email: firebaseUser.email || '',
               firstName: firebaseUser.displayName?.split(' ')[0] || '',
@@ -74,7 +79,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
               entryCount: 0,
               createdAt: firebaseUser.metadata.creationTime || '',
               lastSync: null,
-            });
+            };
+            setUser(fetchedProfile);
           }
         }
       } catch (_fallbackError) {
@@ -82,11 +88,21 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
       }
     }
 
-    // 3. Fetch profile image from local storage
+    // 3. Fetch profile image: local file storage (primary) or download from cloud (fallback)
     try {
-      const savedImage = await AsyncStorage.getItem('@creature_archive_profile_image');
-      if (savedImage) {
-        setProfileImage(savedImage);
+      let localImagePath = await fileStorageService.getProfileImagePath();
+
+      if (!localImagePath && fetchedProfile?.profileImage) {
+        // No local file — download from cloud and save locally
+        localImagePath = await fileStorageService.downloadProfileImage(fetchedProfile.profileImage);
+      }
+
+      if (localImagePath) {
+        const uri = localImagePath.startsWith('file://') ? localImagePath : `file://${localImagePath}`;
+        setProfileImage(`${uri}?t=${Date.now()}`);
+      } else if (fetchedProfile?.profileImage) {
+        // Download failed — use cloud URL directly
+        setProfileImage(fetchedProfile.profileImage);
       }
     } catch (_imgError) {
       // ignore

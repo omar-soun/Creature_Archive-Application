@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   logoWrapper: {
     marginBottom: 28,
     // Subtle shadow for depth
-    shadowColor: '#1B4D3E',
+    shadowColor: '#059669',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.15,
     shadowRadius: 24,

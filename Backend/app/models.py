@@ -104,6 +104,7 @@ class UserProfileResponse(BaseModel):
     entryCount: int
     createdAt: datetime
     lastSync: Optional[datetime] = None
+    profileImage: Optional[str] = None
 
 
 # ── Two-Way Sync Models ───────────────────────────────────────────────

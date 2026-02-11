@@ -166,6 +166,7 @@ def get_current_user(
         entryCount=data.get("entryCount", 0),
         createdAt=data["createdAt"],
         lastSync=data.get("lastSync"),
+        profileImage=data.get("profileImage"),
     )
 
 
@@ -209,6 +210,7 @@ def update_profile(
         entryCount=data.get("entryCount", 0),
         createdAt=data["createdAt"],
         lastSync=data.get("lastSync"),
+        profileImage=data.get("profileImage"),
     )
 
 

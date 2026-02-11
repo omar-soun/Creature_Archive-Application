@@ -611,7 +611,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E7EB',
   },
   stepDotActive: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#059669',
   },
   stepLine: {
     width: 40,
@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   stepLineActive: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#059669',
   },
   stepLabel: {
     fontSize: 13,
@@ -725,28 +725,28 @@ const styles = StyleSheet.create({
 
   // Button Styles
   primaryButton: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#059669',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 8,
     marginBottom: 18,
-    shadowColor: '#1B4D3E',
+    shadowColor: '#059669',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 5,
   },
   primaryButtonFlex: {
-    backgroundColor: '#1B4D3E',
+    backgroundColor: '#059669',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
     marginLeft: 10,
-    shadowColor: '#1B4D3E',
+    shadowColor: '#059669',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
@@ -795,7 +795,7 @@ const styles = StyleSheet.create({
   },
   signInLink: {
     fontSize: 14,
-    color: '#1B4D3E',
+    color: '#059669',
     fontWeight: '600',
   },
 

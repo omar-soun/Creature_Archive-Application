@@ -268,6 +268,37 @@ class FileStorageService {
   }
 
   /**
+   * Download a profile image from a remote URL to persistent local storage.
+   * Returns the local file path on success, or null on failure.
+   */
+  async downloadProfileImage(remoteUrl: string): Promise<string | null> {
+    try {
+      await this.ensureDirectories();
+
+      // Remove existing profile image
+      const destExists = await RNFS.exists(PROFILE_IMAGE_FILE);
+      if (destExists) {
+        await RNFS.unlink(PROFILE_IMAGE_FILE);
+      }
+
+      const result = await RNFS.downloadFile({
+        fromUrl: remoteUrl,
+        toFile: PROFILE_IMAGE_FILE,
+      }).promise;
+
+      if (result.statusCode === 200) {
+        return PROFILE_IMAGE_FILE;
+      }
+
+      console.warn('Profile image download failed with status:', result.statusCode);
+      return null;
+    } catch (error) {
+      console.warn('Profile image download error:', error);
+      return null;
+    }
+  }
+
+  /**
    * Delete the local profile image
    */
   async deleteProfileImage(): Promise<void> {

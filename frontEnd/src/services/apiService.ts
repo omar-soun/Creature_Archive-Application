@@ -347,6 +347,7 @@ class ApiService {
     entryCount: number;
     createdAt: string;
     lastSync: string | null;
+    profileImage?: string;
   }> {
     return apiRequest('/auth/me');
   }
