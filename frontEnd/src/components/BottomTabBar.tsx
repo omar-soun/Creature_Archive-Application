@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Platform,
 } from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { useTheme } from '../context/ThemeContext';
 
 export type TabRoute = 'Home' | 'Archive' | 'Stats' | 'Profile';
@@ -22,10 +23,10 @@ interface TabItem {
 }
 
 const tabs: TabItem[] = [
-    { route: 'Home', label: 'Home', icon: '🏠' },
-    { route: 'Archive', label: 'Archive', icon: '📦' },
-    { route: 'Stats', label: 'Stats', icon: '📊' },
-    { route: 'Profile', label: 'Profile', icon: '👤' },
+    { route: 'Home', label: 'Home', icon: 'house' },
+    { route: 'Archive', label: 'Archive', icon: 'box-archive' },
+    { route: 'Stats', label: 'Stats', icon: 'chart-simple' },
+    { route: 'Profile', label: 'Profile', icon: 'user' },
 ];
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ currentRoute, onNavigate }) => {
@@ -43,7 +44,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ currentRoute, onNavigate })
                         activeOpacity={0.7}
                     >
                         <View style={[styles.iconContainer, isActive && { backgroundColor: theme.accentLight }]}>
-                            <Text style={styles.iconText}>{tab.icon}</Text>
+                            <FontAwesome6 name={tab.icon} size={20} color={isActive ? '#059669' : isDarkMode ? '#64748B' : '#9CA3AF'} />
                         </View>
                         <Text style={[styles.label, { color: isDarkMode ? '#64748B' : '#9CA3AF' }, isActive && styles.labelActive]}>
                             {tab.label}
@@ -85,9 +86,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 4,
-    },
-    iconText: {
-        fontSize: 20,
     },
     label: {
         fontSize: 14,

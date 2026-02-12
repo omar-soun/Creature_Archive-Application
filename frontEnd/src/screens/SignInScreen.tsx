@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import authService from '../services/authService';
 import { useTheme } from '../context/ThemeContext';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 interface SignInScreenProps {
   onSignIn: () => void;
@@ -154,9 +155,12 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
                     onPress={() => setShowPassword(!showPassword)}
                     activeOpacity={0.7}
                   >
-                    <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
-                      {showPassword ? '🙈' : '👁'}
-                    </Text>
+                    <FontAwesome6
+                      name={showPassword ? 'eye-slash' : 'eye'}
+                      size={18}
+                      color={theme.textSecondary}
+                      iconStyle="regular"
+                    />
                   </TouchableOpacity>
                 </View>
               </View>

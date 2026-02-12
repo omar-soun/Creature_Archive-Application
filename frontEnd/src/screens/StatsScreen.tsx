@@ -13,6 +13,7 @@ import BottomTabBar, { TabRoute } from '../components/BottomTabBar';
 import statsService from '../services/statsService';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { useTheme } from '../context/ThemeContext';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const { width } = Dimensions.get('window');
 
@@ -216,22 +217,22 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                     <Text style={[styles.sectionTitle, { color: theme.text }]}>Overview</Text>
                     <View style={styles.overviewGrid}>
                         <View style={[styles.overviewCard, styles.overviewCardPrimary]}>
-                            <Text style={styles.overviewIconPrimary}>📊</Text>
+                            <FontAwesome6 name="chart-simple" size={24} color="#FFFFFF" style={{ marginBottom: 8 }} />
                             <Text style={styles.overviewValuePrimary}>{overviewStats.totalObservations}</Text>
                             <Text style={styles.overviewLabelPrimary}>Total Observations</Text>
                         </View>
                         <View style={[styles.overviewCard, { backgroundColor: theme.card }]}>
-                            <Text style={styles.overviewIcon}>🦎</Text>
+                            <FontAwesome6 name="fingerprint" size={24} color="#059669" style={{ marginBottom: 8 }} />
                             <Text style={[styles.overviewValue, { color: theme.text }]}>{overviewStats.uniqueSpecies}</Text>
                             <Text style={[styles.overviewLabel, { color: theme.textSecondary }]}>Unique Species</Text>
                         </View>
                         <View style={[styles.overviewCard, { backgroundColor: theme.card }]}>
-                            <Text style={styles.overviewIcon}>🎯</Text>
+                            <FontAwesome6 name="bullseye" size={24} color="#059669" style={{ marginBottom: 8 }} />
                             <Text style={[styles.overviewValue, { color: theme.text }]}>{overviewStats.avgConfidence}%</Text>
                             <Text style={[styles.overviewLabel, { color: theme.textSecondary }]}>Avg. Confidence</Text>
                         </View>
                         <View style={[styles.overviewCard, { backgroundColor: theme.card }]}>
-                            <Text style={styles.overviewIcon}>📅</Text>
+                            <FontAwesome6 name="calendar" size={24} color="#059669" style={{ marginBottom: 8 }} />
                             <Text style={[styles.overviewValue, { color: theme.text }]}>{overviewStats.fieldDays}</Text>
                             <Text style={[styles.overviewLabel, { color: theme.textSecondary }]}>Field Days</Text>
                         </View>
@@ -305,7 +306,7 @@ const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                             </View>
                         )) : (
                             <View style={{ padding: 24, alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={{ fontSize: 24, marginBottom: 8 }}>🐾</Text>
+                                <FontAwesome6 name="paw" size={24} color="#6B7280" style={{ marginBottom: 8 }} />
                                 <Text style={{ color: '#6B7280', fontWeight: '500' }}>No species identified yet</Text>
                             </View>
                         )}

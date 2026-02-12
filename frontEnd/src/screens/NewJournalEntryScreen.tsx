@@ -14,6 +14,7 @@ import {
     Pressable,
     ActivityIndicator,
 } from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { useTheme } from '../context/ThemeContext';
 
@@ -111,13 +112,13 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
 
     // Class options
     const classOptions = [
-        { label: 'Mammals', value: 'Mammal', icon: '🐾' },
-        { label: 'Birds', value: 'Bird', icon: '🐦' },
-        { label: 'Fish', value: 'Fish', icon: '🐟' },
-        { label: 'Reptiles', value: 'Reptile', icon: '🦎' },
-        { label: 'Amphibians', value: 'Amphibian', icon: '🐸' },
-        { label: 'Insects', value: 'Insect', icon: '🦋' },
-        { label: 'Other', value: 'Other', icon: '🔬' },
+        { label: 'Mammals', value: 'Mammal', icon: 'paw' },
+        { label: 'Birds', value: 'Bird', icon: 'bird' },
+        { label: 'Fish', value: 'Fish', icon: 'fish' },
+        { label: 'Reptiles', value: 'Reptile', icon: 'dragon' },
+        { label: 'Amphibians', value: 'Amphibian', icon: 'frog' },
+        { label: 'Insects', value: 'Insect', icon: 'butterfly' },
+        { label: 'Other', value: 'Other', icon: 'microscope' },
     ];
 
     // ============================================
@@ -238,7 +239,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                 />
                             ) : (
                                 <View style={[styles.placeholderImage, { backgroundColor: theme.border }]}>
-                                    <Text style={styles.placeholderIcon}>📷</Text>
+                                    <FontAwesome6 name="camera" size={48} color={theme.textSecondary} />
                                 </View>
                             )}
                             {/* Confidence Badge */}
@@ -261,7 +262,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                         {/* Date Row */}
                         <View style={styles.dataRow}>
                             <View style={[styles.dataIcon, { backgroundColor: theme.accentLight }]}>
-                                <Text style={styles.dataIconText}>📅</Text>
+                                <FontAwesome6 name="calendar" size={18} color="#059669" />
                             </View>
                             <View style={styles.dataContent}>
                                 <Text style={[styles.dataValue, { color: theme.text }]}>{observationDate || 'Not recorded'}</Text>
@@ -274,7 +275,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                         {/* Time Row */}
                         <View style={styles.dataRow}>
                             <View style={[styles.dataIcon, { backgroundColor: theme.accentLight }]}>
-                                <Text style={styles.dataIconText}>🕐</Text>
+                                <FontAwesome6 name="clock" size={18} color="#059669" iconStyle="regular" />
                             </View>
                             <View style={styles.dataContent}>
                                 <Text style={[styles.dataValue, { color: theme.text }]}>{observationTime || 'Not recorded'}</Text>
@@ -287,7 +288,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                         {/* GPS Row */}
                         <View style={styles.dataRow}>
                             <View style={[styles.dataIcon, !gpsLocation && styles.dataIconInactive, { backgroundColor: gpsLocation ? theme.accentLight : theme.border }]}>
-                                <Text style={styles.dataIconText}>📍</Text>
+                                <FontAwesome6 name="location-dot" size={18} color="#059669" />
                             </View>
                             <View style={styles.dataContent}>
                                 <Text style={[styles.dataValue, !gpsLocation && { color: theme.textSecondary }, gpsLocation && { color: theme.text }]}>
@@ -343,7 +344,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                     ? classOptions.find(c => c.value === animalClass)?.label || animalClass
                                     : 'Select class...'}
                             </Text>
-                            <Text style={[styles.dropdownArrow, { color: theme.textSecondary }]}>▼</Text>
+                            <FontAwesome6 name="chevron-down" size={16} color={theme.textSecondary} />
                         </TouchableOpacity>
                     </View>
 
@@ -439,7 +440,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                 <ActivityIndicator color="#FFFFFF" size="small" />
                             ) : (
                                 <>
-                                    <Text style={styles.saveIcon}>💾</Text>
+                                    <FontAwesome6 name="floppy-disk" size={20} color="#FFFFFF" style={styles.saveIcon} />
                                     <Text style={styles.saveButtonText}>
                                         Save Entry
                                     </Text>
@@ -479,7 +480,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                 activeOpacity={0.7}
                             >
                                 <View style={styles.dropdownOptionLeft}>
-                                    <Text style={styles.dropdownOptionIcon}>{option.icon}</Text>
+                                    <FontAwesome6 name={option.icon} size={22} color={animalClass === option.value ? '#059669' : theme.textSecondary} style={styles.dropdownOptionIcon} />
                                     <Text
                                         style={[
                                             styles.dropdownOptionText,
@@ -491,7 +492,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                     </Text>
                                 </View>
                                 {animalClass === option.value && (
-                                    <Text style={styles.checkmark}>✓</Text>
+                                    <FontAwesome6 name="check" size={18} color="#059669" />
                                 )}
                             </TouchableOpacity>
                         ))}

@@ -14,6 +14,7 @@ import {
     Share,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 /**
  * ============================================
@@ -179,7 +180,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     onPress={() => setIsMenuOpen(true)}
                     activeOpacity={0.7}
                 >
-                    <Text style={[styles.menuIcon, { color: theme.text }]}>⋮</Text>
+                    <FontAwesome6 name="ellipsis-vertical" size={20} color={theme.text} />
                 </TouchableOpacity>
             </View>
 
@@ -197,7 +198,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                         />
                     ) : (
                         <View style={[styles.heroPlaceholder, { backgroundColor: theme.accentLight }]}>
-                            <Text style={styles.heroPlaceholderIcon}>🦅</Text>
+                            <FontAwesome6 name="dove" size={48} color="#059669" />
                             <Text style={[styles.heroPlaceholderText, { color: isDarkMode ? theme.text : '#059669' }]}>{entry.speciesName}</Text>
                         </View>
                     )}
@@ -238,7 +239,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* Date */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>📅</Text>
+                            <FontAwesome6 name="calendar" size={16} color="#059669" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Date of Observation</Text>
@@ -251,7 +252,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* Time */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>🕐</Text>
+                            <FontAwesome6 name="clock" size={16} color="#059669" iconStyle="regular" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Time of Observation</Text>
@@ -264,7 +265,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* GPS Location */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>📍</Text>
+                            <FontAwesome6 name="location-dot" size={16} color="#059669" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>GPS Location</Text>
@@ -282,7 +283,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* Behavior */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>👁️</Text>
+                            <FontAwesome6 name="eye" size={16} color="#059669" iconStyle="regular" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Behavior Observed</Text>
@@ -297,7 +298,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* Quantity */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>#️⃣</Text>
+                            <FontAwesome6 name="hashtag" size={16} color="#059669" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Quantity</Text>
@@ -312,7 +313,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* Species Type */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>🏷️</Text>
+                            <FontAwesome6 name="tag" size={16} color="#059669" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Species Type</Text>
@@ -325,7 +326,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* Tags */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>🔖</Text>
+                            <FontAwesome6 name="bookmark" size={16} color="#059669" iconStyle="regular" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Tags</Text>
@@ -348,7 +349,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     {/* Habitat Type */}
                     <View style={styles.metaRow}>
                         <View style={[styles.metaIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.metaIconText}>🌲</Text>
+                            <FontAwesome6 name="tree" size={16} color="#059669" />
                         </View>
                         <View style={styles.metaContent}>
                             <Text style={[styles.metaLabel, { color: theme.textSecondary }]}>Habitat Type</Text>
@@ -375,7 +376,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
             {/* Footer - Edit Button */}
             <View style={[styles.footer, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
                 <TouchableOpacity style={styles.editButton} onPress={handleEdit} activeOpacity={0.85}>
-                    <Text style={styles.editButtonIcon}>✏️</Text>
+                    <FontAwesome6 name="pen-to-square" size={16} color="#FFFFFF" style={styles.editButtonIcon} />
                     <Text style={styles.editButtonText}>Edit Journal</Text>
                 </TouchableOpacity>
             </View>
@@ -395,7 +396,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                             onPress={handleShare}
                             activeOpacity={0.7}
                         >
-                            <Text style={styles.menuItemIcon}>📤</Text>
+                            <FontAwesome6 name="share-from-square" size={18} color="#374151" style={styles.menuItemIcon} />
                             <Text style={[styles.menuItemText, { color: theme.text }]}>Share</Text>
                         </TouchableOpacity>
 
@@ -407,7 +408,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                             onPress={handleExportPDF}
                             activeOpacity={0.7}
                         >
-                            <Text style={styles.menuItemIcon}>📄</Text>
+                            <FontAwesome6 name="file-pdf" size={18} color="#374151" style={styles.menuItemIcon} />
                             <Text style={[styles.menuItemText, { color: theme.text }]}>Export to PDF</Text>
                         </TouchableOpacity>
 
@@ -419,7 +420,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                             onPress={handleDelete}
                             activeOpacity={0.7}
                         >
-                            <Text style={styles.menuItemIcon}>🗑️</Text>
+                            <FontAwesome6 name="trash-can" size={18} color="#E53E3E" style={styles.menuItemIcon} />
                             <Text style={[styles.menuItemText, styles.menuItemTextDanger]}>
                                 Delete
                             </Text>
@@ -738,7 +739,6 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     editButtonIcon: {
-        fontSize: 18,
         marginRight: 10,
     },
     editButtonText: {
@@ -774,7 +774,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 18,
     },
     menuItemIcon: {
-        fontSize: 18,
         marginRight: 14,
     },
     menuItemText: {

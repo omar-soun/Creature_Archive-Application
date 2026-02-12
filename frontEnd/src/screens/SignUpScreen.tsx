@@ -19,6 +19,7 @@ import {
 import authService from '../services/authService';
 import { SignUpData } from '../types/models';
 import { useTheme } from '../context/ThemeContext';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const { width } = Dimensions.get('window');
 
@@ -454,9 +455,12 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                         onPress={() => setShowPassword(!showPassword)}
                         activeOpacity={0.7}
                       >
-                        <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
-                          {showPassword ? '🙈' : '👁'}
-                        </Text>
+                        <FontAwesome6
+                          name={showPassword ? 'eye-slash' : 'eye'}
+                          size={18}
+                          color={theme.textSecondary}
+                          iconStyle="regular"
+                        />
                       </TouchableOpacity>
                     </View>
                     {/* Password Strength Indicator */}
@@ -513,9 +517,12 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
                         onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                         activeOpacity={0.7}
                       >
-                        <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
-                          {showConfirmPassword ? '🙈' : '👁'}
-                        </Text>
+                        <FontAwesome6
+                          name={showConfirmPassword ? 'eye-slash' : 'eye'}
+                          size={18}
+                          color={theme.textSecondary}
+                          iconStyle="regular"
+                        />
                       </TouchableOpacity>
                     </View>
                     {confirmTouched && !confirmValidation.isValid && (

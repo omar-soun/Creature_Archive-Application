@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { apiService } from '../services/apiService';
 import { useTheme } from '../context/ThemeContext';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 interface ForgotPasswordScreenProps {
   onNavigateToSignIn: () => void;
@@ -313,9 +314,12 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
             onPress={() => setShowNewPassword(!showNewPassword)}
             activeOpacity={0.7}
           >
-            <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
-              {showNewPassword ? '🙈' : '👁'}
-            </Text>
+            <FontAwesome6
+              name={showNewPassword ? 'eye-slash' : 'eye'}
+              size={18}
+              color={theme.textSecondary}
+              iconStyle="regular"
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -339,9 +343,12 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
             onPress={() => setShowConfirmPassword(!showConfirmPassword)}
             activeOpacity={0.7}
           >
-            <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
-              {showConfirmPassword ? '🙈' : '👁'}
-            </Text>
+            <FontAwesome6
+              name={showConfirmPassword ? 'eye-slash' : 'eye'}
+              size={18}
+              color={theme.textSecondary}
+              iconStyle="regular"
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -366,7 +373,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   const renderSuccessStep = () => (
     <View style={styles.form}>
       <View style={styles.successIconContainer}>
-        <Text style={styles.successIcon}>✓</Text>
+        <FontAwesome6 name="check" size={36} color="#059669" />
       </View>
       <Text style={[styles.title, { color: theme.text, textAlign: 'center' }]}>
         Password Reset Successful

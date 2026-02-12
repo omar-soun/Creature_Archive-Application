@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 /**
  * SyncStatusBadge Component
@@ -25,13 +26,13 @@ export function SyncStatusBadge({
   const getStatusConfig = () => {
     switch (syncStatus) {
       case 'synced':
-        return { color: '#4CAF50', icon: '✓', label: 'Synced' };
+        return { color: '#4CAF50', icon: 'check', label: 'Synced' };
       case 'pending':
-        return { color: '#FF9800', icon: '↑', label: 'Pending' };
+        return { color: '#FF9800', icon: 'arrow-up', label: 'Pending' };
       case 'failed':
-        return { color: '#F44336', icon: '!', label: 'Failed' };
+        return { color: '#F44336', icon: 'exclamation', label: 'Failed' };
       default:
-        return { color: '#9E9E9E', icon: '?', label: 'Unknown' };
+        return { color: '#9E9E9E', icon: 'circle-question', label: 'Unknown' };
     }
   };
 
@@ -51,7 +52,7 @@ export function SyncStatusBadge({
         },
       ]}
     >
-      <Text style={[styles.badgeText, { fontSize }]}>{config.icon}</Text>
+      <FontAwesome6 name={config.icon} size={fontSize} color="#FFFFFF" />
     </View>
   );
 }

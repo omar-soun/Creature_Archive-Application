@@ -11,6 +11,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAuth } from '@react-native-firebase/auth';
 import { apiService } from '../services/apiService';
@@ -234,7 +235,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
               onPress={() => onNavigate('ScanSpecies')}
             >
               <View style={styles.actionIconPrimary}>
-                <Text style={styles.actionIconText}>📷</Text>
+                <FontAwesome6 name="camera" size={28} color="#FFFFFF" />
               </View>
               <View style={styles.actionContent}>
                 <Text style={styles.actionTextPrimary}>New Journal</Text>
@@ -249,7 +250,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                 onPress={() => onNavigate('Archive')}
               >
                 <View style={[styles.actionIconSecondary, { backgroundColor: theme.border }]}>
-                  <Text style={styles.actionIconTextSmall}>📦</Text>
+                  <FontAwesome6 name="box-archive" size={22} color={theme.textSecondary} />
                 </View>
                 <Text style={[styles.actionTextSecondary, { color: theme.text }]}>View Archive</Text>
               </TouchableOpacity>
@@ -260,7 +261,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                 onPress={() => onNavigate('Stats')}
               >
                 <View style={[styles.actionIconSecondary, { backgroundColor: theme.border }]}>
-                  <Text style={styles.actionIconTextSmall}>📊</Text>
+                  <FontAwesome6 name="chart-simple" size={22} color={theme.textSecondary} />
                 </View>
                 <Text style={[styles.actionTextSecondary, { color: theme.text }]}>Analytics</Text>
               </TouchableOpacity>
@@ -297,7 +298,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                 </View>
               </View>
               <View style={[styles.todayIcon, { backgroundColor: theme.accentLight }]}>
-                <Text style={styles.todayIconText}>🎯</Text>
+                <FontAwesome6 name="bullseye" size={22} color="#059669" />
               </View>
             </View>
           </View>
@@ -350,7 +351,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
               ))
             ) : (
               <View style={{ padding: 24, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 24, marginBottom: 8 }}>📝</Text>
+                <FontAwesome6 name="pencil" size={24} color={theme.textSecondary} style={{ marginBottom: 8 }} />
                 <Text style={{ color: theme.textSecondary, fontWeight: '500', marginBottom: 4 }}>No recent activity</Text>
                 <TouchableOpacity onPress={() => onNavigate('ScanSpecies')}>
                   <Text style={{ color: '#059669', fontWeight: '600' }}>+ Add your first entry</Text>

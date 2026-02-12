@@ -14,6 +14,7 @@ import {
     Pressable,
     ActivityIndicator,
 } from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { AnimalClass } from '../types/models';
 import { useTheme } from '../context/ThemeContext';
@@ -91,7 +92,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
         return (
             <View style={[styles.container, { backgroundColor: theme.background }]}>
                 <View style={styles.errorContainer}>
-                    <Text style={styles.errorIcon}>⚠️</Text>
+                    <FontAwesome6 name="triangle-exclamation" size={48} color="#F59E0B" style={styles.errorIcon} />
                     <Text style={[styles.errorText, { color: theme.text }]}>Entry not found</Text>
                     <TouchableOpacity style={styles.errorButton} onPress={onBack}>
                         <Text style={styles.errorButtonText}>Go Back</Text>
@@ -127,13 +128,13 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
 
     // Class options
     const classOptions = [
-        { label: 'Mammals', value: 'Mammal', icon: '🐾' },
-        { label: 'Birds', value: 'Bird', icon: '🐦' },
-        { label: 'Fish', value: 'Fish', icon: '🐟' },
-        { label: 'Reptiles', value: 'Reptile', icon: '🦎' },
-        { label: 'Amphibians', value: 'Amphibian', icon: '🐸' },
-        { label: 'Insects', value: 'Insect', icon: '🦋' },
-        { label: 'Other', value: 'Other', icon: '🔬' },
+        { label: 'Mammals', value: 'Mammal', icon: 'paw' },
+        { label: 'Birds', value: 'Bird', icon: 'bird' },
+        { label: 'Fish', value: 'Fish', icon: 'fish' },
+        { label: 'Reptiles', value: 'Reptile', icon: 'dragon' },
+        { label: 'Amphibians', value: 'Amphibian', icon: 'frog' },
+        { label: 'Insects', value: 'Insect', icon: 'butterfly' },
+        { label: 'Other', value: 'Other', icon: 'microscope' },
     ];
 
     // ============================================
@@ -254,7 +255,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                     {isDeleting ? (
                         <ActivityIndicator color="#DC2626" size="small" />
                     ) : (
-                        <Text style={styles.deleteIcon}>🗑️</Text>
+                        <FontAwesome6 name="trash-can" size={20} color="#DC2626" />
                     )}
                 </TouchableOpacity>
             </View>
@@ -278,7 +279,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                                 />
                             ) : (
                                 <View style={[styles.placeholderImage, { backgroundColor: theme.border }]}>
-                                    <Text style={styles.placeholderIcon}>📷</Text>
+                                    <FontAwesome6 name="camera" size={48} color={theme.textSecondary} />
                                 </View>
                             )}
                             {/* Confidence Badge */}
@@ -301,7 +302,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                         {/* Date Row */}
                         <View style={styles.dataRow}>
                             <View style={[styles.dataIcon, { backgroundColor: theme.accentLight }]}>
-                                <Text style={styles.dataIconText}>📅</Text>
+                                <FontAwesome6 name="calendar" size={18} color="#059669" />
                             </View>
                             <View style={styles.dataContent}>
                                 <Text style={[styles.dataValue, { color: theme.text }]}>{entry.date || 'Not recorded'}</Text>
@@ -314,7 +315,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                         {/* Time Row */}
                         <View style={styles.dataRow}>
                             <View style={[styles.dataIcon, { backgroundColor: theme.accentLight }]}>
-                                <Text style={styles.dataIconText}>🕐</Text>
+                                <FontAwesome6 name="clock" size={18} color="#059669" iconStyle="regular" />
                             </View>
                             <View style={styles.dataContent}>
                                 <Text style={[styles.dataValue, { color: theme.text }]}>{entry.time || 'Not recorded'}</Text>
@@ -331,7 +332,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                                 { backgroundColor: theme.accentLight },
                                 displayCoordinates === 'No GPS data' && { backgroundColor: theme.border }
                             ]}>
-                                <Text style={styles.dataIconText}>📍</Text>
+                                <FontAwesome6 name="location-dot" size={18} color="#059669" />
                             </View>
                             <View style={styles.dataContent}>
                                 <Text style={[
@@ -391,7 +392,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                                     ? classOptions.find(c => c.value === animalClass)?.label || animalClass
                                     : 'Select class...'}
                             </Text>
-                            <Text style={[styles.dropdownArrow, { color: theme.textSecondary }]}>▼</Text>
+                            <FontAwesome6 name="chevron-down" size={16} color={theme.textSecondary} />
                         </TouchableOpacity>
                     </View>
 
@@ -487,7 +488,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                                 <ActivityIndicator color="#FFFFFF" size="small" />
                             ) : (
                                 <>
-                                    <Text style={styles.updateIcon}>✓</Text>
+                                    <FontAwesome6 name="check" size={20} color="#FFFFFF" style={styles.updateIcon} />
                                     <Text style={styles.updateButtonText}>
                                         Save Changes
                                     </Text>
@@ -527,7 +528,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                                 activeOpacity={0.7}
                             >
                                 <View style={styles.dropdownOptionLeft}>
-                                    <Text style={styles.dropdownOptionIcon}>{option.icon}</Text>
+                                    <FontAwesome6 name={option.icon} size={22} color={animalClass === option.value ? '#059669' : theme.textSecondary} style={styles.dropdownOptionIcon} />
                                     <Text
                                         style={[
                                             styles.dropdownOptionText,
@@ -539,7 +540,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                                     </Text>
                                 </View>
                                 {animalClass === option.value && (
-                                    <Text style={styles.checkmark}>✓</Text>
+                                    <FontAwesome6 name="check" size={18} color="#059669" />
                                 )}
                             </TouchableOpacity>
                         ))}

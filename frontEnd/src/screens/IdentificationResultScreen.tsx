@@ -15,6 +15,7 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 import useSpeciesDetection, { getStageText } from '../hooks/useSpeciesDetection';
 import { useTheme } from '../context/ThemeContext';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 /**
  * ============================================
@@ -277,7 +278,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                         <Image source={{ uri: photoUri }} style={styles.heroImage} resizeMode="cover" />
                     ) : (
                         <View style={[styles.heroPlaceholder, { backgroundColor: theme.accentLight }]}>
-                            <Text style={styles.heroPlaceholderIcon}>📷</Text>
+                            <FontAwesome6 name="camera" size={48} color="#059669" />
                             <Text style={styles.heroPlaceholderText}>No image</Text>
                         </View>
                     )}
@@ -299,7 +300,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                 {/* Error State */}
                 {error && !isDetecting && (
                     <View style={styles.errorCard}>
-                        <Text style={styles.errorIcon}>⚠️</Text>
+                        <FontAwesome6 name="triangle-exclamation" size={48} color="#DC2626" />
                         <Text style={styles.errorTitle}>Detection Failed</Text>
                         <Text style={styles.errorMessage}>{error.message}</Text>
                         <TouchableOpacity
@@ -357,7 +358,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                     {/* Date Row - Auto-filled, Mandatory */}
                     <View style={styles.detailRow}>
                         <View style={[styles.iconCircle, { backgroundColor: theme.accentLight }]}>
-                            <Text style={styles.detailIcon}>📅</Text>
+                            <FontAwesome6 name="calendar" size={18} color="#059669" />
                         </View>
                         <View style={styles.detailContent}>
                             <Text style={[styles.detailPrimary, { color: theme.text }]}>{observationDate || 'Loading...'}</Text>
@@ -373,7 +374,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                     {/* Time Row - Auto-filled, Mandatory */}
                     <View style={styles.detailRow}>
                         <View style={[styles.iconCircle, { backgroundColor: theme.accentLight }]}>
-                            <Text style={styles.detailIcon}>🕐</Text>
+                            <FontAwesome6 name="clock" size={18} color="#059669" iconStyle="regular" />
                         </View>
                         <View style={styles.detailContent}>
                             <Text style={[styles.detailPrimary, { color: theme.text }]}>{observationTime || 'Loading...'}</Text>
@@ -389,7 +390,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                     {/* GPS Row - Optional with Refresh */}
                     <View style={styles.detailRow}>
                         <View style={[styles.iconCircle, { backgroundColor: theme.accentLight }, !gpsLocation && { backgroundColor: theme.border }]}>
-                            <Text style={styles.detailIcon}>📍</Text>
+                            <FontAwesome6 name="location-dot" size={18} color="#059669" />
                         </View>
                         <View style={styles.detailContent}>
                             <Text style={[styles.detailPrimary, { color: theme.text }, !gpsLocation && { color: theme.textSecondary }]}>
@@ -407,7 +408,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                             {isRefreshingGps ? (
                                 <ActivityIndicator size="small" color="#059669" />
                             ) : (
-                                <Text style={styles.refreshIcon}>🔄</Text>
+                                <FontAwesome6 name="arrows-rotate" size={16} color="#059669" />
                             )}
                         </TouchableOpacity>
                     </View>
@@ -422,7 +423,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
 
                 {/* Info Note */}
                 <View style={styles.infoNote}>
-                    <Text style={styles.infoNoteIcon}>💡</Text>
+                    <FontAwesome6 name="lightbulb" size={18} color="#92400E" iconStyle="regular" style={styles.infoNoteIcon} />
                     <Text style={styles.infoNoteText}>
                         Date & time are recorded automatically. GPS is optional and can be added manually.
                     </Text>
@@ -447,14 +448,14 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
                         </>
                     ) : (
                         <>
-                            <Text style={styles.primaryButtonIcon}>📝</Text>
+                            <FontAwesome6 name="pencil" size={18} color="#FFFFFF" style={styles.primaryButtonIcon} />
                             <Text style={styles.primaryButtonText}>Write Journal</Text>
                         </>
                     )}
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.secondaryButton, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={handleRescan} activeOpacity={0.7}>
-                    <Text style={styles.secondaryButtonIcon}>🔄</Text>
+                    <FontAwesome6 name="arrows-rotate" size={16} color="#059669" style={styles.secondaryButtonIcon} />
                     <Text style={[styles.secondaryButtonText, { color: theme.text }]}>Rescan</Text>
                 </TouchableOpacity>
             </View>

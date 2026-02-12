@@ -15,6 +15,7 @@ import {
     Alert,
     RefreshControl,
 } from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import BottomTabBar from '../components/BottomTabBar';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { syncManager } from '../services/syncManager';
@@ -47,13 +48,13 @@ interface ArchiveScreenProps {
 
 // Animal class options for filter tabs
 const CLASS_FILTERS = [
-    { label: 'All', value: 'All', icon: '🌍' },
-    { label: 'Mammal', value: 'Mammal', icon: '🐾' },
-    { label: 'Bird', value: 'Bird', icon: '🐦' },
-    { label: 'Reptile', value: 'Reptile', icon: '🦎' },
-    { label: 'Amphibian', value: 'Amphibian', icon: '🐸' },
-    { label: 'Fish', value: 'Fish', icon: '🐟' },
-    { label: 'Insect', value: 'Insect', icon: '🦋' },
+    { label: 'All', value: 'All', icon: 'globe' },
+    { label: 'Mammal', value: 'Mammal', icon: 'paw' },
+    { label: 'Bird', value: 'Bird', icon: 'dove' },
+    { label: 'Reptile', value: 'Reptile', icon: 'worm' },
+    { label: 'Amphibian', value: 'Amphibian', icon: 'frog' },
+    { label: 'Fish', value: 'Fish', icon: 'fish-fins' },
+    { label: 'Insect', value: 'Insect', icon: 'bugs' },
 ];
 
 // Months for date picker
@@ -319,9 +320,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
     // Empty state
     const renderEmptyState = () => (
         <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>
-                {activeClassFilter !== 'All' || activeDateFilter || searchQuery ? '🔍' : '📔'}
-            </Text>
+            <FontAwesome6 name={activeClassFilter !== 'All' || activeDateFilter || searchQuery ? 'magnifying-glass' : 'book'} size={56} color={theme.textSecondary} style={styles.emptyIcon} />
             <Text style={[styles.emptyTitle, { color: theme.text }]}>
                 {activeClassFilter !== 'All' || activeDateFilter || searchQuery
                     ? 'No observations found'
@@ -357,7 +356,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
     // Error state
     const renderError = () => (
         <View style={styles.errorState}>
-            <Text style={styles.errorIcon}>⚠️</Text>
+            <FontAwesome6 name="triangle-exclamation" size={48} color="#F59E0B" style={styles.errorIcon} />
             <Text style={[styles.errorTitle, { color: theme.text }]}>Something went wrong</Text>
             <Text style={[styles.errorText, { color: theme.textSecondary }]}>{error}</Text>
             <TouchableOpacity style={styles.retryBtn} onPress={() => { clearError(); refresh(); }}>
@@ -388,9 +387,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                     />
                     {/* Class Badge */}
                     <View style={[styles.classBadge, { backgroundColor: theme.card, borderColor: theme.border }]}>
-                        <Text style={styles.classBadgeText}>
-                            {CLASS_FILTERS.find(f => f.value === entry.animalClass)?.icon || '🌿'}
-                        </Text>
+                        <FontAwesome6 name={CLASS_FILTERS.find(f => f.value === entry.animalClass)?.icon || 'leaf'} size={14} color={theme.textSecondary} />
                     </View>
                 </View>
 
@@ -404,7 +401,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                     </Text>
 
                     <View style={styles.metadataRow}>
-                        <Text style={styles.metaIcon}>🕒</Text>
+                        <FontAwesome6 name="clock" size={12} color={theme.textSecondary} iconStyle="regular" style={styles.metaIcon} />
                         <Text style={[styles.metaText, { color: theme.textSecondary }]}>
                             {formatDisplayDate(entry)}, {formatDisplayTime(entry)}
                         </Text>
@@ -481,7 +478,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
             {/* Search Bar */}
                 <View style={[styles.searchSection, { backgroundColor: theme.background }]}>
                     <View style={[styles.searchContainer, { backgroundColor: theme.card, borderColor: theme.border }]}>
-                        <Text style={styles.searchIcon}>🔍</Text>
+                        <FontAwesome6 name="magnifying-glass" size={16} color={theme.textSecondary} style={styles.searchIcon} />
                         <TextInput
                             style={[styles.searchInput, { color: theme.text }]}
                             placeholder="Search species, scientific name, tags..."
@@ -491,7 +488,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                         />
                         {searchQuery.length > 0 && (
                             <TouchableOpacity onPress={() => setSearchQuery('')}>
-                                <Text style={[styles.clearIcon, { color: theme.textSecondary }]}>✕</Text>
+                                <FontAwesome6 name="xmark" size={14} color={theme.textSecondary} style={styles.clearIcon} />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -531,7 +528,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                 onPress={() => setIsDateModalOpen(true)}
                                 activeOpacity={0.7}
                             >
-                                <Text style={styles.dateFilterIcon}>📅</Text>
+                                <FontAwesome6 name="calendar" size={14} color={activeDateFilter ? '#059669' : theme.textSecondary} style={styles.dateFilterIcon} />
                                 <Text style={[
                                     styles.dateFilterText,
                                     { color: theme.text },
@@ -547,7 +544,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                         }}
                                         style={styles.clearDateBtn}
                                     >
-                                        <Text style={styles.clearDateIcon}>✕</Text>
+                                        <FontAwesome6 name="xmark" size={12} color="#059669" />
                                     </TouchableOpacity>
                                 )}
                             </TouchableOpacity>
@@ -564,7 +561,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                 onPress={() => setActiveClassFilter(filter.value)}
                                 activeOpacity={0.7}
                             >
-                                <Text style={styles.filterTabIcon}>{filter.icon}</Text>
+                                <FontAwesome6 name={filter.icon} size={16} color={activeClassFilter === filter.value ? '#FFFFFF' : isDarkMode ? theme.text : '#374151'} style={styles.filterTabIcon} />
                                 <Text
                                     style={[
                                         styles.filterTabText,

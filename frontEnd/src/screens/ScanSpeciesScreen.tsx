@@ -39,6 +39,7 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 import ImageEditor from '@react-native-community/image-editor';
 import { useTheme } from '../context/ThemeContext';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 interface ScanSpeciesScreenProps {
     onNavigate: (route: any, params?: any) => void;
@@ -497,7 +498,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 </View>
                 <View style={[styles.permissionContainer, { backgroundColor: theme.background }]}>
                     <View style={[styles.permissionIconBox, { backgroundColor: theme.accentLight }]}>
-                        <Text style={styles.permissionIcon}>📷</Text>
+                        <FontAwesome6 name="camera" size={48} color="#1B4D3E" />
                     </View>
                     <Text style={[styles.permissionTitle, { color: theme.text }]}>Camera Access Required</Text>
                     <Text style={[styles.permissionDesc, { color: theme.textSecondary }]}>
@@ -538,7 +539,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 </View>
                 <View style={[styles.permissionContainer, { backgroundColor: theme.background }]}>
                     <View style={[styles.permissionIconBox, { backgroundColor: '#FEE2E2' }]}>
-                        <Text style={styles.permissionIcon}>⚠️</Text>
+                        <FontAwesome6 name="triangle-exclamation" size={48} color="#DC2626" />
                     </View>
                     <Text style={[styles.permissionTitle, { color: theme.text }]}>Camera Unavailable</Text>
                     <TouchableOpacity style={styles.permissionBtn} onPress={handleOpenGallery}>
@@ -624,7 +625,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 {/* Location Badge (only show if available) */}
                 {currentLocation && (
                     <View style={styles.locationBadge}>
-                        <Text style={styles.locationBadgeIcon}>📍</Text>
+                        <FontAwesome6 name="location-dot" size={14} color="#FFF" style={styles.locationBadgeIcon} />
                         <Text style={styles.locationBadgeText}>{formatCoordinates(currentLocation)}</Text>
                     </View>
                 )}
@@ -632,16 +633,16 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 {/* Actions */}
                 <View style={styles.previewActions}>
                     <TouchableOpacity style={styles.retakeBtn} onPress={handleRetake}>
-                        <Text style={styles.retakeBtnIcon}>↺</Text>
+                        <FontAwesome6 name="camera-rotate" size={18} color="#374151" style={{marginRight: 8}} />
                         <Text style={styles.retakeBtnText}>Retake</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.cropBtn} onPress={handleCropPhoto}>
-                        <Text style={styles.cropBtnIcon}>✂️</Text>
+                        <FontAwesome6 name="crop-simple" size={18} color="#374151" style={{marginRight: 8}} />
                         <Text style={styles.cropBtnText}>Crop</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.identifyBtn} onPress={handleIdentifySpecies}>
                         <Text style={styles.identifyBtnText}>Identify Species</Text>
-                        <Text style={styles.identifyBtnIcon}>→</Text>
+                        <FontAwesome6 name="arrow-right" size={16} color="#FFF" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -683,14 +684,14 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                     onPress={handleToggleFlash}
                     disabled={!supportsFlash}
                 >
-                    <Text style={styles.flashIcon}>{flash === 'on' ? '🔦' : '⚡'}</Text>
+                    <FontAwesome6 name="bolt" size={20} color={flash === 'on' ? '#FFD700' : '#FFF'} />
                 </TouchableOpacity>
             </View>
 
             {/* Location Badge (only show if available) */}
             {currentLocation && (
                 <View style={styles.locationStatusBadge}>
-                    <Text style={styles.locationStatusIcon}>📍</Text>
+                    <FontAwesome6 name="location-dot" size={14} color="#FFF" style={styles.locationStatusIcon} />
                     <Text style={styles.locationStatusText}>{formatCoordinates(currentLocation)}</Text>
                 </View>
             )}
@@ -725,7 +726,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
 
             {/* Instruction */}
             <View style={styles.instructionBadge}>
-                <Text style={styles.instructionIcon}>🎯</Text>
+                <FontAwesome6 name="bullseye" size={20} color="#FFF" style={styles.instructionIcon} />
                 <Text style={styles.instructionText}>Position creature in frame</Text>
             </View>
 
@@ -741,7 +742,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                             {isLoadingGallery ? (
                                 <ActivityIndicator size="small" color="#1B4D3E" />
                             ) : (
-                                <Text style={styles.sideBtnEmoji}>🖼️</Text>
+                                <FontAwesome6 name="image" size={22} color="#6B7280" iconStyle="regular" />
                             )}
                         </View>
                         <Text style={[styles.sideBtnLabel, { color: theme.textSecondary }]}>Gallery</Text>
@@ -765,7 +766,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
 
                     <TouchableOpacity style={styles.sideBtn} onPress={handleFlipCamera}>
                         <View style={[styles.sideBtnIcon, { backgroundColor: theme.border }]}>
-                            <Text style={styles.sideBtnEmoji}>🔄</Text>
+                            <FontAwesome6 name="camera-rotate" size={22} color="#6B7280" />
                         </View>
                         <Text style={[styles.sideBtnLabel, { color: theme.textSecondary }]}>Flip</Text>
                     </TouchableOpacity>
@@ -839,7 +840,7 @@ const styles = StyleSheet.create({
     },
 
     // Flash
-    flashBtnActive: { backgroundColor: '#FFD700' },
+    flashBtnActive: { backgroundColor: '#ffd9004c' },
     flashBtnDisabled: { opacity: 0.4 },
     flashIcon: { fontSize: 22 },
 

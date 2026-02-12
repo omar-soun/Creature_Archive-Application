@@ -23,6 +23,7 @@ import { syncManager } from '../services/syncManager';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { useTheme } from '../context/ThemeContext';
 import BottomTabBar, { TabRoute } from '../components/BottomTabBar';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 // ============================================
 // TYPES
@@ -56,7 +57,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   const [isSyncing, setIsSyncing] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  
+
   // Edit Mode State
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -145,7 +146,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   // ============================================
   // HANDLERS
   // ============================================
-  
+
   // Toggle Edit Mode
   const handleEditToggle = () => {
     if (isEditing) {
@@ -313,29 +314,29 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   // RENDER HELPERS
   // ============================================
   const renderEditableField = (
-    label: string, 
-    value: string, 
-    field: keyof UserProfile, 
+    label: string,
+    value: string,
+    field: keyof UserProfile,
     editable: boolean
   ) => {
     if (editable) {
-        return (
-            <View style={styles.editFieldContainer}>
-                <Text style={[styles.editFieldLabel, { color: theme.textSecondary }]}>{label}</Text>
-                <TextInput
-                    style={[styles.editInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
-                    value={tempUser[field] as string || ''}
-                    onChangeText={(text) => setTempUser(prev => ({ ...prev, [field]: text }))}
-                    placeholder={label}
-                    placeholderTextColor={theme.textSecondary}
-                />
-            </View>
-        );
+      return (
+        <View style={styles.editFieldContainer}>
+          <Text style={[styles.editFieldLabel, { color: theme.textSecondary }]}>{label}</Text>
+          <TextInput
+            style={[styles.editInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
+            value={tempUser[field] as string || ''}
+            onChangeText={(text) => setTempUser(prev => ({ ...prev, [field]: text }))}
+            placeholder={label}
+            placeholderTextColor={theme.textSecondary}
+          />
+        </View>
+      );
     }
-    
+
     // View Mode Custom Rendering based on field
     if (field === 'firstName' || field === 'lastName') return null; // These are handled specially in the main View
-    
+
     return null; // Logic is custom for the main card, so we might just use this for standard fields if we refactor.
   };
 
@@ -349,276 +350,276 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
         backgroundColor={theme.background}
       />
 
-      
 
-      <KeyboardAvoidingView 
+
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header with Back/Cancel and Edit/Save buttons */}
-      <View style={styles.header}>
-        {isEditing ? (
-            <TouchableOpacity onPress={handleEditToggle} style={styles.headerButton}>
-                <Text style={[styles.headerButtonText, { color: theme.textSecondary }]}>Cancel</Text>
-            </TouchableOpacity>
-        ) : (
-             <Text style={[styles.headerTitle, { color: theme.text }]}>Profile</Text>
-        )}
-        
-        {isEditing && <Text style={[styles.headerTitle, { color: theme.text, fontSize: 20 }]}>Edit Profile</Text>}
-
-        <TouchableOpacity 
-            onPress={isEditing ? handleSaveProfile : handleEditToggle} 
-            disabled={isSaving}
-            style={[styles.headerButton, isEditing && styles.saveButton]}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
         >
-            {isSaving ? (
-                <ActivityIndicator size="small" color={isEditing ? "#FFF" : theme.accent} />
-            ) : (
-                <Text style={[styles.headerButtonText, { color: isEditing ? '#FFF' : theme.accent, fontWeight: '700' }]}>
-                    {isEditing ? 'Save' : ''}
-                </Text>
-            )}
-        </TouchableOpacity>
-      </View>
-
-        {/* PROFILE CARD */}
-        <View style={[styles.profileCard, { backgroundColor: theme.card }]}>
-          <View style={styles.avatarContainer}>
-            <TouchableOpacity
-              onPress={handleChangeProfileImage}
-              activeOpacity={0.8}
-              disabled={isUploadingImage}
-            >
-              {isUploadingImage ? (
-                <View style={[styles.avatar, styles.avatarLoading]}>
-                  <ActivityIndicator size="large" color="#FFFFFF" />
-                </View>
-              ) : profileImage ? (
-                <Image source={{ uri: profileImage.startsWith('file://') ? profileImage : `file://${profileImage}` }} style={styles.avatarImage} />
-              ) : (
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarText}>{getInitials()}</Text>
-                </View>
-              )}
-
-              {/* Camera Icon Overlay */}
-              <View style={[styles.editBadge, { backgroundColor: theme.accent }]}>
-                  <Text style={{ fontSize: 12 }}>📷</Text>
-              </View>
-            </TouchableOpacity>
-
-            {/* Remove Photo Button - visible in edit mode when image exists */}
-            {isEditing && profileImage && !isUploadingImage && (
-              <TouchableOpacity
-                style={styles.removeImageButton}
-                onPress={handleRemoveProfileImage}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.removeImageText}>Remove Photo</Text>
+          {/* Header with Back/Cancel and Edit/Save buttons */}
+          <View style={styles.header}>
+            {isEditing ? (
+              <TouchableOpacity onPress={handleEditToggle} style={styles.headerButton}>
+                <Text style={[styles.headerButtonText, { color: theme.textSecondary }]}>Cancel</Text>
               </TouchableOpacity>
+            ) : (
+              <Text style={[styles.headerTitle, { color: theme.text }]}>Profile</Text>
             )}
+
+            {isEditing && <Text style={[styles.headerTitle, { color: theme.text, fontSize: 20 }]}>Edit Profile</Text>}
+
+            <TouchableOpacity
+              onPress={isEditing ? handleSaveProfile : handleEditToggle}
+              disabled={isSaving}
+              style={[styles.headerButton, isEditing && styles.saveButton]}
+            >
+              {isSaving ? (
+                <ActivityIndicator size="small" color={isEditing ? "#FFF" : theme.accent} />
+              ) : (
+                <Text style={[styles.headerButtonText, { color: isEditing ? '#FFF' : theme.accent, fontWeight: '700' }]}>
+                  {isEditing ? 'Save' : ''}
+                </Text>
+              )}
+            </TouchableOpacity>
           </View>
 
-          {isEditing ? (
+          {/* PROFILE CARD */}
+          <View style={[styles.profileCard, { backgroundColor: theme.card }]}>
+            <View style={styles.avatarContainer}>
+              <TouchableOpacity
+                onPress={handleChangeProfileImage}
+                activeOpacity={0.8}
+                disabled={isUploadingImage}
+              >
+                {isUploadingImage ? (
+                  <View style={[styles.avatar, styles.avatarLoading]}>
+                    <ActivityIndicator size="large" color="#FFFFFF" />
+                  </View>
+                ) : profileImage ? (
+                  <Image source={{ uri: profileImage.startsWith('file://') ? profileImage : `file://${profileImage}` }} style={styles.avatarImage} />
+                ) : (
+                  <View style={styles.avatar}>
+                    <Text style={styles.avatarText}>{getInitials()}</Text>
+                  </View>
+                )}
+
+                {/* Camera Icon Overlay */}
+                <View style={[styles.editBadge, { backgroundColor: theme.accent }]}>
+                  <FontAwesome6 name="camera" size={14} color="#FFFFFF" />
+                </View>
+              </TouchableOpacity>
+
+              {/* Remove Photo Button - visible in edit mode when image exists */}
+              {isEditing && profileImage && !isUploadingImage && (
+                <TouchableOpacity
+                  style={styles.removeImageButton}
+                  onPress={handleRemoveProfileImage}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.removeImageText}>Remove Photo</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {isEditing ? (
               /* EDIT MODE INPUTS */
               <View style={styles.editForm}>
-                  <View style={styles.nameRow}>
-                    <TextInput
-                        style={[styles.editInput, styles.halfInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
-                        value={tempUser.firstName}
-                        onChangeText={(t) => setTempUser(prev => ({ ...prev, firstName: t }))}
-                        placeholder="First Name"
-                        placeholderTextColor={theme.textSecondary}
-                    />
-                    <TextInput
-                        style={[styles.editInput, styles.halfInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
-                        value={tempUser.lastName}
-                        onChangeText={(t) => setTempUser(prev => ({ ...prev, lastName: t }))}
-                        placeholder="Last Name"
-                        placeholderTextColor={theme.textSecondary}
-                    />
-                  </View>
-                  
+                <View style={styles.nameRow}>
                   <TextInput
-                    style={[styles.editInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
-                    value={tempUser.role}
-                    onChangeText={(t) => setTempUser(prev => ({ ...prev, role: t }))}
-                    placeholder="Role (e.g. Researcher)"
+                    style={[styles.editInput, styles.halfInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
+                    value={tempUser.firstName}
+                    onChangeText={(t) => setTempUser(prev => ({ ...prev, firstName: t }))}
+                    placeholder="First Name"
                     placeholderTextColor={theme.textSecondary}
                   />
+                  <TextInput
+                    style={[styles.editInput, styles.halfInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
+                    value={tempUser.lastName}
+                    onChangeText={(t) => setTempUser(prev => ({ ...prev, lastName: t }))}
+                    placeholder="Last Name"
+                    placeholderTextColor={theme.textSecondary}
+                  />
+                </View>
 
-                  <TextInput
-                    style={[styles.editInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
-                    value={tempUser.institution}
-                    onChangeText={(t) => setTempUser(prev => ({ ...prev, institution: t }))}
-                    placeholder="Institution"
-                    placeholderTextColor={theme.textSecondary}
-                  />
+                <TextInput
+                  style={[styles.editInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
+                  value={tempUser.role}
+                  onChangeText={(t) => setTempUser(prev => ({ ...prev, role: t }))}
+                  placeholder="Role (e.g. Researcher)"
+                  placeholderTextColor={theme.textSecondary}
+                />
+
+                <TextInput
+                  style={[styles.editInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.background }]}
+                  value={tempUser.institution}
+                  onChangeText={(t) => setTempUser(prev => ({ ...prev, institution: t }))}
+                  placeholder="Institution"
+                  placeholderTextColor={theme.textSecondary}
+                />
               </View>
-          ) : (
+            ) : (
               /* VIEW MODE DETAILS */
               <>
                 <Text style={[styles.userName, { color: theme.text }]}>
-                    {user.firstName} {user.lastName}
+                  {user.firstName} {user.lastName}
                 </Text>
                 <Text style={styles.userRole}>{user.role}</Text>
                 <Text style={[styles.userInstitution, { color: theme.textSecondary }]}>
-                    {user.institution}
+                  {user.institution}
                 </Text>
               </>
-          )}
+            )}
 
-          {/* Stats Row - Only Show in View Mode to save space or keep it? Keeping it looks better for layout stability */}
-          <View style={[styles.statsRow, { borderTopColor: theme.border }]}>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: theme.text }]}>{user.totalObservations}</Text>
-              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Observations</Text>
-            </View>
-            <View style={[styles.statDivider, { backgroundColor: theme.border }]} />
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: theme.text }]}>{uniqueSpeciesCount}</Text>
-              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Species</Text>
-            </View>
-            <View style={[styles.statDivider, { backgroundColor: theme.border }]} />
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: theme.text }]}>{fieldDaysCount}</Text>
-              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Field Days</Text>
+            {/* Stats Row - Only Show in View Mode to save space or keep it? Keeping it looks better for layout stability */}
+            <View style={[styles.statsRow, { borderTopColor: theme.border }]}>
+              <View style={styles.statItem}>
+                <Text style={[styles.statValue, { color: theme.text }]}>{user.totalObservations}</Text>
+                <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Observations</Text>
+              </View>
+              <View style={[styles.statDivider, { backgroundColor: theme.border }]} />
+              <View style={styles.statItem}>
+                <Text style={[styles.statValue, { color: theme.text }]}>{uniqueSpeciesCount}</Text>
+                <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Species</Text>
+              </View>
+              <View style={[styles.statDivider, { backgroundColor: theme.border }]} />
+              <View style={styles.statItem}>
+                <Text style={[styles.statValue, { color: theme.text }]}>{fieldDaysCount}</Text>
+                <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Field Days</Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Member Badge - Hide in Edit Mode to focus on inputs? Or keep. Keeping. */}
-        <View style={styles.memberBadge}>
-          <Text style={styles.memberIcon}>🎓</Text>
-          <View>
-            <Text style={styles.memberTitle}>Research Member</Text>
-            <Text style={styles.memberDate}>Since {user.joinDate}</Text>
+          {/* Member Badge - Hide in Edit Mode to focus on inputs? Or keep. Keeping. */}
+          <View style={styles.memberBadge}>
+            <FontAwesome6 name="graduation-cap" size={24} color="#059669" />
+            <View>
+              <Text style={styles.memberTitle}>Research Member</Text>
+              <Text style={styles.memberDate}>Since {user.joinDate}</Text>
+            </View>
           </View>
-        </View>
 
-        {/* ============================================ */}
-        {/* SETTINGS SECTION */}
-        {/* Hide Settings when Editing to prevent navigation away during edits */}
-        {/* ============================================ */}
-        {!isEditing && (
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Settings</Text>
+          {/* ============================================ */}
+          {/* SETTINGS SECTION */}
+          {/* Hide Settings when Editing to prevent navigation away during edits */}
+          {/* ============================================ */}
+          {!isEditing && (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Settings</Text>
 
-          <View style={[styles.settingsCard, { backgroundColor: theme.card }]}>
+              <View style={[styles.settingsCard, { backgroundColor: theme.card }]}>
 
-            {/* 1. Edit Profile (Trigger) - REDUNDANT NOW that we have header button? 
+                {/* 1. Edit Profile (Trigger) - REDUNDANT NOW that we have header button? 
                 Keeping it as an alternative entry point or removing it.
                 Let's keep it but make it trigger the same toggle.
             */}
-            <TouchableOpacity
-              style={[styles.settingItem, { borderBottomColor: theme.border }]}
-              onPress={handleEditToggle}
-              activeOpacity={0.7}
-            >
-              <View style={styles.settingLeft}>
-                <View style={[styles.settingIcon, { backgroundColor: isDarkMode ? '#374151' : '#F3F4F6' }]}>
-                  <Text style={styles.settingIconText}>👤</Text>
+                <TouchableOpacity
+                  style={[styles.settingItem, { borderBottomColor: theme.border }]}
+                  onPress={handleEditToggle}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.settingLeft}>
+                    <View style={[styles.settingIcon, { backgroundColor: isDarkMode ? '#374151' : '#F3F4F6' }]}>
+                      <FontAwesome6 name="user" size={20} color={isDarkMode ? '#9CA3AF' : '#6B7280'} />
+                    </View>
+                    <View>
+                      <Text style={[styles.settingLabel, { color: theme.text }]}>Edit Profile</Text>
+                      <Text style={[styles.settingDesc, { color: theme.textSecondary }]}>Update personal details</Text>
+                    </View>
+                  </View>
+                  <FontAwesome6 name="chevron-right" size={22} color={theme.textSecondary} />
+                </TouchableOpacity>
+
+                {/* 2. Sync to Cloud */}
+                <TouchableOpacity
+                  style={[styles.settingItem, { borderBottomColor: theme.border }]}
+                  onPress={handleSyncPress}
+                  activeOpacity={0.7}
+                  disabled={isSyncing}
+                >
+                  <View style={styles.settingLeft}>
+                    <View style={[styles.settingIcon, { backgroundColor: theme.accentLight }]}>
+                      <FontAwesome6 name="cloud" size={20} color="#059669" />
+                    </View>
+                    <View>
+                      <Text style={[styles.settingLabel, { color: theme.text }]}>Sync to Cloud</Text>
+                      <Text style={[styles.settingDesc, { color: theme.textSecondary }]}>
+                        {isSyncing ? 'Syncing...' : 'Tap to sync now'}
+                      </Text>
+                    </View>
+                  </View>
+                  {isSyncing ? (
+                    <ActivityIndicator size="small" color={theme.accent} />
+                  ) : (
+                    <View style={[styles.iconButton, { backgroundColor: theme.border }]}>
+                      <FontAwesome6 name="arrows-rotate" size={16} color={isDarkMode ? '#9CA3AF' : '#6B7280'} />
+                    </View>
+                  )}
+                </TouchableOpacity>
+
+                {/* 3. Dark Mode */}
+                <View style={styles.settingItemLast}>
+                  <View style={styles.settingLeft}>
+                    <View style={[styles.settingIcon, { backgroundColor: theme.accentLight }]}>
+                      <FontAwesome6 name={isDarkMode ? "moon" : "sun"} size={20} color={theme.accent} />
+                    </View>
+                    <View>
+                      <Text style={[styles.settingLabel, { color: theme.text }]}>Dark Mode</Text>
+                      <Text style={[styles.settingDesc, { color: theme.textSecondary }]}>
+                        {isDarkMode ? 'Dark theme active' : 'Light theme active'}
+                      </Text>
+                    </View>
+                  </View>
+                  <Switch
+                    value={isDarkMode}
+                    onValueChange={(val: boolean) => toggleDarkMode(val)}
+                    trackColor={{ false: theme.border, true: '#ECFDF5' }}
+                    thumbColor={isDarkMode ? '#059669' : '#ECFDF5'}
+                    ios_backgroundColor={theme.border}
+                  />
                 </View>
-                <View>
-                  <Text style={[styles.settingLabel, { color: theme.text }]}>Edit Profile</Text>
-                  <Text style={[styles.settingDesc, { color: theme.textSecondary }]}>Update personal details</Text>
+
+              </View>
+            </View>
+          )}
+
+          {/* ABOUT SECTION (Hide in Edit) */}
+          {!isEditing && (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>About</Text>
+              <View style={[styles.aboutCard, { backgroundColor: theme.card }]}>
+                <View style={[styles.aboutRow, { borderBottomColor: theme.border }]}>
+                  <Text style={[styles.aboutLabel, { color: theme.textSecondary }]}>Version</Text>
+                  <Text style={[styles.aboutValue, { color: theme.text }]}>1.0.0</Text>
+                </View>
+                <View style={[styles.aboutRow, { borderBottomColor: theme.border }]}>
+                  <Text style={[styles.aboutLabel, { color: theme.textSecondary }]}>Database</Text>
+                  <Text style={[styles.aboutValue, { color: theme.text }]}>v2026.01</Text>
+                </View>
+                <View style={styles.aboutRowLast}>
+                  <Text style={[styles.aboutLabel, { color: theme.textSecondary }]}>License</Text>
+                  <Text style={[styles.aboutValue, { color: theme.text }]}>Research Project</Text>
                 </View>
               </View>
-              <Text style={[styles.chevron, { color: theme.textSecondary }]}>›</Text>
+            </View>
+          )}
+
+          {!isEditing && (
+            <TouchableOpacity style={styles.signOutButton} onPress={onSignOut} activeOpacity={0.85}>
+              <Text style={styles.signOutText}>Sign Out</Text>
             </TouchableOpacity>
+          )}
 
-            {/* 2. Sync to Cloud */}
-            <TouchableOpacity
-              style={[styles.settingItem, { borderBottomColor: theme.border }]}
-              onPress={handleSyncPress}
-              activeOpacity={0.7}
-              disabled={isSyncing}
-            >
-              <View style={styles.settingLeft}>
-                <View style={[styles.settingIcon, { backgroundColor: theme.accentLight }]}>
-                  <Text style={styles.settingIconText}>☁️</Text>
-                </View>
-                <View>
-                  <Text style={[styles.settingLabel, { color: theme.text }]}>Sync to Cloud</Text>
-                  <Text style={[styles.settingDesc, { color: theme.textSecondary }]}>
-                    {isSyncing ? 'Syncing...' : 'Tap to sync now'}
-                  </Text>
-                </View>
-              </View>
-              {isSyncing ? (
-                <ActivityIndicator size="small" color={theme.accent} />
-              ) : (
-                <View style={[styles.iconButton, { backgroundColor: theme.border }]}>
-                  <Text style={{ fontSize: 16 }}>🔄</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-
-            {/* 3. Dark Mode */}
-            <View style={styles.settingItemLast}>
-              <View style={styles.settingLeft}>
-                <View style={[styles.settingIcon, { backgroundColor: isDarkMode ? '#312E81' : '#EEF2FF' }]}>
-                  <Text style={styles.settingIconText}>🌙</Text>
-                </View>
-                <View>
-                  <Text style={[styles.settingLabel, { color: theme.text }]}>Dark Mode</Text>
-                  <Text style={[styles.settingDesc, { color: theme.textSecondary }]}>
-                    {isDarkMode ? 'Dark theme active' : 'Light theme active'}
-                  </Text>
-                </View>
-              </View>
-              <Switch
-                value={isDarkMode}
-                onValueChange={(val: boolean) => toggleDarkMode(val)}
-                trackColor={{ false: theme.border, true: '#818CF8' }}
-                thumbColor={isDarkMode ? '#4F46E5' : '#F4F4F5'}
-                ios_backgroundColor={theme.border}
-              />
-            </View>
-
+          <View style={styles.branding}>
+            <FontAwesome6 name="copyright" size={20} color={theme.textSecondary} />
+            <Text style={[styles.brandingText, { color: theme.textSecondary }]}>Creature Archive | 2026</Text>
           </View>
-        </View>
-        )}
 
-        {/* ABOUT SECTION (Hide in Edit) */}
-        {!isEditing && (
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>About</Text>
-          <View style={[styles.aboutCard, { backgroundColor: theme.card }]}>
-            <View style={[styles.aboutRow, { borderBottomColor: theme.border }]}>
-              <Text style={[styles.aboutLabel, { color: theme.textSecondary }]}>Version</Text>
-              <Text style={[styles.aboutValue, { color: theme.text }]}>1.1.1</Text>
-            </View>
-            <View style={[styles.aboutRow, { borderBottomColor: theme.border }]}>
-              <Text style={[styles.aboutLabel, { color: theme.textSecondary }]}>Database</Text>
-              <Text style={[styles.aboutValue, { color: theme.text }]}>v2024.12</Text>
-            </View>
-            <View style={styles.aboutRowLast}>
-              <Text style={[styles.aboutLabel, { color: theme.textSecondary }]}>License</Text>
-              <Text style={[styles.aboutValue, { color: theme.text }]}>Academic Research</Text>
-            </View>
-          </View>
-        </View>
-        )}
-
-        {!isEditing && (
-        <TouchableOpacity style={styles.signOutButton} onPress={onSignOut} activeOpacity={0.85}>
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
-        )}
-
-        <View style={styles.branding}>
-          <Text style={styles.brandingIcon}>🦎</Text>
-          <Text style={[styles.brandingText, { color: theme.textSecondary }]}>Creature Archive</Text>
-        </View>
-
-        <View style={{ height: 100 }} />
-      </ScrollView>
+          <View style={{ height: 100 }} />
+        </ScrollView>
       </KeyboardAvoidingView>
 
       {!isEditing && <BottomTabBar currentRoute="Profile" onNavigate={onNavigate} />}
@@ -644,13 +645,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContent: { paddingTop: 20, paddingHorizontal: 20 },
-  header: { 
-      marginTop: Platform.OS === 'ios' ? 60 : 40,
-      marginBottom: 24, 
-      marginHorizontal: 20, 
-      flexDirection: 'row', 
-      alignItems: 'center', 
-      justifyContent: 'space-between' 
+  header: {
+    marginTop: Platform.OS === 'ios' ? 60 : 40,
+    marginBottom: 24,
+    marginHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   headerTitle: { fontSize: 28, fontWeight: '700', letterSpacing: -0.5 },
   headerButton: { padding: 8 },
@@ -665,22 +666,22 @@ const styles = StyleSheet.create({
   avatarImage: { width: 100, height: 100, borderRadius: 30 },
   avatarText: { fontSize: 36, fontWeight: '700', color: '#FFFFFF' },
   editBadge: { position: 'absolute', bottom: -5, right: -5, width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFF' },
-  
+
   userName: { fontSize: 24, fontWeight: '700', marginBottom: 4, textAlign: 'center' },
   userRole: { fontSize: 16, color: '#059669', fontWeight: '600', marginBottom: 4, textAlign: 'center' },
   userInstitution: { fontSize: 14, marginBottom: 24, textAlign: 'center' },
-  
+
   // Edit Form
   editForm: { width: '100%', marginBottom: 20 },
   nameRow: { flexDirection: 'row', gap: 10, marginBottom: 10 },
   halfInput: { flex: 1 },
-  editInput: { 
-      borderWidth: 1, 
-      borderRadius: 12, 
-      padding: 12, 
-      fontSize: 16, 
-      marginBottom: 12, 
-      height: 50 
+  editInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 12,
+    height: 50
   },
   editFieldContainer: { marginBottom: 12 },
   editFieldLabel: { fontSize: 12, marginBottom: 4, marginLeft: 4 },
@@ -728,7 +729,7 @@ const styles = StyleSheet.create({
   branding: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 16 },
   brandingIcon: { fontSize: 20 },
   brandingText: { fontSize: 14, fontWeight: '500' },
-  
+
   // Remove Image Button
   removeImageButton: { marginTop: 8, paddingVertical: 6, paddingHorizontal: 16, borderRadius: 8, backgroundColor: '#FEF2F2' },
   removeImageText: { fontSize: 13, fontWeight: '600', color: '#DC2626', textAlign: 'center' },
