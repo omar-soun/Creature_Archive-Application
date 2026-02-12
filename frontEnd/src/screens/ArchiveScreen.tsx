@@ -471,38 +471,14 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                     <Text style={[styles.headerSubtitle, { color: theme.textSecondary }]}>Your Wildlife Journal</Text>
                 </View>
                 <View style={styles.headerRight}>
-                    <TouchableOpacity
-                        style={[styles.syncButton, { backgroundColor: theme.accentLight }]}
-                        onPress={handleSyncToCloud}
-                        disabled={isSyncing}
-                        activeOpacity={0.7}
-                    >
-                        {isSyncing ? (
-                            <ActivityIndicator size="small" color="#059669" />
-                        ) : (
-                            <Text style={styles.syncButtonIcon}>☁️</Text>
-                        )}
-                    </TouchableOpacity>
                     <Text style={[styles.headerCount, { color: theme.textSecondary }]}>
-                        {isLoading ? '...' : `${filteredEntries.length}`}
+                        {isLoading ? '...' : `${filteredEntries.length}`} journals
                     </Text>
                 </View>
+                
             </View>
 
-            {/* Journal Entry List */}
-            <ScrollView
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={handleRefresh}
-                        tintColor="#059669"
-                        colors={['#059669']}
-                    />
-                }
-            >
-                {/* Search Bar */}
+            {/* Search Bar */}
                 <View style={[styles.searchSection, { backgroundColor: theme.background }]}>
                     <View style={[styles.searchContainer, { backgroundColor: theme.card, borderColor: theme.border }]}>
                         <Text style={styles.searchIcon}>🔍</Text>
@@ -520,6 +496,21 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                         )}
                     </View>
                 </View>
+
+            {/* Journal Entry List */}
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing || isSyncing}
+                        onRefresh={handleSyncToCloud}
+                        tintColor="#059669"
+                        colors={['#059669']}
+                    />
+                }
+            >
+                
 
                 {/* Class Filter Tabs */}
                 <View style={[styles.filterTabsContainer, { backgroundColor: theme.background }]}>
@@ -819,17 +810,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 12,
-    },
-    syncButton: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: '#F0FDF4',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    syncButtonIcon: {
-        fontSize: 18,
     },
 
     // Search Section

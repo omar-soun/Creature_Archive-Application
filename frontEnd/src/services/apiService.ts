@@ -489,6 +489,74 @@ class ApiService {
 
     return response.json();
   }
+
+
+  // ── Forgot Password (Unauthenticated) ─────────────────────────────
+
+  /**
+   * Step 1: Initiate forgot password flow by providing email.
+   * Returns a session token and 2 challenge field labels.
+   */
+  async forgotPasswordInitiate(email: string): Promise<{
+    session_token: string;
+    challenge_fields: string[];
+  }> {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password/initiate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Failed to initiate password reset.');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Step 2: Verify answers to the 2 challenge questions.
+   * Returns a reset token on success.
+   */
+  async forgotPasswordVerify(
+    sessionToken: string,
+    answers: Record<string, string>
+  ): Promise<{ reset_token: string }> {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_token: sessionToken, answers }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Verification failed.');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Step 3: Reset password using the reset token.
+   */
+  async forgotPasswordReset(
+    resetToken: string,
+    newPassword: string
+  ): Promise<{ detail: string }> {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password/reset`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reset_token: resetToken, new_password: newPassword }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Failed to reset password.');
+    }
+
+    return response.json();
+  }
 }
 
 export const apiService = new ApiService();

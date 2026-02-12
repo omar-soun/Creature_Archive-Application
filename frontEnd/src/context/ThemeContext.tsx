@@ -32,8 +32,8 @@ const getTheme = (isDark: boolean): ThemeColors => ({
   text: isDark ? '#F1F5F9' : '#111827',
   textSecondary: isDark ? '#94A3B8' : '#6B7280',
   border: isDark ? '#334155' : '#F3F4F6',
-  accent: '#1B4D3E',
-  accentLight: isDark ? '#1E3A2F' : '#ECFDF5',
+  accent: '#059669',
+  accentLight: isDark ? '#05966858' : '#ECFDF5',
 });
 
 const ThemeContext = createContext<ThemeContextValue>({

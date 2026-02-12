@@ -21,11 +21,13 @@ import { useTheme } from '../context/ThemeContext';
 interface SignInScreenProps {
   onSignIn: () => void;
   onNavigateToSignUp: () => void;
+  onNavigateToForgotPassword: () => void;
 }
 
 const SignInScreen: React.FC<SignInScreenProps> = ({
   onSignIn,
   onNavigateToSignUp,
+  onNavigateToForgotPassword,
 }) => {
   const { isDarkMode, theme } = useTheme();
 
@@ -36,6 +38,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
   // Loading and Error States
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Refs for input focus management
   const passwordRef = useRef<TextInput>(null);
@@ -133,22 +136,33 @@ const SignInScreen: React.FC<SignInScreenProps> = ({
 
               <View style={styles.inputGroup}>
                 <Text style={[styles.label, { color: theme.text }]}>Password</Text>
-                <TextInput
-                  ref={passwordRef}
-                  style={[styles.input, { backgroundColor: theme.border, color: theme.text }]}
-                  placeholder="••••••••"
-                  placeholderTextColor={theme.textSecondary}
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                  onFocus={() => handleInputFocus(1)}
-                  returnKeyType="done"
-                  onSubmitEditing={handleSignIn}
-                />
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    ref={passwordRef}
+                    style={[styles.passwordInput, { backgroundColor: theme.border, color: theme.text }]}
+                    placeholder="••••••••"
+                    placeholderTextColor={theme.textSecondary}
+                    secureTextEntry={!showPassword}
+                    value={password}
+                    onChangeText={setPassword}
+                    onFocus={() => handleInputFocus(1)}
+                    returnKeyType="done"
+                    onSubmitEditing={handleSignIn}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeButton}
+                    onPress={() => setShowPassword(!showPassword)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
+                      {showPassword ? '🙈' : '👁'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
 
               {/* Forgot Password Link */}
-              <TouchableOpacity style={styles.forgotPassword} activeOpacity={0.7}>
+              <TouchableOpacity style={styles.forgotPassword} activeOpacity={0.7} onPress={onNavigateToForgotPassword}>
                 <Text style={styles.forgotPasswordText}>Forgot password?</Text>
               </TouchableOpacity>
 
@@ -270,6 +284,34 @@ const styles = StyleSheet.create({
     color: '#111827',
     borderWidth: 2,
     borderColor: 'transparent',
+  },
+
+  // Password Field
+  passwordContainer: {
+    position: 'relative',
+  },
+  passwordInput: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 14,
+    paddingHorizontal: 18,
+    paddingVertical: Platform.OS === 'ios' ? 16 : 14,
+    paddingRight: 50,
+    fontSize: 16,
+    color: '#111827',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  eyeIcon: {
+    fontSize: 18,
   },
 
   // Forgot Password

@@ -275,6 +275,36 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
     setSelectedImage(null);
   };
 
+  const handleRemoveProfileImage = () => {
+    Alert.alert(
+      'Remove Profile Photo',
+      'Are you sure you want to remove your profile photo?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // 1. Delete local file
+              await fileStorageService.deleteProfileImage();
+              setProfileImage(null);
+
+              // 2. Clear cloud URL in backend
+              const currentUser = authService.getCurrentUser();
+              if (currentUser) {
+                authService.updateProfile(currentUser.uid, { profileImage: '' })
+                  .catch((err: any) => console.warn('Failed to clear cloud profile image:', err));
+              }
+            } catch (error) {
+              Alert.alert('Error', 'Failed to remove profile photo.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const getInitials = (): string => {
     return `${user.firstName?.charAt(0) || ''}${user.lastName?.charAt(0) || ''}`.toUpperCase();
   };
@@ -319,7 +349,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
         backgroundColor={theme.background}
       />
 
-      {/* Header with Back/Cancel and Edit/Save buttons */}
+      
+
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header with Back/Cancel and Edit/Save buttons */}
       <View style={styles.header}>
         {isEditing ? (
             <TouchableOpacity onPress={handleEditToggle} style={styles.headerButton}>
@@ -346,40 +386,43 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
         </TouchableOpacity>
       </View>
 
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-
         {/* PROFILE CARD */}
         <View style={[styles.profileCard, { backgroundColor: theme.card }]}>
-          <TouchableOpacity
-            style={styles.avatarContainer}
-            onPress={handleChangeProfileImage}
-            activeOpacity={0.8}
-            disabled={isUploadingImage}
-          >
-            {isUploadingImage ? (
-              <View style={[styles.avatar, styles.avatarLoading]}>
-                <ActivityIndicator size="large" color="#FFFFFF" />
-              </View>
-            ) : profileImage ? (
-              <Image source={{ uri: profileImage.startsWith('file://') ? profileImage : `file://${profileImage}` }} style={styles.avatarImage} />
-            ) : (
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{getInitials()}</Text>
-              </View>
-            )}
+          <View style={styles.avatarContainer}>
+            <TouchableOpacity
+              onPress={handleChangeProfileImage}
+              activeOpacity={0.8}
+              disabled={isUploadingImage}
+            >
+              {isUploadingImage ? (
+                <View style={[styles.avatar, styles.avatarLoading]}>
+                  <ActivityIndicator size="large" color="#FFFFFF" />
+                </View>
+              ) : profileImage ? (
+                <Image source={{ uri: profileImage.startsWith('file://') ? profileImage : `file://${profileImage}` }} style={styles.avatarImage} />
+              ) : (
+                <View style={styles.avatar}>
+                  <Text style={styles.avatarText}>{getInitials()}</Text>
+                </View>
+              )}
 
-            {/* Camera Icon Overlay - always visible */}
-            <View style={[styles.editBadge, { backgroundColor: theme.accent }]}>
-                <Text style={{ fontSize: 12 }}>📷</Text>
-            </View>
-          </TouchableOpacity>
+              {/* Camera Icon Overlay */}
+              <View style={[styles.editBadge, { backgroundColor: theme.accent }]}>
+                  <Text style={{ fontSize: 12 }}>📷</Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* Remove Photo Button - visible in edit mode when image exists */}
+            {isEditing && profileImage && !isUploadingImage && (
+              <TouchableOpacity
+                style={styles.removeImageButton}
+                onPress={handleRemoveProfileImage}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.removeImageText}>Remove Photo</Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
           {isEditing ? (
               /* EDIT MODE INPUTS */
@@ -686,8 +729,9 @@ const styles = StyleSheet.create({
   brandingIcon: { fontSize: 20 },
   brandingText: { fontSize: 14, fontWeight: '500' },
   
-  // Custom Styles
-  
+  // Remove Image Button
+  removeImageButton: { marginTop: 8, paddingVertical: 6, paddingHorizontal: 16, borderRadius: 8, backgroundColor: '#FEF2F2' },
+  removeImageText: { fontSize: 13, fontWeight: '600', color: '#DC2626', textAlign: 'center' },
 });
 
 export default ProfileScreen;

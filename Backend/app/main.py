@@ -21,9 +21,10 @@ Auth flow (Firebase Auth + FastAPI):
    auto-refreshes them. The backend just verifies whatever token it receives.
 """
 
+import random
 import traceback
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
@@ -46,6 +47,11 @@ from .ml_service import (
     validate_prediction,
 )
 from .models import (
+    ForgotPasswordInitRequest,
+    ForgotPasswordInitResponse,
+    ForgotPasswordResetRequest,
+    ForgotPasswordVerifyRequest,
+    ForgotPasswordVerifyResponse,
     HealthCheckResponse,
     ImageUploadResponse,
     JournalEntryCreate,
@@ -129,6 +135,11 @@ def signup(
         "entryCount": 0,
         "createdAt": now,
         "lastSync": None,
+        # Normalized verification fields for forgot-password challenge
+        "_v_first_name": body.firstName.strip().lower(),
+        "_v_last_name": body.lastName.strip().lower(),
+        "_v_current_role": body.currentRole.strip().lower(),
+        "_v_institution": body.institution.strip().lower(),
     }
     user_ref.set(user_doc)
 
@@ -196,6 +207,17 @@ def update_profile(
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update.")
 
+    # Keep normalized verification fields in sync
+    _field_to_verification = {
+        "firstName": "_v_first_name",
+        "lastName": "_v_last_name",
+        "currentRole": "_v_current_role",
+        "institution": "_v_institution",
+    }
+    for field, v_field in _field_to_verification.items():
+        if field in updates and isinstance(updates[field], str):
+            updates[v_field] = updates[field].strip().lower()
+
     updates["lastSync"] = datetime.now(timezone.utc)
     user_ref.update(updates)
 
@@ -245,6 +267,231 @@ def delete_account(
         pass  # Auth record may already be gone
 
     return {"detail": "Account and all data deleted."}
+
+
+# ── Forgot Password (Unauthenticated) ────────────────────────────────
+
+# In-memory session store for password reset flow
+# In production, consider using Redis or Firestore for persistence across restarts
+_reset_sessions: dict[str, dict] = {}
+
+# Verification field mapping: DB key → display label
+_VERIFICATION_FIELDS = {
+    "_v_first_name": "First Name",
+    "_v_last_name": "Last Name",
+    "_v_current_role": "Current Role",
+    "_v_institution": "School or Company",
+}
+
+# Reverse mapping: display label → DB key
+_LABEL_TO_FIELD = {v: k for k, v in _VERIFICATION_FIELDS.items()}
+
+
+def _cleanup_stale_sessions():
+    """Remove sessions older than 30 minutes."""
+    cutoff = datetime.now(timezone.utc) - timedelta(minutes=30)
+    expired = [k for k, v in _reset_sessions.items() if v["created_at"] < cutoff]
+    for k in expired:
+        del _reset_sessions[k]
+
+
+def _ensure_verification_fields(user_ref, data: dict) -> dict:
+    """
+    If user signed up before verification fields existed,
+    compute and store them from existing profile fields.
+    """
+    updates = {}
+    field_map = {
+        "_v_first_name": "firstName",
+        "_v_last_name": "lastName",
+        "_v_current_role": "currentRole",
+        "_v_institution": "institution",
+    }
+    for v_field, source_field in field_map.items():
+        if v_field not in data:
+            value = data.get(source_field, "")
+            updates[v_field] = value.strip().lower() if isinstance(value, str) else ""
+
+    if updates:
+        user_ref.update(updates)
+        data.update(updates)
+
+    return data
+
+
+@app.post(
+    "/auth/forgot-password/initiate",
+    response_model=ForgotPasswordInitResponse,
+    tags=["auth"],
+)
+def forgot_password_initiate(body: ForgotPasswordInitRequest):
+    """
+    Step 1: Start the forgot-password flow.
+    Looks up the email, picks 2 random challenge fields.
+    Returns the same response structure whether or not email exists
+    (to avoid leaking email existence).
+    """
+    _cleanup_stale_sessions()
+
+    db = init_firebase()
+    email = body.email.strip().lower()
+
+    # Query Firestore for user by email
+    users_query = db.collection("users").where("email", "==", email).limit(1).get()
+    user_doc = None
+    user_data = None
+    user_ref = None
+
+    for doc in users_query:
+        user_doc = doc
+        user_data = doc.to_dict()
+        user_ref = doc.reference
+        break
+
+    session_token = str(uuid.uuid4())
+
+    if user_data is None:
+        # Email not found — return dummy response (don't reveal email doesn't exist)
+        dummy_fields = random.sample(list(_VERIFICATION_FIELDS.values()), 2)
+        # Store a dummy session that will always fail verification
+        _reset_sessions[session_token] = {
+            "uid": None,
+            "fields": {},
+            "field_labels": dummy_fields,
+            "attempts": 0,
+            "locked_until": None,
+            "created_at": datetime.now(timezone.utc),
+            "reset_token": None,
+        }
+        return ForgotPasswordInitResponse(
+            session_token=session_token,
+            challenge_fields=dummy_fields,
+        )
+
+    # Ensure verification fields exist (backfill for older accounts)
+    user_data = _ensure_verification_fields(user_ref, user_data)
+
+    # Randomly pick 2 of the 4 verification fields
+    all_v_fields = list(_VERIFICATION_FIELDS.keys())
+    chosen_keys = random.sample(all_v_fields, 2)
+    chosen_labels = [_VERIFICATION_FIELDS[k] for k in chosen_keys]
+
+    # Store session
+    _reset_sessions[session_token] = {
+        "uid": user_data["uid"],
+        "fields": {_VERIFICATION_FIELDS[k]: user_data.get(k, "") for k in chosen_keys},
+        "field_labels": chosen_labels,
+        "attempts": 0,
+        "locked_until": None,
+        "created_at": datetime.now(timezone.utc),
+        "reset_token": None,
+    }
+
+    return ForgotPasswordInitResponse(
+        session_token=session_token,
+        challenge_fields=chosen_labels,
+    )
+
+
+@app.post(
+    "/auth/forgot-password/verify",
+    response_model=ForgotPasswordVerifyResponse,
+    tags=["auth"],
+)
+def forgot_password_verify(body: ForgotPasswordVerifyRequest):
+    """
+    Step 2: Verify the user's answers to the 2 challenge questions.
+    Returns a reset token on success.
+    Max 3 attempts, then locked for 5 minutes.
+    """
+    _cleanup_stale_sessions()
+
+    session = _reset_sessions.get(body.session_token)
+    if not session:
+        raise HTTPException(status_code=400, detail="Invalid or expired session.")
+
+    # Check session expiry (15 minutes)
+    if datetime.now(timezone.utc) - session["created_at"] > timedelta(minutes=15):
+        del _reset_sessions[body.session_token]
+        raise HTTPException(status_code=400, detail="Session expired. Please start over.")
+
+    # Check if locked out
+    if session["locked_until"] and datetime.now(timezone.utc) < session["locked_until"]:
+        remaining = (session["locked_until"] - datetime.now(timezone.utc)).seconds // 60 + 1
+        raise HTTPException(
+            status_code=429,
+            detail=f"Too many failed attempts. Please try again in {remaining} minute(s).",
+        )
+
+    # If this is a dummy session (email didn't exist), always fail
+    if session["uid"] is None:
+        session["attempts"] += 1
+        if session["attempts"] >= 3:
+            session["locked_until"] = datetime.now(timezone.utc) + timedelta(minutes=5)
+        raise HTTPException(status_code=400, detail="Verification failed. Please try again.")
+
+    # Normalize and compare answers
+    stored_fields = session["fields"]
+    all_match = True
+    for label, stored_value in stored_fields.items():
+        user_answer = body.answers.get(label, "").strip().lower()
+        if user_answer != stored_value:
+            all_match = False
+            break
+
+    if not all_match:
+        session["attempts"] += 1
+        if session["attempts"] >= 3:
+            session["locked_until"] = datetime.now(timezone.utc) + timedelta(minutes=5)
+        raise HTTPException(status_code=400, detail="Verification failed. Please try again.")
+
+    # Success — generate reset token
+    reset_token = str(uuid.uuid4())
+    session["reset_token"] = reset_token
+    session["reset_token_created"] = datetime.now(timezone.utc)
+
+    return ForgotPasswordVerifyResponse(reset_token=reset_token)
+
+
+@app.post("/auth/forgot-password/reset", tags=["auth"])
+def forgot_password_reset(body: ForgotPasswordResetRequest):
+    """
+    Step 3: Reset the password using the reset token.
+    Uses Firebase Admin SDK to update the user's password directly.
+    """
+    _cleanup_stale_sessions()
+
+    # Find the session that owns this reset token
+    target_session_key = None
+    target_session = None
+    for key, session in _reset_sessions.items():
+        if session.get("reset_token") == body.reset_token:
+            target_session_key = key
+            target_session = session
+            break
+
+    if not target_session or not target_session.get("uid"):
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token.")
+
+    # Check reset token expiry (10 minutes)
+    token_created = target_session.get("reset_token_created")
+    if not token_created or datetime.now(timezone.utc) - token_created > timedelta(minutes=10):
+        del _reset_sessions[target_session_key]
+        raise HTTPException(status_code=400, detail="Reset token expired. Please start over.")
+
+    # Update password via Firebase Admin SDK
+    from firebase_admin import auth
+
+    try:
+        auth.update_user(target_session["uid"], password=body.new_password)
+    except Exception as e:
+        print(f"[AUTH] Password reset failed: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to reset password. Please try again.")
+
+    # Clean up session
+    del _reset_sessions[target_session_key]
+
+    return {"detail": "Password reset successful. You can now sign in with your new password."}
 
 
 # ── Health ─────────────────────────────────────────────────────────────

@@ -204,3 +204,33 @@ class ProfileImageUploadResponse(BaseModel):
     """Response from profile image upload endpoint."""
     imageUrl: str  # Firebase Storage download URL
     storagePath: str  # Firebase Storage path
+
+
+# ── Forgot Password Models ──────────────────────────────────────────
+
+class ForgotPasswordInitRequest(BaseModel):
+    """Step 1: User provides email to start password reset."""
+    email: str
+
+
+class ForgotPasswordInitResponse(BaseModel):
+    """Returns a session token and the 2 challenge field labels."""
+    session_token: str
+    challenge_fields: list[str]  # Display labels e.g. ["First Name", "Current Role"]
+
+
+class ForgotPasswordVerifyRequest(BaseModel):
+    """Step 2: User answers the 2 challenge questions."""
+    session_token: str
+    answers: dict[str, str]  # { "First Name": "john", "Current Role": "researcher" }
+
+
+class ForgotPasswordVerifyResponse(BaseModel):
+    """Returns a reset token if verification succeeded."""
+    reset_token: str
+
+
+class ForgotPasswordResetRequest(BaseModel):
+    """Step 3: User sets a new password using the reset token."""
+    reset_token: str
+    new_password: str = Field(..., min_length=8)

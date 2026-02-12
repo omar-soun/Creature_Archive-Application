@@ -24,13 +24,14 @@ import ScanSpeciesScreen from './src/screens/ScanSpeciesScreen';
 import IdentificationResultScreen from './src/screens/IdentificationResultScreen';
 import NewJournalEntryScreen from './src/screens/NewJournalEntryScreen';
 import JournalDetailScreen from './src/screens/JournalDetailScreen';
-import EditJournalEntryScreen from './src/screens/EditJournalEntryScreen'; 
+import EditJournalEntryScreen from './src/screens/EditJournalEntryScreen';
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 
 // Types
 import { TabRoute } from './src/components/BottomTabBar';
 
 // Route Types
-type AuthScreen = 'Splash' | 'SignIn' | 'SignUp';
+type AuthScreen = 'Splash' | 'SignIn' | 'SignUp' | 'ForgotPassword';
 export type AppRoute = TabRoute | 'ScanSpecies' | 'IdentificationResult' | 'NewEntry' | 'JournalDetail' | 'EditEntry';
 
 // App State with navigation history
@@ -126,6 +127,10 @@ const AppContent: React.FC = () => {
     setAppState({ auth: 'SignIn' });
   };
 
+  const navigateToForgotPassword = () => {
+    setAppState({ auth: 'ForgotPassword' });
+  };
+
   const handleSignOut = async () => {
     try {
       await authService.signOut();
@@ -194,12 +199,19 @@ const AppContent: React.FC = () => {
             <SignInScreen
               onSignIn={handleSignIn}
               onNavigateToSignUp={navigateToSignUp}
+              onNavigateToForgotPassword={navigateToForgotPassword}
             />
           );
         case 'SignUp':
           return (
             <SignUpScreen
               onSignUp={handleSignUp}
+              onNavigateToSignIn={navigateToSignIn}
+            />
+          );
+        case 'ForgotPassword':
+          return (
+            <ForgotPasswordScreen
               onNavigateToSignIn={navigateToSignIn}
             />
           );

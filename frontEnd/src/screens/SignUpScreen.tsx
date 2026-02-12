@@ -71,6 +71,10 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   // Refs for input focus management
   const lastNameRef = useRef<TextInput>(null);
   const roleRef = useRef<TextInput>(null);
@@ -427,23 +431,34 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
 
                   <View style={styles.inputGroup}>
                     <Text style={[styles.label, { color: theme.text }]}>Password</Text>
-                    <TextInput
-                      ref={passwordRef}
-                      style={[
-                        styles.input,
-                        { backgroundColor: theme.border, color: theme.text },
-                        passwordTouched && !passwordValidation.isValid && styles.inputError,
-                      ]}
-                      placeholder="••••••••"
-                      placeholderTextColor={theme.textSecondary}
-                      value={password}
-                      onChangeText={setPassword}
-                      onBlur={() => setPasswordTouched(true)}
-                      onFocus={() => handleInputFocus(1)}
-                      returnKeyType="next"
-                      onSubmitEditing={() => confirmPasswordRef.current?.focus()}
-                      secureTextEntry
-                    />
+                    <View style={styles.passwordContainer}>
+                      <TextInput
+                        ref={passwordRef}
+                        style={[
+                          styles.passwordInput,
+                          { backgroundColor: theme.border, color: theme.text },
+                          passwordTouched && !passwordValidation.isValid && styles.inputError,
+                        ]}
+                        placeholder="••••••••"
+                        placeholderTextColor={theme.textSecondary}
+                        value={password}
+                        onChangeText={setPassword}
+                        onBlur={() => setPasswordTouched(true)}
+                        onFocus={() => handleInputFocus(1)}
+                        returnKeyType="next"
+                        onSubmitEditing={() => confirmPasswordRef.current?.focus()}
+                        secureTextEntry={!showPassword}
+                      />
+                      <TouchableOpacity
+                        style={styles.eyeButton}
+                        onPress={() => setShowPassword(!showPassword)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
+                          {showPassword ? '🙈' : '👁'}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                     {/* Password Strength Indicator */}
                     {password.length > 0 && (
                       <View style={styles.strengthContainer}>
@@ -475,23 +490,34 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({
 
                   <View style={styles.inputGroup}>
                     <Text style={[styles.label, { color: theme.text }]}>Confirm Password</Text>
-                    <TextInput
-                      ref={confirmPasswordRef}
-                      style={[
-                        styles.input,
-                        { backgroundColor: theme.border, color: theme.text },
-                        confirmTouched && !confirmValidation.isValid && styles.inputError,
-                      ]}
-                      placeholder="••••••••"
-                      placeholderTextColor={theme.textSecondary}
-                      value={confirmPassword}
-                      onChangeText={setConfirmPassword}
-                      onBlur={() => setConfirmTouched(true)}
-                      onFocus={() => handleInputFocus(2)}
-                      returnKeyType="done"
-                      onSubmitEditing={handleCreateAccount}
-                      secureTextEntry
-                    />
+                    <View style={styles.passwordContainer}>
+                      <TextInput
+                        ref={confirmPasswordRef}
+                        style={[
+                          styles.passwordInput,
+                          { backgroundColor: theme.border, color: theme.text },
+                          confirmTouched && !confirmValidation.isValid && styles.inputError,
+                        ]}
+                        placeholder="••••••••"
+                        placeholderTextColor={theme.textSecondary}
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        onBlur={() => setConfirmTouched(true)}
+                        onFocus={() => handleInputFocus(2)}
+                        returnKeyType="done"
+                        onSubmitEditing={handleCreateAccount}
+                        secureTextEntry={!showConfirmPassword}
+                      />
+                      <TouchableOpacity
+                        style={styles.eyeButton}
+                        onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={[styles.eyeIcon, { color: theme.textSecondary }]}>
+                          {showConfirmPassword ? '🙈' : '👁'}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                     {confirmTouched && !confirmValidation.isValid && (
                       <Text style={styles.validationError}>{confirmValidation.message}</Text>
                     )}
@@ -666,6 +692,32 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: '#EF4444',
     backgroundColor: '#FEF2F2',
+  },
+  passwordContainer: {
+    position: 'relative' as const,
+  },
+  passwordInput: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: Platform.OS === 'ios' ? 15 : 13,
+    paddingRight: 50,
+    fontSize: 16,
+    color: '#111827',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  eyeButton: {
+    position: 'absolute' as const,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 50,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+  },
+  eyeIcon: {
+    fontSize: 18,
   },
 
   // Validation Messages
