@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
 import authService from './src/services/authService';
 import { migrationService } from './src/services/migrationService';
 import { fileStorageService } from './src/services/fileStorageService';
@@ -103,6 +104,35 @@ const AppContent: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [isAuthChecked]);
+
+  // ============================================
+  // ANDROID HARDWARE BACK BUTTON HANDLER
+  // ============================================
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      // Auth screens
+      if ('auth' in appState) {
+        // From SignUp or ForgotPassword, navigate back to SignIn
+        if (appState.auth === 'SignUp' || appState.auth === 'ForgotPassword') {
+          setAppState({ auth: 'SignIn' });
+          return true;
+        }
+        // Splash or SignIn: let the default behavior close the app
+        return false;
+      }
+
+      // Main app screens: if there's a previous screen in history, go back
+      if ('main' in appState && appState.previousMain) {
+        handleBack();
+        return true;
+      }
+
+      // Root tab screens (Home, Archive, Stats, Profile) with no history: close the app
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [appState]);
 
   // ============================================
   // AUTH NAVIGATION HANDLERS

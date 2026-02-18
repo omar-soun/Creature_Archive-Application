@@ -21,7 +21,7 @@ const auth = getAuth();
 //
 // For EMULATOR testing: the defaults below work automatically.
 // ──────────────────────────────────────────────────────────────────────
-const DEV_MACHINE_IP = '192.168.254.181'; // ← CHANGE to your computer's local IP
+const DEV_MACHINE_IP = '10.193.124.125'; // ← CHANGE to your computer's local IP
 
 const API_BASE_URL = __DEV__
   ? Platform.select({
