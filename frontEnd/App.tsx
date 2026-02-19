@@ -7,44 +7,25 @@
 
 import React, { useEffect, useState } from 'react';
 import { BackHandler } from 'react-native';
-import authService from './src/services/authService';
-import { migrationService } from './src/services/migrationService';
-import { fileStorageService } from './src/services/fileStorageService';
-import { speciesService } from './src/services/speciesService'; // Eager load species data at startup
-import { ThemeProvider, useTheme } from './src/context/ThemeContext';
-import { AlertProvider } from './src/context/AlertContext';
 
-// Screen imports
-import SplashScreen from './src/screens/SplashScreen';
-import SignInScreen from './src/screens/SignInScreen';
-import SignUpScreen from './src/screens/SignUpScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import ArchiveScreen from './src/screens/ArchiveScreen';
-import StatsScreen from './src/screens/StatsScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
-import ScanSpeciesScreen from './src/screens/ScanSpeciesScreen';
-import IdentificationResultScreen from './src/screens/IdentificationResultScreen';
-import NewJournalEntryScreen from './src/screens/NewJournalEntryScreen';
-import JournalDetailScreen from './src/screens/JournalDetailScreen';
-import EditJournalEntryScreen from './src/screens/EditJournalEntryScreen';
-import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
+// Core
+import { ThemeProvider, useTheme } from './src/core/theme';
+import { AlertProvider } from './src/core/alerts';
 
-// Types
-import { TabRoute } from './src/components/BottomTabBar';
+// Services
+import { fileStorageService, migrationService } from './src/services/storage';
 
-// Route Types
-type AuthScreen = 'Splash' | 'SignIn' | 'SignUp' | 'ForgotPassword';
-export type AppRoute = TabRoute | 'ScanSpecies' | 'IdentificationResult' | 'NewEntry' | 'JournalDetail' | 'EditEntry';
+// Features
+import { authService, SplashScreen, SignInScreen, SignUpScreen, ForgotPasswordScreen } from './src/features/auth';
+import { ScanSpeciesScreen, IdentificationResultScreen, speciesService } from './src/features/scan';
+import { NewJournalEntryScreen, EditJournalEntryScreen, JournalDetailScreen } from './src/features/journal';
+import { ArchiveScreen } from './src/features/archive';
+import { StatsScreen } from './src/features/stats';
+import { ProfileScreen } from './src/features/profile';
+import { HomeScreen } from './src/features/home';
 
-// App State with navigation history
-interface MainState {
-  main: AppRoute;
-  params?: any;
-  previousMain?: AppRoute;
-  previousParams?: any;
-}
-
-type AppState = { auth: AuthScreen } | MainState;
+// Navigation types
+import type { AppRoute, AppState } from './src/navigation';
 
 const AppContent: React.FC = () => {
   const { isThemeLoaded } = useTheme();
