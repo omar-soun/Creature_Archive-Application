@@ -9,7 +9,6 @@ import {
   Platform,
   Image,
   Switch,
-  Alert,
   ActivityIndicator,
   TextInput,
   KeyboardAvoidingView,
@@ -22,6 +21,7 @@ import { fileStorageService } from '../services/fileStorageService';
 import { syncManager } from '../services/syncManager';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { useTheme } from '../context/ThemeContext';
+import { useAlert } from '../context/AlertContext';
 import BottomTabBar, { TabRoute } from '../components/BottomTabBar';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
@@ -54,6 +54,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   // STATE
   // ============================================
   const { isDarkMode, toggleDarkMode, theme } = useTheme();
+  const { showAlert } = useAlert();
   const [isSyncing, setIsSyncing] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -168,7 +169,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   const handleSaveProfile = async () => {
     // Validation
     if (!tempUser.firstName?.trim() || !tempUser.lastName?.trim()) {
-      Alert.alert('Validation Error', 'First and Last name are required.');
+      showAlert('Validation Error', 'First and Last name are required.');
       return;
     }
 
@@ -191,10 +192,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
         ...tempUser as UserProfile
       }));
 
-      Alert.alert('Success', 'Profile updated successfully.');
+      showAlert('Success', 'Profile updated successfully.');
       setIsEditing(false);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to update profile.');
+      showAlert('Error', error.message || 'Failed to update profile.');
     } finally {
       setIsSaving(false);
     }
@@ -207,7 +208,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
     try {
       const result = await syncManager.sync();
       if (result.success) {
-        Alert.alert(
+        showAlert(
           'Sync Complete',
           `Uploaded: ${result.uploaded}, Downloaded: ${result.downloaded}` +
           (result.conflicts > 0 ? `, Conflicts resolved: ${result.conflicts}` : '')
@@ -218,10 +219,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
         const errorMsg = result.errors.length > 0
           ? result.errors[0]
           : 'Sync could not complete. Will retry later.';
-        Alert.alert('Sync Deferred', errorMsg);
+        showAlert('Sync Deferred', errorMsg);
       }
     } catch (error) {
-      Alert.alert('Sync Failed', 'Unable to sync data. Please check your connection.');
+      showAlert('Sync Failed', 'Unable to sync data. Please check your connection.');
     } finally {
       setIsSyncing(false);
     }
@@ -243,7 +244,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
       setSelectedImage({ uri: asset.uri, width: asset.width, height: asset.height });
       setCropModalVisible(true);
     } catch (error) {
-      Alert.alert('Error', 'Failed to select image');
+      showAlert('Error', 'Failed to select image');
     }
   };
 
@@ -267,7 +268,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
       }
     } catch (error) {
       setIsUploadingImage(false);
-      Alert.alert('Error', 'Failed to update profile image');
+      showAlert('Error', 'Failed to update profile image');
     }
   };
 
@@ -277,7 +278,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
   };
 
   const handleRemoveProfileImage = () => {
-    Alert.alert(
+    showAlert(
       'Remove Profile Photo',
       'Are you sure you want to remove your profile photo?',
       [
@@ -298,7 +299,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigate, onSignOut }) 
                   .catch((err: any) => console.warn('Failed to clear cloud profile image:', err));
               }
             } catch (error) {
-              Alert.alert('Error', 'Failed to remove profile photo.');
+              showAlert('Error', 'Failed to remove profile photo.');
             }
           },
         },

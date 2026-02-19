@@ -12,6 +12,7 @@ import { migrationService } from './src/services/migrationService';
 import { fileStorageService } from './src/services/fileStorageService';
 import { speciesService } from './src/services/speciesService'; // Eager load species data at startup
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
+import { AlertProvider } from './src/context/AlertContext';
 
 // Screen imports
 import SplashScreen from './src/screens/SplashScreen';
@@ -329,7 +330,9 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => (
   <ThemeProvider>
-    <AppContent />
+    <AlertProvider>
+      <AppContent />
+    </AlertProvider>
   </ThemeProvider>
 );
 

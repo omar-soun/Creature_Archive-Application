@@ -12,7 +12,6 @@ import {
     Modal,
     Pressable,
     ActivityIndicator,
-    Alert,
     RefreshControl,
 } from 'react-native';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -22,6 +21,7 @@ import { syncManager } from '../services/syncManager';
 import { SyncStatusBadge } from '../components/OfflineIndicator';
 import { LocalJournalEntry } from '../types/models';
 import { useTheme } from '../context/ThemeContext';
+import { useAlert } from '../context/AlertContext';
 
 /**
  * ============================================
@@ -68,6 +68,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
     // THEME
     // ============================================
     const { isDarkMode, theme } = useTheme();
+    const { showAlert } = useAlert();
 
     // ============================================
     // HOOKS - Offline-first local storage data
@@ -150,7 +151,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
             const result = await syncManager.sync();
             if (result.success) {
                 await refresh();
-                Alert.alert(
+                showAlert(
                     'Sync Complete',
                     `Uploaded: ${result.uploaded}, Downloaded: ${result.downloaded}` +
                     (result.conflicts > 0 ? `, Conflicts resolved: ${result.conflicts}` : '')
@@ -159,10 +160,10 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                 const errorMsg = result.errors.length > 0
                     ? result.errors[0]
                     : 'Sync could not complete. Will retry later.';
-                Alert.alert('Sync Deferred', errorMsg);
+                showAlert('Sync Deferred', errorMsg);
             }
         } catch (error) {
-            Alert.alert('Sync Failed', 'Unable to sync data. Please check your connection.');
+            showAlert('Sync Failed', 'Unable to sync data. Please check your connection.');
         } finally {
             setIsSyncing(false);
         }
@@ -193,7 +194,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
 
     // Delete entry with confirmation
     const handleDeleteEntry = useCallback((entry: LocalJournalEntry) => {
-        Alert.alert(
+        showAlert(
             'Delete Journal Entry',
             `Are you sure you want to delete "${entry.speciesName}"? This action cannot be undone.`,
             [
@@ -207,7 +208,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                         try {
                             await deleteEntry(entry.localId);
                         } catch (err) {
-                            Alert.alert('Error', 'Failed to delete entry. Please try again.');
+                            showAlert('Error', 'Failed to delete entry. Please try again.');
                         } finally {
                             setDeletingId(null);
                         }

@@ -8,7 +8,6 @@ import {
     Platform,
     Dimensions,
     Animated,
-    Alert,
     Linking,
     Image,
     ActivityIndicator,
@@ -39,6 +38,7 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 import ImageEditor from '@react-native-community/image-editor';
 import { useTheme } from '../context/ThemeContext';
+import { useAlert } from '../context/AlertContext';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 interface ScanSpeciesScreenProps {
@@ -58,6 +58,7 @@ const CORNER_THICKNESS = 4;
 
 const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBack }) => {
     const { isDarkMode, theme } = useTheme();
+    const { showAlert } = useAlert();
 
     // Orientation-aware camera preview
     const { width: winWidth, height: winHeight } = useWindowDimensions();
@@ -151,7 +152,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 
                 if (error.code === 2 || error.code === 1) {
                     // Location service is OFF or permission denied - show alert
-                    Alert.alert(
+                    showAlert(
                         'Location is Turned Off',
                         'Please enable location services to tag your observations with GPS coordinates.',
                         [
@@ -257,7 +258,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
             const photoUri = Platform.OS === 'ios' ? photo.path : `file://${photo.path}`;
             setCapturedPhoto(photoUri);
         } catch (error: any) {
-            Alert.alert('Capture Failed', error.message || 'Unable to take photo.');
+            showAlert('Capture Failed', error.message || 'Unable to take photo.');
         } finally {
             setIsCapturing(false);
         }
@@ -268,7 +269,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
     // ============================================
     const handleToggleFlash = () => {
         if (!supportsFlash) {
-            Alert.alert('Flash Unavailable', 'This camera does not support flash.');
+            showAlert('Flash Unavailable', 'This camera does not support flash.');
             return;
         }
         setFlash(prev => (prev === 'off' ? 'on' : 'off'));
@@ -304,7 +305,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
 
             if (result.errorCode) {
                 if (result.errorCode === 'permission') {
-                    Alert.alert('Permission Required', 'Please grant photo library access.', [
+                    showAlert('Permission Required', 'Please grant photo library access.', [
                         { text: 'Cancel', style: 'cancel' },
                         { text: 'Settings', onPress: () => Linking.openSettings() },
                     ]);
@@ -317,7 +318,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 setCapturedPhoto(result.assets[0].uri);
             }
         } catch (error) {
-            Alert.alert('Error', 'Failed to open gallery.');
+            showAlert('Error', 'Failed to open gallery.');
         } finally {
             setIsLoadingGallery(false);
         }
@@ -441,7 +442,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                 setCropBox(initBox);
                 setIsCropping(true);
             },
-            () => Alert.alert('Error', 'Could not load image dimensions.'),
+            () => showAlert('Error', 'Could not load image dimensions.'),
         );
     };
 
@@ -467,7 +468,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
             setCapturedPhoto(result.uri);
             setIsCropping(false);
         } catch (error) {
-            Alert.alert('Crop Failed', 'Unable to crop the image.');
+            showAlert('Crop Failed', 'Unable to crop the image.');
         }
     };
 
@@ -509,7 +510,7 @@ const ScanSpeciesScreen: React.FC<ScanSpeciesScreenProps> = ({ onNavigate, onBac
                         onPress={async () => {
                             const granted = await requestCameraPermission();
                             if (!granted) {
-                                Alert.alert('Permission Denied', 'Please enable camera in Settings.', [
+                                showAlert('Permission Denied', 'Please enable camera in Settings.', [
                                     { text: 'Cancel' },
                                     { text: 'Settings', onPress: () => Linking.openSettings() },
                                 ]);

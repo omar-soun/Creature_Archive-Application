@@ -9,7 +9,6 @@ import {
     Image,
     ScrollView,
     TextInput,
-    Alert,
     Modal,
     Pressable,
     ActivityIndicator,
@@ -17,6 +16,7 @@ import {
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { useTheme } from '../context/ThemeContext';
+import { useAlert } from '../context/AlertContext';
 
 /**
  * ============================================
@@ -67,6 +67,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
     // HOOKS - Offline-first data management
     // ============================================
     const { isDarkMode, theme } = useTheme();
+    const { showAlert } = useAlert();
     const {
         createEntry,
     } = useJournalEntries();
@@ -139,7 +140,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
     const handleSave = async () => {
         // Validate required fields
         if (!speciesName.trim()) {
-            Alert.alert('Required Field', 'Please enter a species name.');
+            showAlert('Required Field', 'Please enter a species name.');
             return;
         }
 
@@ -177,7 +178,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                 animalClass: animalClass || 'Other',
             });
 
-            Alert.alert(
+            showAlert(
                 'Entry Saved',
                 `${speciesName} has been added to your journal.`,
                 [
@@ -194,7 +195,7 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
             );
         } catch (error: any) {
             console.error('Failed to save entry:', error);
-            Alert.alert(
+            showAlert(
                 'Save Failed',
                 error.message || 'Failed to save journal entry. Please try again.'
             );

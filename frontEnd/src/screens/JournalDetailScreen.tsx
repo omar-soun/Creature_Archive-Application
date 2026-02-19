@@ -10,10 +10,10 @@ import {
     Image,
     Modal,
     Pressable,
-    Alert,
     Share,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
+import { useAlert } from '../context/AlertContext';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 /**
@@ -67,6 +67,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
     routeParams,
 }) => {
     const { isDarkMode, theme } = useTheme();
+    const { showAlert } = useAlert();
 
     // Menu state
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -131,7 +132,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
 
     const handleExportPDF = () => {
         setIsMenuOpen(false);
-        Alert.alert(
+        showAlert(
             'Export to PDF',
             'PDF export functionality will be available in a future update.',
             [{ text: 'OK' }]
@@ -140,7 +141,7 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
 
     const handleDelete = () => {
         setIsMenuOpen(false);
-        Alert.alert(
+        showAlert(
             'Delete Entry',
             `Are you sure you want to delete this observation of ${entry.speciesName}? This action cannot be undone.`,
             [

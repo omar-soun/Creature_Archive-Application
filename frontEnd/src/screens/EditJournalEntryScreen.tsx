@@ -9,7 +9,6 @@ import {
     Image,
     ScrollView,
     TextInput,
-    Alert,
     Modal,
     Pressable,
     ActivityIndicator,
@@ -18,6 +17,7 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { AnimalClass } from '../types/models';
 import { useTheme } from '../context/ThemeContext';
+import { useAlert } from '../context/AlertContext';
 
 /**
  * ============================================
@@ -75,6 +75,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
     routeParams,
 }) => {
     const { isDarkMode, theme } = useTheme();
+    const { showAlert } = useAlert();
 
     // ============================================
     // HOOKS - Offline-first data management
@@ -158,7 +159,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
     const handleUpdate = async () => {
         // Validate required fields
         if (!speciesName.trim()) {
-            Alert.alert('Required Field', 'Please enter a species name.');
+            showAlert('Required Field', 'Please enter a species name.');
             return;
         }
 
@@ -180,7 +181,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                     .filter(tag => tag.length > 0),
             });
 
-            Alert.alert(
+            showAlert(
                 'Entry Updated',
                 `${speciesName} has been updated successfully.`,
                 [
@@ -192,7 +193,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
             );
         } catch (error: any) {
             console.error('Failed to update entry:', error);
-            Alert.alert(
+            showAlert(
                 'Update Failed',
                 error.message || 'Failed to update journal entry. Please try again.'
             );
@@ -205,7 +206,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
     // DELETE HANDLER (Offline-first)
     // ============================================
     const handleDelete = () => {
-        Alert.alert(
+        showAlert(
             'Delete Entry',
             `Are you sure you want to delete this observation of ${entry.speciesName}? This action cannot be undone.`,
             [
@@ -220,7 +221,7 @@ const EditJournalEntryScreen: React.FC<EditJournalEntryScreenProps> = ({
                             onNavigate('Archive');
                         } catch (error: any) {
                             console.error('Failed to delete entry:', error);
-                            Alert.alert(
+                            showAlert(
                                 'Delete Failed',
                                 error.message || 'Failed to delete journal entry. Please try again.'
                             );
