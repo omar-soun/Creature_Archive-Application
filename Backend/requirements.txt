@@ -9,19 +9,14 @@ h11==0.16.0
 idna==3.11
 pydantic==2.12.5
 pydantic_core==2.41.5
+pydantic-settings>=2.0.0
 starlette==0.50.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 uvicorn==0.40.0
 
-# ML dependencies for species classification
-tensorflow==2.20.0
-numpy==1.26.4
-pillow==11.0.0
+# File uploads
 python-multipart==0.0.20
 
 # Firebase Admin SDK
 firebase-admin==6.6.0
-
-# OpenCV for image preprocessing
-opencv-python-headless==4.10.0.84
