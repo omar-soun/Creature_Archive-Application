@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import logging
 
+from google.cloud.firestore_v1.base_query import FieldFilter
+
 logger = logging.getLogger("creature_archive.auth.repository")
 
 USERS_COLLECTION = "users"
@@ -52,7 +54,7 @@ class UserRepository:
         """
         query = (
             self._db.collection(USERS_COLLECTION)
-            .where("email", "==", email)
+            .where(filter=FieldFilter("email", "==", email))
             .limit(1)
             .get()
         )
@@ -64,7 +66,7 @@ class UserRepository:
         """Delete all journal entries for a user (used during account deletion)."""
         entries = (
             self._db.collection(ENTRIES_COLLECTION)
-            .where("userId", "==", uid)
+            .where(filter=FieldFilter("userId", "==", uid))
             .stream()
         )
         for entry_doc in entries:

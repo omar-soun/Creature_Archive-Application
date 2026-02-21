@@ -9,6 +9,8 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timezone
 
+from google.cloud.firestore_v1.base_query import FieldFilter
+
 from app.core.firestore_utils import firestore_increment
 
 logger = logging.getLogger("creature_archive.entries.repository")
@@ -41,7 +43,7 @@ class EntryRepository:
         """List entries for a user, newest first. Returns Firestore document snapshots."""
         query = (
             self._db.collection(COLLECTION)
-            .where("userId", "==", user_id)
+            .where(filter=FieldFilter("userId", "==", user_id))
             .order_by("capturedAt", direction="DESCENDING")
             .limit(limit)
             .offset(offset)
@@ -60,8 +62,8 @@ class EntryRepository:
         """Check if a duplicate entry exists (same user + capturedAt)."""
         existing = (
             self._db.collection(COLLECTION)
-            .where("userId", "==", user_id)
-            .where("capturedAt", "==", captured_at)
+            .where(filter=FieldFilter("userId", "==", user_id))
+            .where(filter=FieldFilter("capturedAt", "==", captured_at))
             .limit(1)
             .stream()
         )
@@ -71,7 +73,7 @@ class EntryRepository:
         """Stream all entries for a user (for sync operations)."""
         return (
             self._db.collection(COLLECTION)
-            .where("userId", "==", user_id)
+            .where(filter=FieldFilter("userId", "==", user_id))
             .stream()
         )
 

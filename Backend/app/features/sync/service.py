@@ -21,6 +21,7 @@ import logging
 from datetime import datetime, timezone
 
 from google.cloud.firestore_v1 import GeoPoint
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 from app.core.firebase import check_firestore_reachable
 from app.core.firestore_utils import firestore_increment
@@ -98,7 +99,7 @@ class SyncService:
             # Step 2: Fetch all cloud entries for this user
             cloud_docs = (
                 self._db.collection(COLLECTION)
-                .where("userId", "==", auth_uid)
+                .where(filter=FieldFilter("userId", "==", auth_uid))
                 .stream()
             )
 

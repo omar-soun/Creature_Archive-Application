@@ -385,7 +385,6 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                 ) : filteredEntries.length > 0 ? (
                     <View style={styles.listContainer}>
                         {/* Long press hint */}
-                        <Text style={[styles.hintText, { color: theme.textSecondary }]}>Long press to delete</Text>
                         {filteredEntries.map((entry) => (
                             <JournalCard
                                 key={entry.localId}
@@ -587,14 +586,6 @@ const styles = StyleSheet.create({
     // Scroll Content
     scrollContent: {
         paddingBottom: 20,
-    },
-
-    // Hint text
-    hintText: {
-        fontSize: 12,
-        color: '#9CA3AF',
-        textAlign: 'center',
-        marginBottom: 12,
     },
 
     // List
