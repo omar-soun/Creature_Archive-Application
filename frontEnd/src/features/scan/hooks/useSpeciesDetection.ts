@@ -82,6 +82,7 @@ export interface UseSpeciesDetectionReturn {
 }
 
 export type DetectionStage = 'idle' | 'initializing' | 'preprocessing' | 'analyzing' | 'complete' | 'error';
+export const LOW_CONFIDENCE_THRESHOLD = 60;
 
 // ============================================
 // MODEL SINGLETON (shared across hook instances)

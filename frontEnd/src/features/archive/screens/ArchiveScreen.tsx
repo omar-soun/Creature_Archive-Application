@@ -75,11 +75,8 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
         isDateModalOpen,
         setIsDateModalOpen,
         selectedYear,
-        setSelectedYear,
         selectedMonth,
-        setSelectedMonth,
         selectedDay,
-        setSelectedDay,
         activeDateFilter,
         filteredEntries,
         clearDateFilter,
@@ -317,7 +314,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.filterTabsScroll}
                     >
-                        {/* Date Filter Button */}
+                        {/* Date Filter Button — toggles between "Filter by Date" and "Clear Filter" */}
                         <View style={styles.dateFilterSection}>
                             <TouchableOpacity
                                 style={[
@@ -326,28 +323,26 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
                                     activeDateFilter && styles.dateFilterBtnActive,
                                     activeDateFilter && { backgroundColor: theme.accentLight },
                                 ]}
-                                onPress={() => setIsDateModalOpen(true)}
+                                onPress={() =>
+                                    activeDateFilter
+                                        ? clearDateFilter()
+                                        : setIsDateModalOpen(true)
+                                }
                                 activeOpacity={0.7}
                             >
-                                <FontAwesome6 name="calendar" size={14} color={activeDateFilter ? '#059669' : theme.textSecondary} style={styles.dateFilterIcon} />
+                                <FontAwesome6
+                                    name={activeDateFilter ? 'xmark' : 'calendar'}
+                                    size={14}
+                                    color={activeDateFilter ? '#059669' : theme.textSecondary}
+                                    style={styles.dateFilterIcon}
+                                />
                                 <Text style={[
                                     styles.dateFilterText,
                                     { color: theme.text },
                                     activeDateFilter && styles.dateFilterTextActive,
                                 ]}>
-                                    {activeDateFilter || 'Filter by Date'}
+                                    {activeDateFilter ? 'Clear Filter' : 'Filter by Date'}
                                 </Text>
-                                {activeDateFilter && (
-                                    <TouchableOpacity
-                                        onPress={(e) => {
-                                            e.stopPropagation();
-                                            clearDateFilter();
-                                        }}
-                                        style={styles.clearDateBtn}
-                                    >
-                                        <FontAwesome6 name="xmark" size={12} color="#059669" />
-                                    </TouchableOpacity>
-                                )}
                             </TouchableOpacity>
                         </View>
 
@@ -416,12 +411,9 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
             <DateFilterModal
                 isVisible={isDateModalOpen}
                 onClose={() => setIsDateModalOpen(false)}
-                selectedYear={selectedYear}
-                setSelectedYear={setSelectedYear}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                selectedDay={selectedDay}
-                setSelectedDay={setSelectedDay}
+                initialYear={selectedYear}
+                initialMonth={selectedMonth}
+                initialDay={selectedDay}
                 activeDateFilter={activeDateFilter}
                 onApply={applyDateFilter}
                 onClear={clearDateFilter}
@@ -574,15 +566,6 @@ const styles = StyleSheet.create({
     dateFilterTextActive: {
         color: '#059669',
     },
-    clearDateBtn: {
-        marginLeft: 8,
-        padding: 4,
-    },
-    clearDateIcon: {
-        fontSize: 12,
-        color: '#059669',
-    },
-
     // Scroll Content
     scrollContent: {
         paddingBottom: 20,

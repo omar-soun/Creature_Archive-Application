@@ -5,6 +5,11 @@ import { MONTHS } from '../constants';
 /**
  * Hook that encapsulates all filter-related state and logic for the Archive screen.
  * Handles class filtering, date filtering, and search filtering.
+ *
+ * Date filter uses a committed-state model:
+ * - selectedYear/Month/Day reflect the APPLIED filter only.
+ * - The modal manages its own draft state and calls applyDateFilter(year, month, day)
+ *   to commit. Cancel in the modal discards the draft without touching committed state.
  */
 const useArchiveFilters = (entries: LocalJournalEntry[]) => {
     // ============================================
@@ -13,6 +18,8 @@ const useArchiveFilters = (entries: LocalJournalEntry[]) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeClassFilter, setActiveClassFilter] = useState('All');
     const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+
+    // Committed date filter (only updated on Apply, never by the modal pickers directly)
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -27,7 +34,7 @@ const useArchiveFilters = (entries: LocalJournalEntry[]) => {
             return false;
         }
 
-        // Date filter
+        // Date filter — uses committed selectedYear/Month/Day only
         if (selectedYear !== null) {
             const entryDate = new Date(entry.capturedAt);
             const entryYear = entryDate.getFullYear();
@@ -66,37 +73,31 @@ const useArchiveFilters = (entries: LocalJournalEntry[]) => {
         setActiveDateFilter(null);
     };
 
-    // Apply date filter
-    const applyDateFilter = () => {
-        if (selectedYear) {
-            let label = `${selectedYear}`;
-            if (selectedMonth !== null) {
-                label = `${MONTHS[selectedMonth]} ${selectedYear}`;
-                if (selectedDay !== null) {
-                    label = `${MONTHS[selectedMonth]} ${selectedDay}, ${selectedYear}`;
+    /**
+     * Commit a date selection from the modal.
+     * Called with the modal's final draft values — never called on Cancel.
+     */
+    const applyDateFilter = (
+        year: number | null,
+        month: number | null,
+        day: number | null,
+    ) => {
+        if (year) {
+            setSelectedYear(year);
+            setSelectedMonth(month);
+            setSelectedDay(day);
+
+            let label = `${year}`;
+            if (month !== null) {
+                label = `${MONTHS[month]} ${year}`;
+                if (day !== null) {
+                    label = `${MONTHS[month]} ${day}, ${year}`;
                 }
             }
             setActiveDateFilter(label);
         }
         setIsDateModalOpen(false);
     };
-
-    // ============================================
-    // DATE PICKER HELPERS
-    // ============================================
-
-    // Generate years for picker (last 10 years)
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
-
-    // Generate days for selected month
-    const getDaysInMonth = (year: number, month: number) => {
-        return new Date(year, month + 1, 0).getDate();
-    };
-
-    const days = selectedYear && selectedMonth !== null
-        ? Array.from({ length: getDaysInMonth(selectedYear, selectedMonth) }, (_, i) => i + 1)
-        : [];
 
     return {
         // Filter state
@@ -106,23 +107,15 @@ const useArchiveFilters = (entries: LocalJournalEntry[]) => {
         setActiveClassFilter,
         isDateModalOpen,
         setIsDateModalOpen,
+
+        // Committed date filter values (read-only for modal initial state)
         selectedYear,
-        setSelectedYear,
         selectedMonth,
-        setSelectedMonth,
         selectedDay,
-        setSelectedDay,
         activeDateFilter,
-        setActiveDateFilter,
 
         // Computed
         filteredEntries,
-
-        // Date picker helpers
-        currentYear,
-        years,
-        getDaysInMonth,
-        days,
 
         // Actions
         clearDateFilter,

@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     service_account_path: Path = BASE_DIR / "service-account.json"
     species_data_path: Path = BASE_DIR / "data" / "species_data.json"
 
+    # AnimalDetect API (server-side only — key never sent to client)
+    animal_detect_api_key: str | None = None
+    animal_detect_api_url: str = "https://www.animaldetect.com/api/v1/detect"
+
     # App
     debug: bool = False
 

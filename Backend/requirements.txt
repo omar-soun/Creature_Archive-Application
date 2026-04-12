@@ -20,3 +20,6 @@ python-multipart==0.0.20
 
 # Firebase Admin SDK
 firebase-admin==6.6.0
+
+# Async HTTP client (used for AnimalDetect API proxy)
+httpx>=0.27.0

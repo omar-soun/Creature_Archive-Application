@@ -161,13 +161,17 @@ const AppContent: React.FC = () => {
     console.log('Navigating to:', route, params ? 'with params' : '');
 
     setAppState((prevState) => {
-      // Save current route for back navigation (1-level history)
       if ('main' in prevState) {
+        // _returnParams lets the current screen override what params will be
+        // restored when the user navigates back. This is used by
+        // IdentificationResultScreen to freeze the detection result so the
+        // model doesn't re-run when the user returns from NewEntry.
+        const { _returnParams, ...cleanParams } = params || {};
         return {
           main: route,
-          params,
+          params: cleanParams,
           previousMain: prevState.main,
-          previousParams: prevState.params,
+          previousParams: _returnParams ?? prevState.params,
         };
       }
       return { main: route, params };
@@ -250,7 +254,12 @@ const AppContent: React.FC = () => {
               onBack={handleBack}
               photoUri={params?.photoUri}
               location={params?.location}
-              timestamp={params?.timestamp}
+              cachedDetectionResult={params?.cachedDetectionResult}
+              cachedOnlineResult={params?.cachedOnlineResult}
+              cachedPhase={params?.cachedPhase}
+              cachedCommonName={params?.cachedCommonName}
+              cachedScientificName={params?.cachedScientificName}
+              cachedNotes={params?.cachedNotes}
             />
           );
 

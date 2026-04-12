@@ -50,6 +50,8 @@ interface RouteParams {
     observationDate: string;
     observationTime: string;
     gpsLocation: LocationData | null;
+    notes?: string;
+    isDraft?: boolean;
 }
 
 interface NewJournalEntryScreenProps {
@@ -83,6 +85,8 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
         observationDate = '',
         observationTime = '',
         gpsLocation = null,
+        notes: initialNotes = '',
+        isDraft = false,
     } = routeParams || {};
 
     // ============================================
@@ -93,11 +97,11 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
     const [scientificName, setScientificName] = useState(speciesScientificName);
     const [quantity, setQuantity] = useState('1');
 
-    // User Input (Empty state)
+    // User Input (Empty state, notes pre-filled from detection screen)
     const [animalClass, setAnimalClass] = useState('');
     const [behavior, setBehavior] = useState('');
     const [habitat, setHabitat] = useState('');
-    const [fieldNotes, setFieldNotes] = useState('');
+    const [fieldNotes, setFieldNotes] = useState(initialNotes);
     const [tags, setTags] = useState('');
 
     // Notes field height (auto-resize)
@@ -220,6 +224,16 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                 <Text style={[styles.headerTitle, { color: theme.text }]}>New Journal Entry</Text>
                 <View style={styles.headerRight} />
             </View>
+
+            {/* Draft banner — shown when species ID is pending verification */}
+            {isDraft && (
+                <View style={styles.draftBanner}>
+                    <FontAwesome6 name="triangle-exclamation" size={14} color="#92400E" style={{ marginRight: 8 }} />
+                    <Text style={styles.draftBannerText}>
+                        Draft — species identification is pending verification. You can edit the details and save now, or update later once online.
+                    </Text>
+                </View>
+            )}
 
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
@@ -553,6 +567,23 @@ const styles = StyleSheet.create({
     },
     headerRight: {
         width: 44,
+    },
+
+    // Draft banner
+    draftBanner: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        backgroundColor: '#FEF3C7',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#FCD34D',
+    },
+    draftBannerText: {
+        flex: 1,
+        fontSize: 13,
+        color: '#92400E',
+        lineHeight: 18,
     },
 
     // Scroll Content

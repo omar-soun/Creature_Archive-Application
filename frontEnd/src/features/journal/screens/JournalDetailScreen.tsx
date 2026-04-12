@@ -120,23 +120,21 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
     // ============================================
     const handleShare = async () => {
         setIsMenuOpen(false);
+        const photoUri = entry.photoUri;
+        const message = `I observed a ${entry.speciesName} (${entry.scientificName}) on ${entry.date} at ${entry.time}.\n\nLocation: ${formatCoordinates(entry.location)}\nBehavior: ${entry.behavior}\n\nNotes: ${entry.notes}`;
         try {
-            await Share.share({
+            const shareOptions: { title: string; message: string; url?: string } = {
                 title: `${entry.speciesName} Observation`,
-                message: `I observed a ${entry.speciesName} (${entry.scientificName}) on ${entry.date} at ${entry.time}.\n\nLocation: ${formatCoordinates(entry.location)}\nBehavior: ${entry.behavior}\n\nNotes: ${entry.notes}`,
-            });
+                message,
+            };
+            if (photoUri) {
+                // On iOS, url supports local file URIs; on Android it is used as a fallback
+                shareOptions.url = Platform.OS === 'android' ? `file://${photoUri}` : photoUri;
+            }
+            await Share.share(shareOptions);
         } catch (error) {
             console.error('Share error:', error);
         }
-    };
-
-    const handleExportPDF = () => {
-        setIsMenuOpen(false);
-        showAlert(
-            'Export to PDF',
-            'PDF export functionality will be available in a future update.',
-            [{ text: 'OK' }]
-        );
     };
 
     const handleDelete = () => {
@@ -399,18 +397,6 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                         >
                             <FontAwesome6 name="share-from-square" size={18} color="#374151" style={styles.menuItemIcon} />
                             <Text style={[styles.menuItemText, { color: theme.text }]}>Share</Text>
-                        </TouchableOpacity>
-
-                        <View style={[styles.menuDivider, { backgroundColor: theme.border }]} />
-
-                        {/* Export to PDF Option */}
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={handleExportPDF}
-                            activeOpacity={0.7}
-                        >
-                            <FontAwesome6 name="file-pdf" size={18} color="#374151" style={styles.menuItemIcon} />
-                            <Text style={[styles.menuItemText, { color: theme.text }]}>Export to PDF</Text>
                         </TouchableOpacity>
 
                         <View style={[styles.menuDivider, { backgroundColor: theme.border }]} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -14,14 +14,15 @@ import { MONTHS } from '../constants';
 interface DateFilterModalProps {
     isVisible: boolean;
     onClose: () => void;
-    selectedYear: number | null;
-    setSelectedYear: (year: number | null) => void;
-    selectedMonth: number | null;
-    setSelectedMonth: (month: number | null) => void;
-    selectedDay: number | null;
-    setSelectedDay: (day: number | null) => void;
+    /** Committed year — used to pre-populate the modal when re-opened */
+    initialYear: number | null;
+    /** Committed month — used to pre-populate the modal when re-opened */
+    initialMonth: number | null;
+    /** Committed day — used to pre-populate the modal when re-opened */
+    initialDay: number | null;
     activeDateFilter: string | null;
-    onApply: () => void;
+    /** Called with (year, month, day) when user confirms. Never called on Cancel. */
+    onApply: (year: number | null, month: number | null, day: number | null) => void;
     onClear: () => void;
     theme: any;
 }
@@ -30,42 +31,67 @@ interface DateFilterModalProps {
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
-// Generate days for selected month
-const getDaysInMonth = (year: number, month: number) => {
-    return new Date(year, month + 1, 0).getDate();
-};
+const getDaysInMonth = (year: number, month: number) =>
+    new Date(year, month + 1, 0).getDate();
 
 const DateFilterModal: React.FC<DateFilterModalProps> = ({
     isVisible,
     onClose,
-    selectedYear,
-    setSelectedYear,
-    selectedMonth,
-    setSelectedMonth,
-    selectedDay,
-    setSelectedDay,
+    initialYear,
+    initialMonth,
+    initialDay,
     activeDateFilter,
     onApply,
     onClear,
     theme,
 }) => {
-    const days = selectedYear && selectedMonth !== null
-        ? Array.from({ length: getDaysInMonth(selectedYear, selectedMonth) }, (_, i) => i + 1)
-        : [];
+    // ============================================
+    // DRAFT STATE — local to the modal.
+    // Initialized from committed values on open.
+    // Discarded on Cancel.
+    // ============================================
+    const [draftYear, setDraftYear] = useState<number | null>(null);
+    const [draftMonth, setDraftMonth] = useState<number | null>(null);
+    const [draftDay, setDraftDay] = useState<number | null>(null);
+
+    // Sync draft to committed values every time the modal opens
+    useEffect(() => {
+        if (isVisible) {
+            setDraftYear(initialYear);
+            setDraftMonth(initialMonth);
+            setDraftDay(initialDay);
+        }
+    }, [isVisible]);
+
+    const days =
+        draftYear && draftMonth !== null
+            ? Array.from(
+                  { length: getDaysInMonth(draftYear, draftMonth) },
+                  (_, i) => i + 1,
+              )
+            : [];
+
+    const handleApply = () => {
+        onApply(draftYear, draftMonth, draftDay);
+    };
+
+    const handleCancel = () => {
+        // Do NOT commit draft — just close. The draft resets on next open via useEffect.
+        onClose();
+    };
 
     return (
         <Modal
             visible={isVisible}
             transparent
             animationType="fade"
-            onRequestClose={onClose}
+            onRequestClose={handleCancel}
         >
-            <Pressable
-                style={styles.modalOverlay}
-                onPress={onClose}
-            >
+            <Pressable style={styles.modalOverlay} onPress={handleCancel}>
                 <View style={[styles.dateModal, { backgroundColor: theme.card }]}>
-                    <Text style={[styles.dateModalTitle, { color: theme.text }]}>Filter by Date</Text>
+                    <Text style={[styles.dateModalTitle, { color: theme.text }]}>
+                        Filter by Date
+                    </Text>
                     <Text style={[styles.dateModalSubtitle, { color: theme.textSecondary }]}>
                         Select year, optionally month and day
                     </Text>
@@ -83,13 +109,17 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                                 style={[
                                     styles.pickerItem,
                                     { backgroundColor: theme.border },
-                                    selectedYear === year && styles.pickerItemActive,
+                                    draftYear === year && styles.pickerItemActive,
                                 ]}
                                 onPress={() => {
-                                    setSelectedYear(selectedYear === year ? null : year);
-                                    if (selectedYear !== year) {
-                                        setSelectedMonth(null);
-                                        setSelectedDay(null);
+                                    if (draftYear === year) {
+                                        setDraftYear(null);
+                                        setDraftMonth(null);
+                                        setDraftDay(null);
+                                    } else {
+                                        setDraftYear(year);
+                                        setDraftMonth(null);
+                                        setDraftDay(null);
                                     }
                                 }}
                             >
@@ -97,7 +127,7 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                                     style={[
                                         styles.pickerItemText,
                                         { color: theme.text },
-                                        selectedYear === year && styles.pickerItemTextActive,
+                                        draftYear === year && styles.pickerItemTextActive,
                                     ]}
                                 >
                                     {year}
@@ -107,9 +137,11 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                     </ScrollView>
 
                     {/* Month Picker */}
-                    {selectedYear && (
+                    {draftYear && (
                         <>
-                            <Text style={[styles.pickerLabel, { color: theme.text }]}>Month (Optional)</Text>
+                            <Text style={[styles.pickerLabel, { color: theme.text }]}>
+                                Month (Optional)
+                            </Text>
                             <ScrollView
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
@@ -121,18 +153,23 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                                         style={[
                                             styles.pickerItem,
                                             { backgroundColor: theme.border },
-                                            selectedMonth === idx && styles.pickerItemActive,
+                                            draftMonth === idx && styles.pickerItemActive,
                                         ]}
                                         onPress={() => {
-                                            setSelectedMonth(selectedMonth === idx ? null : idx);
-                                            if (selectedMonth !== idx) setSelectedDay(null);
+                                            if (draftMonth === idx) {
+                                                setDraftMonth(null);
+                                                setDraftDay(null);
+                                            } else {
+                                                setDraftMonth(idx);
+                                                setDraftDay(null);
+                                            }
                                         }}
                                     >
                                         <Text
                                             style={[
                                                 styles.pickerItemText,
                                                 { color: theme.text },
-                                                selectedMonth === idx && styles.pickerItemTextActive,
+                                                draftMonth === idx && styles.pickerItemTextActive,
                                             ]}
                                         >
                                             {month.slice(0, 3)}
@@ -144,9 +181,11 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                     )}
 
                     {/* Day Picker */}
-                    {selectedYear && selectedMonth !== null && (
+                    {draftYear && draftMonth !== null && (
                         <>
-                            <Text style={styles.pickerLabel}>Day (Optional)</Text>
+                            <Text style={[styles.pickerLabel, { color: theme.text }]}>
+                                Day (Optional)
+                            </Text>
                             <ScrollView
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
@@ -157,14 +196,18 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                                         key={day}
                                         style={[
                                             styles.pickerItemSmall,
-                                            selectedDay === day && styles.pickerItemActive,
+                                            { backgroundColor: theme.border },
+                                            draftDay === day && styles.pickerItemActive,
                                         ]}
-                                        onPress={() => setSelectedDay(selectedDay === day ? null : day)}
+                                        onPress={() =>
+                                            setDraftDay(draftDay === day ? null : day)
+                                        }
                                     >
                                         <Text
                                             style={[
                                                 styles.pickerItemText,
-                                                selectedDay === day && styles.pickerItemTextActive,
+                                                { color: theme.text },
+                                                draftDay === day && styles.pickerItemTextActive,
                                             ]}
                                         >
                                             {day}
@@ -179,7 +222,7 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                     <View style={styles.dateModalActions}>
                         <TouchableOpacity
                             style={styles.dateModalCancelBtn}
-                            onPress={onClose}
+                            onPress={handleCancel}
                         >
                             <Text style={styles.dateModalCancelText}>Cancel</Text>
                         </TouchableOpacity>
@@ -187,16 +230,16 @@ const DateFilterModal: React.FC<DateFilterModalProps> = ({
                         <TouchableOpacity
                             style={[
                                 styles.dateModalApplyBtn,
-                                !selectedYear && styles.dateModalApplyBtnDisabled,
+                                !draftYear && styles.dateModalApplyBtnDisabled,
                             ]}
-                            onPress={onApply}
-                            disabled={!selectedYear}
+                            onPress={handleApply}
+                            disabled={!draftYear}
                         >
                             <Text style={styles.dateModalApplyText}>Apply Filter</Text>
                         </TouchableOpacity>
                     </View>
 
-                    {/* Clear Button */}
+                    {/* Clear existing filter */}
                     {activeDateFilter && (
                         <TouchableOpacity
                             style={styles.dateModalClearBtn}
