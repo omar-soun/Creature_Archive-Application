@@ -152,7 +152,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         species: entry.speciesName,
         scientificName: entry.scientificName,
         date: entryDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + entryDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
-        confidence: Math.round(entry.confidenceScore * 100),
         image: imageUri ? { uri: imageUri } : require('../../../assets/1.png'),
         // Full entry data for detail navigation
         entryParams: {
@@ -168,6 +167,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
             location: entry.locationName || 'Unknown Location',
             coordinates: coordinates,
             confidence: Math.round((entry.confidenceScore || 0) * 100),
+            detectionSource: entry.detectionSource ?? 'offline',
             tags: entry.tags || [],
             image: imageUri ? { uri: imageUri } : require('../../../assets/1.png'),
             notes: entry.notes,
@@ -179,18 +179,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         },
       };
     });
-
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 90) return '#059669';
-    if (confidence >= 75) return '#D97706';
-    return '#DC2626';
-  };
-
-  const getConfidenceBackground = (confidence: number) => {
-    if (confidence >= 90) return '#ECFDF5';
-    if (confidence >= 75) return '#FFFBEB';
-    return '#FEF2F2';
-  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -331,21 +319,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                     <Text style={[styles.speciesName, { color: theme.text }]}>{item.species}</Text>
                     <Text style={styles.scientificName}>{item.scientificName}</Text>
                     <Text style={[styles.activityDate, { color: theme.textSecondary }]}>{item.date}</Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.confidenceBadge,
-                      { backgroundColor: getConfidenceBackground(item.confidence) },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.confidenceText,
-                        { color: getConfidenceColor(item.confidence) },
-                      ]}
-                    >
-                      {item.confidence}%
-                    </Text>
                   </View>
                 </TouchableOpacity>
               ))
@@ -681,16 +654,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6B7280',
     marginTop: 4,
-  },
-  confidenceBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-    marginLeft: 8,
-  },
-  confidenceText: {
-    fontSize: 13,
-    fontWeight: '700',
   },
 });
 

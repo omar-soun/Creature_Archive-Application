@@ -37,6 +37,7 @@ export interface SyncEntryData {
   quantity: number;
   habitatType: string;
   animalClass: string;
+  detectionSource: string;
   isDeleted?: boolean;
   deletedAt?: number;
 }
@@ -74,6 +75,7 @@ export interface SyncedEntryResponse {
   quantity: number;
   habitatType: string;
   animalClass: string;
+  detectionSource: string;
 }
 
 /**
@@ -162,6 +164,7 @@ function localEntryToSyncData(entry: LocalJournalEntry): SyncEntryData {
     quantity: entry.quantity,
     habitatType: entry.habitatType,
     animalClass: entry.animalClass,
+    detectionSource: entry.detectionSource,
     isDeleted: entry.isDeleted,
     deletedAt: entry.deletedAt,
   };
@@ -203,6 +206,7 @@ function syncResponseToLocalEntry(
     quantity: response.quantity,
     habitatType: response.habitatType,
     animalClass: response.animalClass as LocalJournalEntry['animalClass'],
+    detectionSource: (response.detectionSource || 'offline') as LocalJournalEntry['detectionSource'],
   };
 }
 
@@ -379,6 +383,7 @@ class ApiService {
       quantity: entry.quantity || 1,
       habitatType: entry.habitatType || '',
       animalClass: (entry.animalClass || 'Other') as LocalJournalEntry['animalClass'],
+      detectionSource: (entry.detectionSource || 'offline') as LocalJournalEntry['detectionSource'],
     }));
   }
 

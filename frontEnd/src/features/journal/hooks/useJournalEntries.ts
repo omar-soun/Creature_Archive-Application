@@ -18,6 +18,7 @@ import {
   CreateLocalJournalData,
   UpdateLocalJournalData,
   AnimalClass,
+  DetectionSource,
 } from '../../../core/types';
 
 // Initialize auth instance
@@ -46,6 +47,7 @@ export interface CreateEntryData {
   quantity: number;
   habitatType: string;
   animalClass: string;
+  detectionSource: DetectionSource;
   latitude?: number;
   longitude?: number;
   locationName?: string;
@@ -157,6 +159,7 @@ export function useJournalEntries(): UseJournalEntriesReturn {
           quantity: data.quantity,
           habitatType: data.habitatType,
           animalClass: data.animalClass as AnimalClass,
+          detectionSource: data.detectionSource,
         };
 
         const entry = await fileStorageService.createEntry(createData);

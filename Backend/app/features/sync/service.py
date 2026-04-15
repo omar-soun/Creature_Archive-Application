@@ -190,6 +190,7 @@ class SyncService:
                                 "quantity": entry.quantity,
                                 "habitatType": entry.habitatType,
                                 "animalClass": entry.animalClass,
+                                "detectionSource": entry.detectionSource,
                                 "locationName": entry.locationName or "",
                                 "lastUpdated": datetime.fromtimestamp(
                                     entry.lastUpdated / 1000, tz=timezone.utc
@@ -226,6 +227,7 @@ class SyncService:
                                 quantity=entry.quantity,
                                 habitatType=entry.habitatType,
                                 animalClass=entry.animalClass,
+                                detectionSource=entry.detectionSource,
                             )
                             result.mergedEntries.append(synced_entry)
 
@@ -281,6 +283,7 @@ class SyncService:
                             quantity=entry.quantity,
                             habitatType=entry.habitatType,
                             animalClass=entry.animalClass,
+                            detectionSource=entry.detectionSource,
                         )
                         result.mergedEntries.append(synced_entry)
                         processed_local_ids.add(entry.localId)
@@ -315,6 +318,7 @@ class SyncService:
                         quantity=entry.quantity,
                         habitatType=entry.habitatType,
                         animalClass=entry.animalClass,
+                        detectionSource=entry.detectionSource,
                     )
                     result.mergedEntries.append(synced_entry)
                     processed_local_ids.add(entry.localId)
@@ -397,6 +401,7 @@ class SyncService:
             "quantity": entry.quantity,
             "habitatType": entry.habitatType,
             "animalClass": entry.animalClass,
+            "detectionSource": entry.detectionSource,
             "localId": entry.localId,
         }
 
@@ -451,6 +456,7 @@ class SyncService:
             quantity=data.get("quantity", 1),
             habitatType=data.get("habitatType", ""),
             animalClass=data.get("animalClass", "Other"),
+            detectionSource=data.get("detectionSource", "offline"),
         )
 
     @staticmethod
@@ -485,6 +491,7 @@ class SyncService:
                     quantity=entry.quantity,
                     habitatType=entry.habitatType,
                     animalClass=entry.animalClass,
+                    detectionSource=entry.detectionSource,
                 )
             )
         return entries

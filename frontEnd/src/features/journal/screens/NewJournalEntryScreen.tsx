@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,6 +6,8 @@ import {
     StatusBar,
     TouchableOpacity,
     Platform,
+    PermissionsAndroid,
+    Linking,
     Image,
     ScrollView,
     TextInput,
@@ -14,6 +16,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import Geolocation from '@react-native-community/geolocation';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import useJournalEntries from '../hooks/useJournalEntries';
 import { useTheme } from '../../../core/theme';
@@ -73,6 +76,9 @@ interface RouteParams {
 
     // Manual entry flag
     isManualEntry?: boolean;
+
+    // Detection source from scan flow
+    detectionSource?: 'offline' | 'online';
 }
 
 interface NewJournalEntryScreenProps {
@@ -135,6 +141,60 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
     const [manualDate, setManualDate] = useState(getCurrentDateString);
     const [manualTime, setManualTime] = useState(getCurrentTimeString);
     const [showImageOptions, setShowImageOptions] = useState(false);
+
+    // Manual entry location state
+    type LocationStatus = 'idle' | 'fetching' | 'granted' | 'denied';
+    const [manualGpsLocation, setManualGpsLocation] = useState<LocationData | null>(null);
+    const [locationStatus, setLocationStatus] = useState<LocationStatus>('idle');
+
+    // Auto-fetch location on mount for manual entries
+    useEffect(() => {
+        if (!isManualEntry) return;
+        fetchManualLocation();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const fetchManualLocation = useCallback(async () => {
+        setLocationStatus('fetching');
+
+        // Android requires explicit runtime permission
+        if (Platform.OS === 'android') {
+            const result = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    title: 'Location Access',
+                    message:
+                        'Creature Archive uses your location to tag journal entries with GPS coordinates, helping you track where each observation was made.',
+                    buttonNeutral: 'Ask Later',
+                    buttonNegative: 'Skip',
+                    buttonPositive: 'Allow',
+                }
+            );
+            if (result !== PermissionsAndroid.RESULTS.GRANTED) {
+                setLocationStatus('denied');
+                return;
+            }
+        }
+
+        Geolocation.getCurrentPosition(
+            (pos) => {
+                setManualGpsLocation({
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude,
+                });
+                setLocationStatus('granted');
+            },
+            (err) => {
+                // code 1 = permission denied, code 2 = unavailable, code 3 = timeout
+                if (err.code === 1) {
+                    setLocationStatus('denied');
+                } else {
+                    // Service off or timeout — treat as denied so user can retry
+                    setLocationStatus('denied');
+                }
+            },
+            { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 }
+        );
+    }, [isManualEntry]);
     // ============================================
     // UI STATE
     // ============================================
@@ -143,11 +203,11 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
 
     const classOptions = [
         { label: 'Mammals', value: 'Mammal', icon: 'paw' },
-        { label: 'Birds', value: 'Bird', icon: 'bird' },
-        { label: 'Fish', value: 'Fish', icon: 'fish' },
-        { label: 'Reptiles', value: 'Reptile', icon: 'dragon' },
+        { label: 'Birds', value: 'Bird', icon: 'dove' },
+        { label: 'Fish', value: 'Fish', icon: 'fish-fins' },
+        { label: 'Reptiles', value: 'Reptile', icon: 'worm' },
         { label: 'Amphibians', value: 'Amphibian', icon: 'frog' },
-        { label: 'Insects', value: 'Insect', icon: 'butterfly' },
+        { label: 'Insects', value: 'Insect', icon: 'bugs' },
         { label: 'Other', value: 'Other', icon: 'microscope' },
     ];
 
@@ -202,8 +262,26 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
     // SAVE / SUBMIT HANDLER
     // ============================================
     const handleSave = async () => {
+        const photoToCheck = isManualEntry ? currentPhotoUri : scanPhotoUri;
+        if (!photoToCheck) {
+            showAlert('Photo Required', 'Please add a photo of the animal before saving.');
+            return;
+        }
         if (!speciesName.trim()) {
-            showAlert('Required Field', 'Please enter an animal name.');
+            showAlert('Species Name Required', 'Please enter the name of the species.');
+            return;
+        }
+        if (!scientificName.trim()) {
+            showAlert('Scientific Name Required', 'Please enter the scientific name of the species.');
+            return;
+        }
+        if (!fieldNotes.trim()) {
+            showAlert('Notes Required', 'Please add field notes describing your observation.');
+            return;
+        }
+        const parsedTags = tags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+        if (parsedTags.length === 0) {
+            showAlert('Tag Required', 'Please add at least one tag (e.g. raptor, nocturnal).');
             return;
         }
 
@@ -226,33 +304,27 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
             }
 
             const photoToSave = isManualEntry ? currentPhotoUri : scanPhotoUri;
+            const activeLocation = isManualEntry ? manualGpsLocation : gpsLocation;
 
             await createEntry({
                 speciesName: speciesName.trim(),
                 scientificName: scientificName.trim(),
                 confidenceScore: isManualEntry ? 0 : confidenceScore / 100,
                 localImageUri: photoToSave,
-                latitude: gpsLocation?.latitude,
-                longitude: gpsLocation?.longitude,
-                locationName: gpsLocation
-                    ? `${gpsLocation.latitude.toFixed(4)}°, ${gpsLocation.longitude.toFixed(4)}°`
+                latitude: activeLocation?.latitude,
+                longitude: activeLocation?.longitude,
+                locationName: activeLocation
+                    ? `${activeLocation.latitude.toFixed(4)}°, ${activeLocation.longitude.toFixed(4)}°`
                     : undefined,
                 capturedAt,
                 notes: fieldNotes.trim(),
-                tags: tags
-                    .split(',')
-                    .map(tag => tag.trim())
-                    .filter(tag => tag.length > 0),
+                tags: parsedTags,
                 behaviorObserved: behavior.trim(),
                 quantity: parseInt(quantity, 10) || 1,
                 habitatType: habitat.trim(),
                 animalClass: animalClass || 'Other',
+                detectionSource: isManualEntry ? 'manual' : (routeParams?.detectionSource ?? 'offline'),
             });
-
-            // Clear draft if this was a manual entry submit
-            if (isManualEntry) {
-                await AsyncStorage.removeItem(DRAFT_STORAGE_KEY);
-            }
 
             showAlert(
                 'Entry Saved',
@@ -475,6 +547,71 @@ const NewJournalEntryScreen: React.FC<NewJournalEntryScreenProps> = ({
                                 <Text style={[styles.dataLabel, { color: theme.textSecondary }]}>GPS coordinates</Text>
                             </View>
                         </View>
+                    </View>
+                )}
+
+                {/* Manual entry location card — placed outside ternary */}
+                {isManualEntry && (
+                    <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                        <View style={styles.locationHeader}>
+                            <View style={[styles.locationIconBox, { backgroundColor: theme.accentLight }]}>
+                                <FontAwesome6 name="location-dot" size={16} color="#059669" />
+                            </View>
+                            <View style={styles.locationHeaderText}>
+                                <Text style={[styles.cardTitle, styles.locationTitle, { color: theme.text }]}>GPS Location</Text>
+                                <Text style={[styles.cardSubtitle, { color: theme.textSecondary }]}>
+                                    {locationStatus === 'fetching' && 'Detecting your location…'}
+                                    {locationStatus === 'granted' && 'Location captured'}
+                                    {locationStatus === 'denied' && 'Location not available'}
+                                    {locationStatus === 'idle' && 'Optional'}
+                                </Text>
+                            </View>
+                            {locationStatus === 'denied' && (
+                                <TouchableOpacity
+                                    style={styles.locationRetryBtn}
+                                    onPress={fetchManualLocation}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={styles.locationRetryText}>Retry</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+
+                        {locationStatus === 'fetching' && (
+                            <View style={styles.locationStatusRow}>
+                                <ActivityIndicator size="small" color="#059669" style={{ marginRight: 8 }} />
+                                <Text style={[styles.locationStatusText, { color: theme.textSecondary }]}>
+                                    Fetching coordinates…
+                                </Text>
+                            </View>
+                        )}
+
+                        {locationStatus === 'granted' && manualGpsLocation && (
+                            <View style={[styles.locationResult, { backgroundColor: theme.accentLight }]}>
+                                <Text style={styles.locationCoords}>
+                                    {formatCoordinates(manualGpsLocation)}
+                                </Text>
+                            </View>
+                        )}
+
+                        {locationStatus === 'denied' && (
+                            <View style={styles.locationStatusRow}>
+                                <FontAwesome6 name="circle-exclamation" size={13} color="#D97706" style={{ marginRight: 6 }} />
+                                <Text style={[styles.locationStatusText, { color: theme.textSecondary }]}>
+                                    Location unavailable. Entry will be saved without GPS.{' '}
+                                    <Text
+                                        style={styles.locationSettingsLink}
+                                        onPress={() =>
+                                            Platform.OS === 'ios'
+                                                ? Linking.openURL('app-settings:')
+                                                : Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS')
+                                        }
+                                    >
+                                        Open Settings
+                                    </Text>
+                                </Text>
+                            </View>
+                        )}
                     </View>
                 )}
 
@@ -1099,6 +1236,66 @@ const styles = StyleSheet.create({
     dropdownCancelText: {
         fontSize: 16,
         fontWeight: '600',
+    },
+
+    // Location card
+    locationHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    locationIconBox: {
+        width: 36,
+        height: 36,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+    },
+    locationHeaderText: {
+        flex: 1,
+    },
+    locationTitle: {
+        marginBottom: 0,
+        fontSize: 15,
+    },
+    locationRetryBtn: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 8,
+        backgroundColor: '#ECFDF5',
+    },
+    locationRetryText: {
+        fontSize: 13,
+        fontWeight: '600',
+        color: '#059669',
+    },
+    locationStatusRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        paddingTop: 4,
+    },
+    locationStatusText: {
+        flex: 1,
+        fontSize: 13,
+        lineHeight: 18,
+    },
+    locationResult: {
+        borderRadius: 10,
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+        marginTop: 4,
+    },
+    locationCoords: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#059669',
+        fontVariant: ['tabular-nums'],
+    },
+    locationSettingsLink: {
+        color: '#059669',
+        fontWeight: '600',
+        textDecorationLine: 'underline',
     },
 });
 

@@ -42,24 +42,12 @@ const formatDisplayTime = (entry: LocalJournalEntry): string => {
     return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 };
 
-// Confidence colors
-const getConfidenceColor = (confidence: number) => {
-    const percent = confidence <= 1 ? confidence * 100 : confidence;
-    if (percent >= 90) return '#059669';
-    if (percent >= 80) return '#D97706';
-    return '#DC2626';
-};
-
-const getConfidenceBackground = (confidence: number) => {
-    const percent = confidence <= 1 ? confidence * 100 : confidence;
-    if (percent >= 90) return '#ECFDF5';
-    if (percent >= 80) return '#FFFBEB';
-    return '#FEF2F2';
-};
-
-const getConfidencePercent = (confidence: number) => {
-    return confidence <= 1 ? Math.round(confidence * 100) : Math.round(confidence);
-};
+// Detection source display config
+const DETECTION_SOURCE_CONFIG = {
+    offline: { label: 'On-Device AI', icon: 'microchip', color: '#059669', bg: '#ECFDF5' },
+    online:  { label: 'Online Detection', icon: 'globe', color: '#2563EB', bg: '#EFF6FF' },
+    manual:  { label: 'Manual Entry', icon: 'pen', color: '#6B7280', bg: '#F3F4F6' },
+} as const;
 
 // ============================================
 // COMPONENT
@@ -115,22 +103,18 @@ const JournalCard: React.FC<JournalCardProps> = ({ entry, isDeleting, onPress, o
                 )}
             </View>
 
-            {/* Confidence Badge */}
-            <View
-                style={[
-                    styles.confidenceBadge,
-                    { backgroundColor: getConfidenceBackground(entry.confidenceScore) },
-                ]}
-            >
-                <Text
-                    style={[
-                        styles.confidenceText,
-                        { color: getConfidenceColor(entry.confidenceScore) },
-                    ]}
-                >
-                    {getConfidencePercent(entry.confidenceScore)}%
-                </Text>
-            </View>
+
+            {/* Detection Source Badge — top-right corner */}
+            {(() => {
+                const src = entry.detectionSource ?? 'offline';
+                const cfg = DETECTION_SOURCE_CONFIG[src] ?? DETECTION_SOURCE_CONFIG.offline;
+                return (
+                    <View style={[styles.sourceTag, { backgroundColor: cfg.bg }]}>
+                        <FontAwesome6 name={cfg.icon} size={9} color={cfg.color} style={styles.sourceTagIcon} />
+                        <Text style={[styles.sourceTagText, { color: cfg.color }]}>{cfg.label}</Text>
+                    </View>
+                );
+            })()}
 
             {/* Sync Status Badge */}
             {entry.syncStatus !== 'synced' && (
@@ -196,7 +180,7 @@ const styles = StyleSheet.create({
     cardContent: {
         flex: 1,
         justifyContent: 'center',
-        paddingRight: 45,
+        paddingRight: 100,
     },
     speciesName: {
         fontSize: 16,
@@ -242,18 +226,6 @@ const styles = StyleSheet.create({
         color: '#6B7280',
         fontWeight: '500',
     },
-    confidenceBadge: {
-        position: 'absolute',
-        top: 14,
-        right: 14,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 8,
-    },
-    confidenceText: {
-        fontSize: 13,
-        fontWeight: '700',
-    },
     syncBadgeContainer: {
         position: 'absolute',
         bottom: 14,
@@ -269,6 +241,23 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    sourceTag: {
+        position: 'absolute',
+        top: 14,
+        right: 14,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 7,
+        paddingVertical: 4,
+        borderRadius: 6,
+    },
+    sourceTagIcon: {
+        marginRight: 4,
+    },
+    sourceTagText: {
+        fontSize: 10,
+        fontWeight: '600',
     },
 });
 

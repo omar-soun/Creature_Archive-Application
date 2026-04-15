@@ -199,6 +199,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
             confidenceScore: localMlResult?.confidenceScore ?? 0,
             notes: manualNotes,
             isDraft: false,
+            detectionSource: 'offline',
         });
     };
 
@@ -255,6 +256,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
             confidenceScore: localMlResult?.confidenceScore ?? 0,
             notes: combinedNotes,
             isDraft: true,
+            detectionSource: 'offline',
         });
     };
 
@@ -274,6 +276,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
             confidenceScore: onlineResult.confidence,
             notes: manualNotes || extraNotes,
             isDraft: false,
+            detectionSource: 'online',
         });
     };
 
@@ -288,6 +291,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
         confidenceScore: number;
         notes: string;
         isDraft: boolean;
+        detectionSource: 'offline' | 'online';
     }) => {
         const restorePhase: Phase =
             phase === 'online_result' ? 'online_result' : 'awaiting_confirmation';
@@ -302,6 +306,7 @@ const IdentificationResultScreen: React.FC<IdentificationResultScreenProps> = ({
             gpsLocation,
             notes: data.notes,
             isDraft: data.isDraft,
+            detectionSource: data.detectionSource,
             // Frozen detection state — restored when user presses Back
             _returnParams: {
                 photoUri,

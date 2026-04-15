@@ -31,12 +31,15 @@ interface LocationData {
     longitude: number;
 }
 
+type DetectionSource = 'offline' | 'online' | 'manual';
+
 interface JournalEntry {
     id: string;
     speciesName: string;
     scientificName: string;
     animalClass: string;
     confidence: number;
+    detectionSource?: DetectionSource;
     date: string;
     time: string;
     location?: LocationData | null;
@@ -91,6 +94,19 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
         photoUri: '',
         createdAt: '2024-12-29T14:34:00Z',
     };
+
+    // ============================================
+    // DETECTION SOURCE HELPERS
+    // ============================================
+    const DETECTION_SOURCE_CONFIG = {
+        offline: { label: 'On-Device AI', icon: 'microchip', color: '#059669', bg: '#ECFDF5' },
+        online:  { label: 'Online Detection', icon: 'globe', color: '#2563EB', bg: '#EFF6FF' },
+        manual:  { label: 'Manual Entry', icon: 'pen', color: '#6B7280', bg: '#F3F4F6' },
+    } as const;
+
+    const detectionSource: DetectionSource = entry.detectionSource ?? 'offline';
+    const sourceConfig = DETECTION_SOURCE_CONFIG[detectionSource];
+    const isAiDetected = detectionSource !== 'manual';
 
     // ============================================
     // CONFIDENCE HELPERS
@@ -209,26 +225,39 @@ const JournalDetailScreen: React.FC<JournalDetailScreenProps> = ({
                     <Text style={[styles.scientificName, { color: theme.textSecondary }]}>{entry.scientificName}</Text>
                 </View>
 
-                {/* AI Confidence Card */}
+                {/* Detection Source + Confidence Card */}
                 <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
-                    <View style={styles.confidenceHeader}>
-                        <Text style={[styles.confidenceLabel, { color: theme.text }]}>AI Prediction Confidence</Text>
-                        <Text style={[styles.confidenceValue, { color: confidenceInfo.color }]}>
-                            {entry.confidence}%
-                        </Text>
+                    {/* Detection source badge */}
+                    <View style={styles.detectionSourceRow}>
+                        <View style={[styles.detectionSourceBadge, { backgroundColor: sourceConfig.bg }]}>
+                            <FontAwesome6 name={sourceConfig.icon} size={12} color={sourceConfig.color} style={styles.detectionSourceIcon} />
+                            <Text style={[styles.detectionSourceText, { color: sourceConfig.color }]}>{sourceConfig.label}</Text>
+                        </View>
                     </View>
-                    <View style={[styles.progressBarBg, { backgroundColor: theme.border }]}>
-                        <View
-                            style={[
-                                styles.progressBarFill,
-                                {
-                                    width: `${entry.confidence}%`,
-                                    backgroundColor: confidenceInfo.color,
-                                },
-                            ]}
-                        />
-                    </View>
-                    <Text style={[styles.confidenceFooter, { color: theme.textSecondary }]}>{confidenceInfo.text}</Text>
+
+                    {/* Confidence — only for AI detections */}
+                    {isAiDetected && (
+                        <>
+                            <View style={styles.confidenceHeader}>
+                                <Text style={[styles.confidenceLabel, { color: theme.text }]}>Prediction Confidence</Text>
+                                <Text style={[styles.confidenceValue, { color: confidenceInfo.color }]}>
+                                    {entry.confidence}%
+                                </Text>
+                            </View>
+                            <View style={[styles.progressBarBg, { backgroundColor: theme.border }]}>
+                                <View
+                                    style={[
+                                        styles.progressBarFill,
+                                        {
+                                            width: `${entry.confidence}%`,
+                                            backgroundColor: confidenceInfo.color,
+                                        },
+                                    ]}
+                                />
+                            </View>
+                            <Text style={[styles.confidenceFooter, { color: theme.textSecondary }]}>{confidenceInfo.text}</Text>
+                        </>
+                    )}
                 </View>
 
                 {/* Observation Metadata Card */}
@@ -549,6 +578,26 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#1A1A1A',
         marginBottom: 16,
+    },
+
+    // Detection Source
+    detectionSourceRow: {
+        marginBottom: 14,
+    },
+    detectionSourceBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 20,
+    },
+    detectionSourceIcon: {
+        marginRight: 6,
+    },
+    detectionSourceText: {
+        fontSize: 13,
+        fontWeight: '600',
     },
 
     // Confidence Card

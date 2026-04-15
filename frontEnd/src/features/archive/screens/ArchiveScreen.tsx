@@ -172,6 +172,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
             location: entry.locationName || 'Unknown Location',
             coordinates: coordinates,
             confidence: Math.round((entry.confidenceScore || 0) * 100),
+            detectionSource: entry.detectionSource ?? 'offline',
             tags: entry.tags || [],
             image: entry.localImageUri ? { uri: entry.localImageUri.startsWith('file://') ? entry.localImageUri : `file://${entry.localImageUri}` } : require('../../../assets/1.png'),
             notes: entry.notes,

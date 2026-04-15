@@ -29,6 +29,7 @@ class SyncEntryData(BaseModel):
     quantity: int = Field(1, ge=0)
     habitatType: str = ""
     animalClass: str = "Other"
+    detectionSource: str = "offline"
     isDeleted: bool = False
     deletedAt: Optional[int] = None
 
@@ -65,6 +66,7 @@ class SyncedEntryResponse(BaseModel):
     quantity: int
     habitatType: str
     animalClass: str
+    detectionSource: str = "offline"
 
 
 class TwoWaySyncResponse(BaseModel):

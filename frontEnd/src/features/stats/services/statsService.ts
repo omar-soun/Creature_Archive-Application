@@ -25,16 +25,16 @@ export interface TopSpecies {
     percentage: number;
 }
 
-// Color palette for charts
-const COLORS = [
-    '#1B4D3E', // Primary Dark
-    '#059669', // Green
-    '#34D399', // Light Green
-    '#6EE7B7', // Teal
-    '#A7F3D0', // Pale
-    '#A7C4B8', // Orange
-    '#F59E0B', // Amber
-];
+// Color palette for charts — keyed by AnimalClass value
+const CLASS_COLORS: Record<string, string> = {
+    Mammal:     '#1B4D3E',
+    Bird:       '#059669',
+    Fish:       '#34D399',
+    Reptile:    '#6EE7B7',
+    Amphibian:  '#A7F3D0',
+    Insect:     '#A7C4B8',
+    Other:      '#F59E0B',
+};
 
 export class StatsService {
     /**
@@ -97,11 +97,11 @@ export class StatsService {
             counts[cls] = (counts[cls] || 0) + 1;
         });
 
-        return Object.keys(counts).map((cls, index) => ({
+        return Object.keys(counts).map(cls => ({
             name: cls,
             count: counts[cls],
             percentage: Math.round((counts[cls] / total) * 100),
-            color: COLORS[index % COLORS.length]
+            color: CLASS_COLORS[cls] ?? CLASS_COLORS.Other,
         })).sort((a, b) => b.count - a.count);
     }
 

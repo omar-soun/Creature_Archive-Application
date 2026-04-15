@@ -13,6 +13,14 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 export type SyncStatus = 'synced' | 'pending' | 'failed';
 
 /**
+ * How the species was identified
+ * - offline: on-device TFLite model
+ * - online: remote AnimalDetect API
+ * - manual: user typed it in manually
+ */
+export type DetectionSource = 'offline' | 'online' | 'manual';
+
+/**
  * Animal class options for filtering and categorization
  */
 export type AnimalClass = 'Mammal' | 'Bird' | 'Reptile' | 'Amphibian' | 'Fish' | 'Insect' | 'Other';
@@ -55,6 +63,7 @@ export interface LocalJournalEntry {
   quantity: number;
   habitatType: string;
   animalClass: AnimalClass;
+  detectionSource: DetectionSource;
   isDeleted?: boolean; // Soft delete for sync
   deletedAt?: number; // When deleted locally
 }
@@ -183,6 +192,7 @@ export interface CreateLocalJournalData {
   quantity: number;
   habitatType: string;
   animalClass: AnimalClass;
+  detectionSource: DetectionSource;
 }
 
 /**
@@ -259,5 +269,6 @@ export function createLocalJournalEntry(data: CreateLocalJournalData): LocalJour
     quantity: data.quantity,
     habitatType: data.habitatType,
     animalClass: data.animalClass,
+    detectionSource: data.detectionSource,
   };
 }

@@ -7,6 +7,7 @@ export const CLASS_FILTERS = [
     { label: 'Amphibian', value: 'Amphibian', icon: 'frog' },
     { label: 'Fish', value: 'Fish', icon: 'fish-fins' },
     { label: 'Insect', value: 'Insect', icon: 'bugs' },
+    { label: 'Other', value: 'Other', icon: 'microscope' },
 ];
 
 // Months for date picker
