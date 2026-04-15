@@ -402,7 +402,7 @@ const ArchiveScreen: React.FC<ArchiveScreenProps> = ({ onNavigate }) => {
             <TouchableOpacity
                 style={styles.fab}
                 activeOpacity={0.85}
-                onPress={() => onNavigate('ScanSpecies')}
+                onPress={() => onNavigate('NewEntry', { isManualEntry: true })}
             >
                 <Text style={styles.fabIcon}>+</Text>
             </TouchableOpacity>
